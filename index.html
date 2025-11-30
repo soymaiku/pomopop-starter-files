@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <header class="header">
+      <button class="header-button" id="js-settings-btn" title="Settings">
+        ⚙️ Settings
+      </button>
+      <button class="header-button" id="js-music-btn" title="Background Music">
+        🎵 Music
+      </button>
+      <button class="header-button" id="js-tasks-toggle-btn" title="Tasks">
+        📋 Tasks
+      </button>
+    </header>
+
     <main class="app">
       <progress id="js-progress" value="0"></progress>
       <div class="progress-bar"></div>
@@ -40,15 +52,139 @@
           <span class="separator">:</span>
           <span id="js-seconds">00</span>
         </div>
-        <button class="main-button" data-action="start" id="js-btn">
-          Start
-        </button>
+        <div class="task-name-display" id="js-task-name-display">
+          No task selected
+        </div>
+        <div class="timer-controls">
+          <button class="main-button" data-action="start" id="js-btn">
+            Start
+          </button>
+          <button
+            class="control-button reset-button"
+            id="js-reset-btn"
+            title="Reset timer"
+          >
+            🔄 Reset
+          </button>
+        </div>
       </div>
     </main>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="js-settings-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-settings">&times;</span>
+        <h2>Settings</h2>
+        <div class="settings-form">
+          <div class="form-group">
+            <label for="js-pomodoro-duration"
+              >Pomodoro Duration (minutes):</label
+            >
+            <input
+              type="number"
+              id="js-pomodoro-duration"
+              min="1"
+              max="60"
+              value="25"
+            />
+          </div>
+          <div class="form-group">
+            <label for="js-short-break-duration"
+              >Short Break Duration (minutes):</label
+            >
+            <input
+              type="number"
+              id="js-short-break-duration"
+              min="1"
+              max="30"
+              value="5"
+            />
+          </div>
+          <div class="form-group">
+            <label for="js-long-break-duration"
+              >Long Break Duration (minutes):</label
+            >
+            <input
+              type="number"
+              id="js-long-break-duration"
+              min="1"
+              max="60"
+              value="15"
+            />
+          </div>
+          <div class="form-group">
+            <label for="js-long-break-interval"
+              >Long Break Interval (pomodoros):</label
+            >
+            <input
+              type="number"
+              id="js-long-break-interval"
+              min="1"
+              max="10"
+              value="4"
+            />
+          </div>
+          <button class="save-button" id="js-save-settings">
+            Save Settings
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Music Modal -->
+    <div class="modal" id="js-music-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-music">&times;</span>
+        <h2>Background Music</h2>
+        <div class="music-player">
+          <div class="form-group">
+            <label for="js-music-select">Choose a track:</label>
+            <select id="js-music-select">
+              <option value="">No Music</option>
+              <option value="lofi">Lo-Fi Hip Hop</option>
+              <option value="ambient">Ambient Relaxation</option>
+              <option value="classical">Classical Focus</option>
+              <option value="jazz">Jazz Vibes</option>
+              <option value="nature">Nature Sounds</option>
+            </select>
+          </div>
+          <div class="music-controls">
+            <button class="music-button" id="js-music-play">Play</button>
+            <button class="music-button" id="js-music-stop">Stop</button>
+          </div>
+          <div class="volume-control">
+            <label for="js-volume">Volume:</label>
+            <input type="range" id="js-volume" min="0" max="100" value="50" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task System -->
+    <div class="task-section hidden" id="js-task-section">
+      <h2>Tasks</h2>
+      <div class="task-input-group">
+        <input type="text" id="js-task-name" placeholder="Task name" />
+        <input
+          type="number"
+          id="js-task-pomodoros"
+          placeholder="Est. pomodoros"
+          min="1"
+          max="20"
+          value="1"
+        />
+        <button class="add-task-button" id="js-add-task">Add Task</button>
+      </div>
+      <div class="tasks-list" id="js-tasks-list">
+        <!-- Tasks will be dynamically added here -->
+      </div>
+    </div>
+
     <div class="hidden">
       <audio src="backtowork.mp3" data-sound="pomodoro"></audio>
       <audio src="break.mp3" data-sound="shortBreak"></audio>
       <audio src="break.mp3" data-sound="longBreak"></audio>
+      <audio id="js-music-player" loop></audio>
     </div>
     <script src="main.js"></script>
   </body>

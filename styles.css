@@ -2,18 +2,13 @@
    #POMODORO APP STYLES
    ========================================================================== */
 
-/**
- *
- * Inheriting box sizing slightly better best-practice
- * https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
- *
- */
-
 html {
   box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
   margin: 0;
   padding: 0;
@@ -28,8 +23,39 @@ html {
 body {
   background-color: var(--pomodoro);
   transition: background-color 1s ease;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   user-select: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+}
+
+.header-button {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pomodoro);
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-button:hover {
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 progress {
@@ -41,7 +67,7 @@ progress {
 }
 
 progress::-webkit-progress-bar {
- background-color: rgba(0, 0, 0, 0.1);;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 progress::-webkit-progress-value {
@@ -65,6 +91,16 @@ progress::-webkit-progress-value {
   display: flex;
   align-items: center;
   font-family: arial, sans-serif;
+}
+
+.task-name-display {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  min-height: 30px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
 .mode-button {
@@ -103,7 +139,8 @@ progress::-webkit-progress-value {
   transition: color 0.5s ease-in-out 0s;
 }
 
-button:focus, button:active {
+button:focus,
+button:active {
   outline: none;
 }
 
@@ -113,12 +150,832 @@ button:focus, button:active {
   outline: none;
 }
 
+.timer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.control-button {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.control-button:hover {
+  background-color: white;
+  border-color: white;
+  color: hsl(175, 26%, 41%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.control-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
 .hidden {
   display: none;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal.open {
+  display: block;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+}
+
+.modal h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--pomodoro);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.save-button,
+.add-task-button {
+  padding: 10px 16px;
+  background-color: var(--pomodoro);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover,
+.add-task-button:hover {
+  opacity: 0.9;
+}
+
+/* Music Player */
+.music-player {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.music-controls,
+.volume-control {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.music-button {
+  flex: 1;
+  padding: 8px;
+  background-color: var(--pomodoro);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.3s;
+}
+
+.music-button:hover {
+  opacity: 0.9;
+}
+
+.volume-control input {
+  flex: 1;
+  cursor: pointer;
+}
+
+/* Task System */
+.task-section {
+  position: fixed;
+  left: 20px;
+  top: 80px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 8px;
+  width: 320px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+  transition: all 0.3s ease;
+}
+
+.task-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+}
+
+.task-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.task-input-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.task-input-group input:focus {
+  outline: none;
+  border-color: var(--pomodoro);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  border-left: 4px solid var(--pomodoro);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-info {
+  flex: 1;
+}
+
+.task-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.task-progress {
+  font-size: 13px;
+  color: #666;
+}
+
+.task-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.task-button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  font-weight: 600;
+}
+
+.task-complete {
+  background-color: #4caf50;
+  color: white;
+}
+
+.task-complete:hover {
+  opacity: 0.8;
+}
+
+.task-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.task-delete:hover {
+  opacity: 0.8;
+}
+
+.task-edit {
+  background-color: #2196f3;
+  color: white;
+}
+
+.task-edit:hover {
+  opacity: 0.8;
+}
+
+.task-item.completed {
+  opacity: 0.6;
+}
+
+.task-item.completed .task-name {
+  text-decoration: line-through;
+}
+
+.task-item.selected {
+  background-color: #e3f2fd;
+  border-left-color: #2196f3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.task-item.selected .task-name {
+  color: #1976d2;
+  font-weight: 700;
+}
+
+.task-info {
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 @media screen and (max-width: 550px) {
   .clock {
     font-size: 8rem;
+  }
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Mobile Devices (320px - 480px) */
+@media screen and (max-width: 480px) {
+  .header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+  }
+
+  .header-button {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  progress {
+    height: 8px;
+  }
+
+  .timer {
+    padding: 10px;
+    margin-top: 40px;
+  }
+
+  .clock {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 5rem;
+  }
+
+  .mode-button {
+    font-size: 12px;
+    height: 24px;
+    padding: 2px 8px;
+    margin: 0 4px;
+  }
+
+  .main-button {
+    font-size: 16px;
+    height: 45px;
+    width: 150px;
+    margin: 15px 0 0;
+    padding: 0 8px;
+  }
+
+  .modal-content {
+    margin: 30% auto;
+    padding: 15px;
+    width: 95%;
+    max-width: 280px;
+  }
+
+  .close {
+    font-size: 24px;
+  }
+
+  .modal h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .settings-form {
+    gap: 10px;
+  }
+
+  .form-group {
+    gap: 3px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .save-button,
+  .add-task-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .music-player {
+    gap: 10px;
+  }
+
+  .music-controls,
+  .volume-control {
+    gap: 6px;
+  }
+
+  .music-button {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  /* Task Section - Mobile */
+  .task-section {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    min-width: 90vw;
+    max-width: 350px;
+    padding: 10px;
+    border-radius: 6px;
+    max-height: 45vh;
+  }
+
+  .task-section h2 {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .task-input-group {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .task-input-group input {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .task-item {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .task-name {
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .task-progress {
+    font-size: 11px;
+  }
+
+  .task-button {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+}
+
+/* Small Tablets (481px - 768px) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .header {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .header-button {
+    padding: 7px 11px;
+    font-size: 13px;
+  }
+
+  progress {
+    height: 10px;
+  }
+
+  .timer {
+    padding: 15px;
+    margin-top: 50px;
+  }
+
+  .clock {
+    margin-top: 35px;
+    margin-bottom: 25px;
+    font-size: 10rem;
+  }
+
+  .mode-button {
+    font-size: 14px;
+    height: 26px;
+    padding: 2px 10px;
+  }
+
+  .main-button {
+    font-size: 18px;
+    height: 48px;
+    width: 160px;
+    margin: 18px 0 0;
+  }
+
+  .modal-content {
+    margin: 15% auto;
+    padding: 18px;
+    max-width: 420px;
+  }
+
+  .modal h2 {
+    font-size: 18px;
+  }
+
+  .settings-form {
+    gap: 12px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 7px;
+    font-size: 13px;
+  }
+
+  .save-button,
+  .add-task-button {
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+
+  .music-player {
+    gap: 12px;
+  }
+
+  .music-controls,
+  .volume-control {
+    gap: 8px;
+  }
+
+  .music-button {
+    padding: 7px;
+    font-size: 13px;
+  }
+
+  /* Task Section - Tablet */
+  .task-section {
+    bottom: 15px;
+    min-width: 320px;
+    max-width: 380px;
+    padding: 12px;
+    max-height: 45vh;
+  }
+
+  .task-section h2 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .task-input-group {
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .task-input-group input {
+    padding: 7px;
+    font-size: 13px;
+  }
+
+  .task-item {
+    padding: 9px;
+    gap: 7px;
+  }
+
+  .task-name {
+    font-size: 14px;
+  }
+
+  .task-progress {
+    font-size: 12px;
+  }
+
+  .task-button {
+    padding: 4px 7px;
+    font-size: 11px;
+  }
+}
+
+/* Large Tablets & Small Desktops (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .header {
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .header-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  progress {
+    height: 11px;
+  }
+
+  .timer {
+    padding: 20px;
+  }
+
+  .clock {
+    margin-top: 45px;
+    margin-bottom: 30px;
+    font-size: 12rem;
+  }
+
+  .mode-button {
+    font-size: 15px;
+    height: 28px;
+    padding: 2px 12px;
+  }
+
+  .main-button {
+    font-size: 20px;
+    height: 50px;
+    width: 180px;
+    margin: 20px 0 0;
+  }
+
+  .modal-content {
+    margin: 12% auto;
+    padding: 20px;
+    max-width: 480px;
+  }
+
+  .settings-form {
+    gap: 14px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .save-button,
+  .add-task-button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .music-player {
+    gap: 15px;
+  }
+
+  .music-button {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  /* Task Section - Large Tablet */
+  .task-section {
+    bottom: 20px;
+    min-width: 320px;
+    max-width: 400px;
+    max-height: 50vh;
+  }
+
+  .task-section h2 {
+    font-size: 17px;
+  }
+
+  .task-button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+/* Desktop (1025px and above) */
+@media screen and (min-width: 1025px) {
+  .header {
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .header-button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  progress {
+    height: 12px;
+  }
+
+  .timer {
+    padding: 20px;
+  }
+
+  .clock {
+    margin-top: 50px;
+    margin-bottom: 30px;
+    font-size: 15rem;
+  }
+
+  .mode-button {
+    font-size: 16px;
+    height: 28px;
+    padding: 2px 12px;
+  }
+
+  .main-button {
+    font-size: 22px;
+    height: 55px;
+    width: 200px;
+    margin: 20px 0 0;
+  }
+
+  .modal-content {
+    margin: 10% auto;
+    padding: 20px;
+    max-width: 500px;
+  }
+
+  .settings-form {
+    gap: 15px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .save-button,
+  .add-task-button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .music-player {
+    gap: 15px;
+  }
+
+  .music-button {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  /* Task Section - Desktop */
+  .task-section {
+    bottom: 20px;
+    min-width: 300px;
+    max-width: 400px;
+    max-height: 400px;
+  }
+
+  .task-section h2 {
+    font-size: 18px;
+  }
+
+  .task-button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+/* Ultra-wide screens (1600px and above) */
+@media screen and (min-width: 1600px) {
+  .clock {
+    font-size: 18rem;
+  }
+
+  .main-button {
+    font-size: 24px;
+    height: 60px;
+    width: 220px;
+  }
+
+  .modal-content {
+    max-width: 600px;
+  }
+
+  .task-section {
+    max-width: 450px;
+  }
+}
+
+/* Notification Animations */
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
   }
 }
