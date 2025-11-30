@@ -70,7 +70,6 @@
       </div>
     </main>
 
-    <!-- Settings Modal -->
     <div class="modal" id="js-settings-modal">
       <div class="modal-content">
         <span class="close" id="js-close-settings">&times;</span>
@@ -131,7 +130,6 @@
       </div>
     </div>
 
-    <!-- Music Modal -->
     <div class="modal" id="js-music-modal">
       <div class="modal-content">
         <span class="close" id="js-close-music">&times;</span>
@@ -160,7 +158,6 @@
       </div>
     </div>
 
-    <!-- Task System -->
     <div class="task-section hidden" id="js-task-section">
       <h2>Tasks</h2>
       <div class="task-input-group">
@@ -175,17 +172,16 @@
         />
         <button class="add-task-button" id="js-add-task">Add Task</button>
       </div>
-      <div class="tasks-list" id="js-tasks-list">
-        <!-- Tasks will be dynamically added here -->
-      </div>
+      <div class="tasks-list" id="js-tasks-list"></div>
     </div>
 
     <div class="hidden">
-      <audio src="backtowork.mp3" data-sound="pomodoro"></audio>
-      <audio src="break.mp3" data-sound="shortBreak"></audio>
-      <audio src="break.mp3" data-sound="longBreak"></audio>
+      <audio src="/Audio/backtowork.mp3" data-sound="pomodoro"></audio>
+      <audio src="/Audio/break.mp3" data-sound="shortBreak"></audio>
+      <audio src="/Audio/break.mp3" data-sound="longBreak"></audio>
       <audio id="js-music-player" loop></audio>
     </div>
-    <script src="main.js"></script>
+
+    <script src="/Javascripts/app.js" type="module"></script>
   </body>
 </html>
