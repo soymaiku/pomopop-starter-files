@@ -1,7 +1,8 @@
 /* ==========================================================================
-   #POMODORO APP STYLES
+   1. CSS Setup & Global Variables
    ========================================================================== */
 
+/* Global Reset & Box Sizing */
 html {
   box-sizing: border-box;
 }
@@ -14,12 +15,19 @@ html {
   padding: 0;
 }
 
+/* CSS Custom Properties (Variables) */
 :root {
   --pomodoro: hsl(223, 25%, 40%);
   --shortBreak: hsl(48, 23%, 40%);
   --longBreak: hsl(105, 16%, 40%);
+  /* New variables for easier color management */
+  --color-text-light: rgba(255, 255, 255, 0.9);
+  --color-text-medium: rgba(255, 255, 255, 0.6);
+  --color-bg-light: #fff;
+  --color-progress-bar: rgba(0, 0, 0, 0.1);
 }
 
+/* Body and Global Typography */
 body {
   background-color: var(--pomodoro);
   transition: background-color 1s ease;
@@ -30,6 +38,16 @@ body {
   padding: 0;
 }
 
+button:focus,
+button:active {
+  outline: none;
+}
+
+/* ==========================================================================
+   2. Layout & Structure (Header, Timer, Progress)
+   ========================================================================== */
+
+/* Header & Header Buttons */
 .header {
   position: fixed;
   top: 0;
@@ -42,7 +60,7 @@ body {
 
 .header-button {
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--color-text-light);
   border: none;
   padding: 8px 12px;
   border-radius: 4px;
@@ -58,6 +76,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Progress Bar */
 progress {
   border-radius: 2px;
   width: 100%;
@@ -67,13 +86,14 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--color-progress-bar);
 }
 
 progress::-webkit-progress-value {
-  background-color: #fff;
+  background-color: var(--color-bg-light);
 }
 
+/* Main Timer Container */
 .timer {
   position: absolute;
   top: 50%;
@@ -83,6 +103,7 @@ progress::-webkit-progress-value {
   text-align: center;
 }
 
+/* Clock Display */
 .clock {
   margin-top: 50px;
   margin-bottom: 30px;
@@ -93,16 +114,30 @@ progress::-webkit-progress-value {
   font-family: arial, sans-serif;
 }
 
+/* Current Task Name Display */
 .task-name-display {
   margin-bottom: 20px;
   font-size: 18px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-medium);
   text-align: center;
   min-height: 30px;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
 
+.timer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* ==========================================================================
+   3. Timer Buttons (Mode, Main, Control)
+   ========================================================================== */
+
+/* Mode Buttons (Pomodoro, Break) */
 .mode-button {
   font-size: 16px;
   height: 28px;
@@ -121,7 +156,7 @@ progress::-webkit-progress-value {
   border-color: #fff;
 }
 
-/* MODIFIED: Main button styles to ensure consistency and set base height */
+/* Main Start/Pause Button */
 .main-button {
   cursor: pointer;
   box-shadow: rgb(235, 235, 235) 0px 6px 0px;
@@ -134,15 +169,10 @@ progress::-webkit-progress-value {
   background-color: white;
   border-width: initial;
   border-style: none;
-  margin: 0; /* Changed from 20px 0px 0px to 0 to rely on .timer-controls */
+  margin: 0;
   padding: 0px 12px;
   border-radius: 4px;
   transition: color 0.5s ease-in-out 0s;
-}
-
-button:focus,
-button:active {
-  outline: none;
 }
 
 .main-button.active {
@@ -151,31 +181,19 @@ button:active {
   outline: none;
 }
 
-.timer-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
-}
-
-/* MODIFIED: Control button styles to match the height and visual style of .main-button */
+/* Reset/Control Buttons */
 .control-button {
   cursor: pointer;
-  background-color: white; /* Match main-button background */
-  border: none; /* Remove border */
+  background-color: white;
+  border: none;
   padding: 0 12px;
   border-radius: 4px;
   font-weight: bold;
   color: var(--pomodoro);
   transition: all 0.3s ease;
-  box-shadow: rgb(235, 235, 235) 0px 6px 0px; /* Add the shadow for the 3D effect */
-
-  /* Match height (55px) and set a smaller width */
+  box-shadow: rgb(235, 235, 235) 0px 6px 0px;
   height: 55px;
   width: 100px;
-
-  /* Center the content */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -184,29 +202,186 @@ button:active {
 
 .control-button:hover {
   background-color: #f0f0f0;
-  border-color: none;
   color: var(--pomodoro);
   box-shadow: rgb(220, 220, 220) 0px 6px 0px;
 }
 
 .control-button:active {
-  transform: translateY(6px); /* Match main button press effect */
+  transform: translateY(6px);
   box-shadow: none;
   outline: none;
   background-color: #e0e0e0;
 }
 
-/* Specific styling for the reset text/icon */
 .control-button.reset-button {
   font-size: 18px;
-  color: #f44336; /* Use a red color for the reset action */
+  color: #f44336;
 }
 
-.hidden {
-  display: none;
+/* ==========================================================================
+   4. Task System
+   ========================================================================== */
+
+/* Task Sidebar Container */
+.task-section {
+  position: fixed;
+  left: 20px;
+  top: 80px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 8px;
+  width: 320px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+  transition: all 0.3s ease;
 }
 
-/* Modal Styles */
+.task-section h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+}
+
+/* Input Group for Adding Tasks */
+.task-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.task-input-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.task-input-group input:focus {
+  outline: none;
+  border-color: var(--pomodoro);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-task-button {
+  padding: 10px 16px;
+  background-color: var(--pomodoro);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.add-task-button:hover {
+  opacity: 0.9;
+}
+
+/* Task List */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Individual Task Item */
+.task-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  border-left: 4px solid var(--pomodoro);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.task-info {
+  flex: 1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.task-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.task-progress {
+  font-size: 13px;
+  color: #666;
+}
+
+.task-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.task-button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  font-weight: 600;
+}
+
+/* Task State Modifiers */
+.task-item.completed {
+  opacity: 0.6;
+}
+
+.task-item.completed .task-name {
+  text-decoration: line-through;
+}
+
+.task-item.selected {
+  background-color: #e3f2fd;
+  border-left-color: #2196f3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.task-item.selected .task-name {
+  color: #1976d2;
+  font-weight: 700;
+}
+
+/* Specific Task Control Buttons */
+.task-complete {
+  background-color: #4caf50;
+  color: white;
+}
+
+.task-edit {
+  background-color: #2196f3;
+  color: white;
+}
+
+.task-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.task-complete:hover,
+.task-edit:hover,
+.task-delete:hover {
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   5. Modal Styles (Settings & Music)
+   ========================================================================== */
+
 .modal {
   display: none;
   position: fixed;
@@ -253,6 +428,7 @@ button:active {
   color: #333;
 }
 
+/* Settings Form */
 .settings-form {
   display: flex;
   flex-direction: column;
@@ -287,8 +463,7 @@ button:active {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
-.save-button,
-.add-task-button {
+.save-button {
   padding: 10px 16px;
   background-color: var(--pomodoro);
   color: white;
@@ -300,8 +475,7 @@ button:active {
   transition: background-color 0.3s;
 }
 
-.save-button:hover,
-.add-task-button:hover {
+.save-button:hover {
   opacity: 0.9;
 }
 
@@ -341,706 +515,12 @@ button:active {
   cursor: pointer;
 }
 
-/* Task System */
-.task-section {
-  position: fixed;
-  left: 20px;
-  top: 80px;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 15px;
-  border-radius: 8px;
-  width: 320px;
-  max-height: 70vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 99;
-  transition: all 0.3s ease;
-}
-
-.task-section h2 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 18px;
-}
-
-.task-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-.task-input-group input {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
-}
-
-.task-input-group input:focus {
-  outline: none;
-  border-color: var(--pomodoro);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-}
-
-.tasks-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.task-item {
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 4px;
-  border-left: 4px solid var(--pomodoro);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
-
-.task-info {
-  flex: 1;
-}
-
-.task-name {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-  word-break: break-word;
-}
-
-.task-progress {
-  font-size: 13px;
-  color: #666;
-}
-
-.task-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.task-button {
-  padding: 4px 8px;
-  font-size: 12px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: opacity 0.3s;
-  font-weight: 600;
-}
-
-.task-complete {
-  background-color: #4caf50;
-  color: white;
-}
-
-.task-complete:hover {
-  opacity: 0.8;
-}
-
-.task-delete {
-  background-color: #f44336;
-  color: white;
-}
-
-.task-delete:hover {
-  opacity: 0.8;
-}
-
-.task-edit {
-  background-color: #2196f3;
-  color: white;
-}
-
-.task-edit:hover {
-  opacity: 0.8;
-}
-
-.task-item.completed {
-  opacity: 0.6;
-}
-
-.task-item.completed .task-name {
-  text-decoration: line-through;
-}
-
-.task-item.selected {
-  background-color: #e3f2fd;
-  border-left-color: #2196f3;
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
-}
-
-.task-item.selected .task-name {
-  color: #1976d2;
-  font-weight: 700;
-}
-
-.task-info {
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-@media screen and (max-width: 550px) {
-  .clock {
-    font-size: 8rem;
-  }
-}
-
-/* ========== RESPONSIVE DESIGN ========== */
-
-/* Mobile Devices (320px - 480px) */
-@media screen and (max-width: 480px) {
-  .header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 100;
-    flex-direction: column;
-    gap: 5px;
-    padding: 8px;
-  }
-
-  .header-button {
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  progress {
-    height: 8px;
-  }
-
-  .timer {
-    padding: 10px;
-    margin-top: 40px;
-  }
-
-  .clock {
-    margin-top: 20px;
-    margin-bottom: 15px;
-    font-size: 5rem;
-  }
-
-  .mode-button {
-    font-size: 12px;
-    height: 24px;
-    padding: 2px 8px;
-    margin: 0 4px;
-  }
-
-  /* MODIFIED: Mobile button sizes */
-  .main-button {
-    font-size: 16px;
-    height: 45px;
-    width: 150px;
-    margin: 0;
-    padding: 0 8px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .main-button.active {
-    transform: translateY(5px);
-  }
-
-  .control-button {
-    height: 45px; /* Match main-button height on mobile */
-    width: 80px; /* Adjust width */
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button.reset-button {
-    font-size: 14px;
-  }
-
-  .control-button:active {
-    transform: translateY(5px);
-  }
-  /* END MODIFIED */
-
-  .modal-content {
-    margin: 30% auto;
-    padding: 15px;
-    width: 95%;
-    max-width: 280px;
-  }
-
-  .close {
-    font-size: 24px;
-  }
-
-  .modal h2 {
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-
-  .settings-form {
-    gap: 10px;
-  }
-
-  .form-group {
-    gap: 3px;
-  }
-
-  .form-group label {
-    font-size: 12px;
-  }
-
-  .form-group input,
-  .form-group select {
-    padding: 6px;
-    font-size: 12px;
-  }
-
-  .save-button,
-  .add-task-button {
-    padding: 8px 12px;
-    font-size: 12px;
-  }
-
-  .music-player {
-    gap: 10px;
-  }
-
-  .music-controls,
-  .volume-control {
-    gap: 6px;
-  }
-
-  .music-button {
-    padding: 6px;
-    font-size: 12px;
-  }
-
-  /* Task Section - Mobile */
-  .task-section {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    min-width: 90vw;
-    max-width: 350px;
-    padding: 10px;
-    border-radius: 6px;
-    max-height: 45vh;
-  }
-
-  .task-section h2 {
-    font-size: 14px;
-    margin-bottom: 8px;
-  }
-
-  .task-input-group {
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .task-input-group input {
-    padding: 6px;
-    font-size: 12px;
-  }
-
-  .task-item {
-    padding: 8px;
-    gap: 6px;
-  }
-
-  .task-name {
-    font-size: 13px;
-    margin-bottom: 2px;
-  }
-
-  .task-progress {
-    font-size: 11px;
-  }
-
-  .task-button {
-    padding: 3px 6px;
-    font-size: 11px;
-  }
-}
-
-/* Small Tablets (481px - 768px) */
-@media screen and (min-width: 481px) and (max-width: 768px) {
-  .header {
-    gap: 8px;
-    padding: 12px;
-  }
-
-  .header-button {
-    padding: 7px 11px;
-    font-size: 13px;
-  }
-
-  progress {
-    height: 10px;
-  }
-
-  .timer {
-    padding: 15px;
-    margin-top: 50px;
-  }
-
-  .clock {
-    margin-top: 35px;
-    margin-bottom: 25px;
-    font-size: 10rem;
-  }
-
-  .mode-button {
-    font-size: 14px;
-    height: 26px;
-    padding: 2px 10px;
-  }
-
-  /* MODIFIED: Tablet button sizes */
-  .main-button {
-    font-size: 18px;
-    height: 48px;
-    width: 160px;
-    margin: 0;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .main-button.active {
-    transform: translateY(5px);
-  }
-
-  .control-button {
-    height: 48px; /* Match main-button height on tablet */
-    width: 90px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button.reset-button {
-    font-size: 16px;
-  }
-
-  .control-button:active {
-    transform: translateY(5px);
-  }
-  /* END MODIFIED */
-
-  .modal-content {
-    margin: 15% auto;
-    padding: 18px;
-    max-width: 420px;
-  }
-
-  .modal h2 {
-    font-size: 18px;
-  }
-
-  .settings-form {
-    gap: 12px;
-  }
-
-  .form-group label {
-    font-size: 13px;
-  }
-
-  .form-group input,
-  .form-group select {
-    padding: 7px;
-    font-size: 13px;
-  }
-
-  .save-button,
-  .add-task-button {
-    padding: 9px 14px;
-    font-size: 13px;
-  }
-
-  .music-player {
-    gap: 12px;
-  }
-
-  .music-controls,
-  .volume-control {
-    gap: 8px;
-  }
-
-  .music-button {
-    padding: 7px;
-    font-size: 13px;
-  }
-
-  /* Task Section - Tablet */
-  .task-section {
-    bottom: 15px;
-    min-width: 320px;
-    max-width: 380px;
-    padding: 12px;
-    max-height: 45vh;
-  }
-
-  .task-section h2 {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-
-  .task-input-group {
-    gap: 7px;
-    margin-bottom: 12px;
-  }
-
-  .task-input-group input {
-    padding: 7px;
-    font-size: 13px;
-  }
-
-  .task-item {
-    padding: 9px;
-    gap: 7px;
-  }
-
-  .task-name {
-    font-size: 14px;
-  }
-
-  .task-progress {
-    font-size: 12px;
-  }
-
-  .task-button {
-    padding: 4px 7px;
-    font-size: 11px;
-  }
-}
-
-/* Large Tablets & Small Desktops (769px - 1024px) */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-  .header {
-    gap: 10px;
-    padding: 14px;
-  }
-
-  .header-button {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-
-  progress {
-    height: 11px;
-  }
-
-  .timer {
-    padding: 20px;
-  }
-
-  .clock {
-    margin-top: 45px;
-    margin-bottom: 30px;
-    font-size: 12rem;
-  }
-
-  .mode-button {
-    font-size: 15px;
-    height: 28px;
-    padding: 2px 12px;
-  }
-
-  /* MODIFIED: Large Tablet/Small Desktop button sizes */
-  .main-button {
-    font-size: 20px;
-    height: 50px;
-    width: 180px;
-    margin: 0;
-  }
-
-  .control-button {
-    height: 50px; /* Match main-button height */
-    width: 95px;
-  }
-
-  .control-button.reset-button {
-    font-size: 16px;
-  }
-  /* END MODIFIED */
-
-  .modal-content {
-    margin: 12% auto;
-    padding: 20px;
-    max-width: 480px;
-  }
-
-  .settings-form {
-    gap: 14px;
-  }
-
-  .form-group label {
-    font-size: 14px;
-  }
-
-  .form-group input,
-  .form-group select {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  .save-button,
-  .add-task-button {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-
-  .music-player {
-    gap: 15px;
-  }
-
-  .music-button {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  /* Task Section - Large Tablet */
-  .task-section {
-    bottom: 20px;
-    min-width: 320px;
-    max-width: 400px;
-    max-height: 50vh;
-  }
-
-  .task-section h2 {
-    font-size: 17px;
-  }
-
-  .task-button {
-    padding: 4px 8px;
-    font-size: 12px;
-  }
-}
-
-/* Desktop (1025px and above) */
-@media screen and (min-width: 1025px) {
-  .header {
-    gap: 10px;
-    padding: 15px;
-  }
-
-  .header-button {
-    padding: 8px 12px;
-    font-size: 14px;
-  }
-
-  progress {
-    height: 12px;
-  }
-
-  .timer {
-    padding: 20px;
-  }
-
-  .clock {
-    margin-top: 50px;
-    margin-bottom: 30px;
-    font-size: 15rem;
-  }
-
-  .mode-button {
-    font-size: 16px;
-    height: 28px;
-    padding: 2px 12px;
-  }
-
-  /* MODIFIED: Desktop button sizes (margin set to 0 in base .main-button now) */
-  .main-button {
-    font-size: 22px;
-    height: 55px;
-    width: 200px;
-    margin: 0;
-  }
-
-  .control-button {
-    height: 55px;
-    width: 100px;
-  }
-  /* END MODIFIED */
-
-  .modal-content {
-    margin: 10% auto;
-    padding: 20px;
-    max-width: 500px;
-  }
-
-  .settings-form {
-    gap: 15px;
-  }
-
-  .form-group label {
-    font-size: 14px;
-  }
-
-  .form-group input,
-  .form-group select {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  .save-button,
-  .add-task-button {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-
-  .music-player {
-    gap: 15px;
-  }
-
-  .music-button {
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  /* Task Section - Desktop */
-  .task-section {
-    bottom: 20px;
-    min-width: 300px;
-    max-width: 400px;
-    max-height: 400px;
-  }
-
-  .task-section h2 {
-    font-size: 18px;
-  }
-
-  .task-button {
-    padding: 4px 8px;
-    font-size: 12px;
-  }
-}
-
-/* Ultra-wide screens (1600px and above) */
-@media screen and (min-width: 1600px) {
-  .clock {
-    font-size: 18rem;
-  }
-
-  /* MODIFIED: Ultra-wide button sizes */
-  .main-button {
-    font-size: 24px;
-    height: 60px;
-    width: 220px;
-  }
-
-  .control-button {
-    height: 60px;
-    width: 110px;
-  }
-  /* END MODIFIED */
-
-  .modal-content {
-    max-width: 600px;
-  }
-
-  .task-section {
-    max-width: 450px;
-  }
+/* ==========================================================================
+   6. Utility & Animations
+   ========================================================================== */
+
+.hidden {
+  display: none !important;
 }
 
 /* Notification Animations */
@@ -1063,5 +543,146 @@ button:active {
   to {
     transform: translateX(-50%) translateY(-20px);
     opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   7. Responsive Design (Media Queries)
+   ========================================================================== */
+
+/* Mobile Devices (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+  }
+  .header-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  progress {
+    height: 8px;
+  }
+  .timer {
+    padding: 10px;
+  }
+  .clock {
+    font-size: 5rem;
+  }
+  .mode-button {
+    font-size: 12px;
+    height: 24px;
+  }
+  .main-button {
+    font-size: 16px;
+    height: 45px;
+    width: 150px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .main-button.active {
+    transform: translateY(5px);
+  }
+  .control-button {
+    height: 45px;
+    width: 80px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .control-button:active {
+    transform: translateY(5px);
+  }
+  .control-button.reset-button {
+    font-size: 14px;
+  }
+  .modal-content {
+    margin: 30% auto;
+    max-width: 280px;
+  }
+  /* Task Section - Mobile (Fixed to bottom) */
+  .task-section {
+    bottom: 10px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    min-width: 90vw;
+    max-width: 350px;
+    padding: 10px;
+    top: auto;
+    max-height: 45vh;
+  }
+  .task-item {
+    padding: 8px;
+  }
+}
+
+/* Small Tablets (481px - 768px) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .clock {
+    font-size: 10rem;
+  }
+  .main-button {
+    font-size: 18px;
+    height: 48px;
+    width: 160px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .control-button {
+    height: 48px;
+    width: 90px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .control-button:active {
+    transform: translateY(5px);
+  }
+  /* Task Section - Tablet (Fixed to bottom) */
+  .task-section {
+    bottom: 15px;
+    min-width: 320px;
+    max-width: 380px;
+    top: auto;
+  }
+}
+
+/* Large Tablets & Small Desktops (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .clock {
+    font-size: 12rem;
+  }
+  .main-button {
+    font-size: 20px;
+    height: 50px;
+    width: 180px;
+  }
+  .control-button {
+    height: 50px;
+    width: 95px;
+  }
+  .task-section {
+    top: 80px;
+    bottom: auto;
+  }
+}
+
+/* Desktop (1025px and above) */
+@media screen and (min-width: 1025px) {
+  .task-section {
+    top: 80px;
+    bottom: auto;
+  }
+}
+
+/* Ultra-wide screens (1600px and above) */
+@media screen and (min-width: 1600px) {
+  .clock {
+    font-size: 18rem;
+  }
+  .main-button {
+    font-size: 24px;
+    height: 60px;
+    width: 220px;
+  }
+  .control-button {
+    height: 60px;
+    width: 110px;
   }
 }
