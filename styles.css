@@ -121,6 +121,7 @@ progress::-webkit-progress-value {
   border-color: #fff;
 }
 
+/* MODIFIED: Main button styles to ensure consistency and set base height */
 .main-button {
   cursor: pointer;
   box-shadow: rgb(235, 235, 235) 0px 6px 0px;
@@ -133,7 +134,7 @@ progress::-webkit-progress-value {
   background-color: white;
   border-width: initial;
   border-style: none;
-  margin: 20px 0px 0px;
+  margin: 0; /* Changed from 20px 0px 0px to 0 to rely on .timer-controls */
   padding: 0px 12px;
   border-radius: 4px;
   transition: color 0.5s ease-in-out 0s;
@@ -158,29 +159,47 @@ button:active {
   margin-top: 20px;
 }
 
+/* MODIFIED: Control button styles to match the height and visual style of .main-button */
 .control-button {
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  padding: 10px 16px;
+  background-color: white; /* Match main-button background */
+  border: none; /* Remove border */
+  padding: 0 12px;
   border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+  font-weight: bold;
+  color: var(--pomodoro);
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: rgb(235, 235, 235) 0px 6px 0px; /* Add the shadow for the 3D effect */
+
+  /* Match height (55px) and set a smaller width */
+  height: 55px;
+  width: 100px;
+
+  /* Center the content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
 }
 
 .control-button:hover {
-  background-color: white;
-  border-color: white;
-  color: hsl(175, 26%, 41%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #f0f0f0;
+  border-color: none;
+  color: var(--pomodoro);
+  box-shadow: rgb(220, 220, 220) 0px 6px 0px;
 }
 
 .control-button:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(6px); /* Match main button press effect */
+  box-shadow: none;
+  outline: none;
+  background-color: #e0e0e0;
+}
+
+/* Specific styling for the reset text/icon */
+.control-button.reset-button {
+  font-size: 18px;
+  color: #f44336; /* Use a red color for the reset action */
 }
 
 .hidden {
@@ -514,13 +533,34 @@ button:active {
     margin: 0 4px;
   }
 
+  /* MODIFIED: Mobile button sizes */
   .main-button {
     font-size: 16px;
     height: 45px;
     width: 150px;
-    margin: 15px 0 0;
+    margin: 0;
     padding: 0 8px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
+  .main-button.active {
+    transform: translateY(5px);
+  }
+
+  .control-button {
+    height: 45px; /* Match main-button height on mobile */
+    width: 80px; /* Adjust width */
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+
+  .control-button.reset-button {
+    font-size: 14px;
+  }
+
+  .control-button:active {
+    transform: translateY(5px);
+  }
+  /* END MODIFIED */
 
   .modal-content {
     margin: 30% auto;
@@ -658,12 +698,33 @@ button:active {
     padding: 2px 10px;
   }
 
+  /* MODIFIED: Tablet button sizes */
   .main-button {
     font-size: 18px;
     height: 48px;
     width: 160px;
-    margin: 18px 0 0;
+    margin: 0;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
+  .main-button.active {
+    transform: translateY(5px);
+  }
+
+  .control-button {
+    height: 48px; /* Match main-button height on tablet */
+    width: 90px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+
+  .control-button.reset-button {
+    font-size: 16px;
+  }
+
+  .control-button:active {
+    transform: translateY(5px);
+  }
+  /* END MODIFIED */
 
   .modal-content {
     margin: 15% auto;
@@ -784,12 +845,23 @@ button:active {
     padding: 2px 12px;
   }
 
+  /* MODIFIED: Large Tablet/Small Desktop button sizes */
   .main-button {
     font-size: 20px;
     height: 50px;
     width: 180px;
-    margin: 20px 0 0;
+    margin: 0;
   }
+
+  .control-button {
+    height: 50px; /* Match main-button height */
+    width: 95px;
+  }
+
+  .control-button.reset-button {
+    font-size: 16px;
+  }
+  /* END MODIFIED */
 
   .modal-content {
     margin: 12% auto;
@@ -876,12 +948,19 @@ button:active {
     padding: 2px 12px;
   }
 
+  /* MODIFIED: Desktop button sizes (margin set to 0 in base .main-button now) */
   .main-button {
     font-size: 22px;
     height: 55px;
     width: 200px;
-    margin: 20px 0 0;
+    margin: 0;
   }
+
+  .control-button {
+    height: 55px;
+    width: 100px;
+  }
+  /* END MODIFIED */
 
   .modal-content {
     margin: 10% auto;
@@ -942,11 +1021,18 @@ button:active {
     font-size: 18rem;
   }
 
+  /* MODIFIED: Ultra-wide button sizes */
   .main-button {
     font-size: 24px;
     height: 60px;
     width: 220px;
   }
+
+  .control-button {
+    height: 60px;
+    width: 110px;
+  }
+  /* END MODIFIED */
 
   .modal-content {
     max-width: 600px;
