@@ -158,23 +158,25 @@
       </div>
     </div>
 
-    <div class="task-section hidden" id="js-task-section">
-      <h2>Tasks</h2>
-      <div class="task-input-group">
-        <input type="text" id="js-task-name" placeholder="Task name" />
-        <input
-          type="number"
-          id="js-task-pomodoros"
-          placeholder="Est. pomodoros"
-          min="1"
-          max="20"
-          value="1"
-        />
-        <button class="add-task-button" id="js-add-task">Add Task</button>
+    <div class="modal" id="js-task-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-tasks">&times;</span>
+        <h2>Tasks</h2>
+        <div class="task-input-group">
+          <input type="text" id="js-task-name" placeholder="Task name" />
+          <input
+            type="number"
+            id="js-task-pomodoros"
+            placeholder="Est. pomodoros"
+            min="1"
+            max="20"
+            value="1"
+          />
+          <button class="add-task-button" id="js-add-task">Add Task</button>
+        </div>
+        <div class="tasks-list" id="js-tasks-list"></div>
       </div>
-      <div class="tasks-list" id="js-tasks-list"></div>
     </div>
-
     <div class="hidden">
       <audio src="/Audio/backtowork.mp3" data-sound="pomodoro"></audio>
       <audio src="/Audio/break.mp3" data-sound="shortBreak"></audio>

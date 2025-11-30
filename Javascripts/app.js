@@ -10,6 +10,7 @@ import {
   updateTaskNameDisplay,
   addTask,
   toggleTaskSection,
+  closeTaskModal, // ADDED: Import the new modal close function
 } from "./tasks.js";
 import {
   switchMode,
@@ -59,6 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("js-music-play").addEventListener("click", playMusic);
   document.getElementById("js-music-stop").addEventListener("click", stopMusic);
 
+  // Task Modal Handlers
+  document
+    .getElementById("js-close-tasks") // ADDED: Close button handler for the new task modal
+    .addEventListener("click", closeTaskModal);
+
   // Volume control
   document
     .getElementById("js-volume")
@@ -90,11 +96,17 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("click", (e) => {
     const settingsModal = document.getElementById("js-settings-modal");
     const musicModal = document.getElementById("js-music-modal");
+    const taskModal = document.getElementById("js-task-modal"); // UPDATED ID
+
     if (e.target === settingsModal) {
       closeSettingsModal();
     }
     if (e.target === musicModal) {
       closeMusicModal();
+    }
+    if (e.target === taskModal) {
+      // ADDED: Handler for the task modal
+      closeTaskModal();
     }
   });
 
