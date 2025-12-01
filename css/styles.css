@@ -1,0 +1,641 @@
+/* ==========================================================================
+   1. CSS Setup & Global Variables
+   ========================================================================== */
+
+/* Global Reset & Box Sizing */
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+/* CSS Custom Properties (Variables) */
+:root {
+  --pomodoro: hsl(223, 25%, 40%);
+  --shortBreak: hsl(48, 23%, 40%);
+  --longBreak: hsl(105, 16%, 40%);
+  /* New variables for easier color management */
+  --color-text-light: rgba(255, 255, 255, 0.9);
+  --color-text-medium: rgba(255, 255, 255, 0.6);
+  --color-bg-light: #fff;
+  --color-progress-bar: rgba(0, 0, 0, 0.1);
+}
+
+/* Body and Global Typography */
+body {
+  background-color: var(--pomodoro);
+  transition: background-color 1s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  user-select: none;
+  margin: 0;
+  padding: 0;
+}
+
+button:focus,
+button:active {
+  outline: none;
+}
+
+/* ==========================================================================
+   2. Layout & Structure (Header, Timer, Progress)
+   ========================================================================== */
+
+/* Header & Header Buttons */
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+}
+
+.header-button {
+  cursor: pointer;
+  background-color: var(--color-text-light);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pomodoro);
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-button:hover {
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Progress Bar */
+progress {
+  border-radius: 2px;
+  width: 100%;
+  height: 12px;
+  position: fixed;
+  top: 0;
+}
+
+progress::-webkit-progress-bar {
+  background-color: var(--color-progress-bar);
+}
+
+progress::-webkit-progress-value {
+  background-color: var(--color-bg-light);
+}
+
+/* Main Timer Container */
+.timer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  text-align: center;
+}
+
+/* Clock Display */
+.clock {
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-size: 15rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  font-family: arial, sans-serif;
+}
+
+/* Current Task Name Display */
+.task-name-display {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: var(--color-text-medium);
+  text-align: center;
+  min-height: 30px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.timer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* ==========================================================================
+   3. Timer Buttons (Mode, Main, Control)
+   ========================================================================== */
+
+/* Mode Buttons (Pomodoro, Break) */
+.mode-button {
+  font-size: 16px;
+  height: 28px;
+  cursor: pointer;
+  box-shadow: none;
+  font-weight: 300;
+  color: #fff;
+  border: 1px solid transparent;
+  margin: 0px;
+  border-radius: 4px;
+  padding: 2px 12px;
+  background: none;
+}
+
+.mode-button.active {
+  border-color: #fff;
+}
+
+/* Main Start/Pause Button */
+.main-button {
+  cursor: pointer;
+  box-shadow: rgb(235, 235, 235) 0px 6px 0px;
+  font-size: 22px;
+  height: 55px;
+  text-transform: uppercase;
+  color: hsl(175, 26%, 41%);
+  font-weight: bold;
+  width: 200px;
+  background-color: white;
+  border-width: initial;
+  border-style: none;
+  margin: 0;
+  padding: 0px 12px;
+  border-radius: 4px;
+  transition: color 0.5s ease-in-out 0s;
+}
+
+.main-button.active {
+  transform: translateY(6px);
+  box-shadow: none;
+  outline: none;
+}
+
+/* Reset/Control Buttons */
+.control-button {
+  cursor: pointer;
+  background-color: white;
+  border: none;
+  padding: 0 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: var(--pomodoro);
+  transition: all 0.3s ease;
+  box-shadow: rgb(235, 235, 235) 0px 6px 0px;
+  height: 55px;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+}
+
+.control-button:hover {
+  background-color: #f0f0f0;
+  color: var(--pomodoro);
+  box-shadow: rgb(220, 220, 220) 0px 6px 0px;
+}
+
+.control-button:active {
+  transform: translateY(6px);
+  box-shadow: none;
+  outline: none;
+  background-color: #e0e0e0;
+}
+
+.control-button.reset-button {
+  font-size: 18px;
+  color: #f44336;
+}
+
+/* ==========================================================================
+   4. Task System
+   ========================================================================== */
+
+/* Input Group for Adding Tasks */
+.task-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.task-input-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.task-input-group input:focus {
+  outline: none;
+  border-color: var(--pomodoro);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-task-button {
+  padding: 10px 16px;
+  background-color: var(--pomodoro);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.add-task-button:hover {
+  opacity: 0.9;
+}
+
+/* Task List - ADDED scrolling for modal content */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 40vh; /* Set max height for scrolling within the modal */
+  overflow-y: auto;
+  padding-right: 5px; /* Add some padding for the scrollbar */
+}
+
+/* Individual Task Item */
+.task-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 4px;
+  border-left: 4px solid var(--pomodoro);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.task-info {
+  flex: 1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.task-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.task-progress {
+  font-size: 13px;
+  color: #666;
+}
+
+.task-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.task-button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+  font-weight: 600;
+}
+
+/* Task State Modifiers */
+.task-item.completed {
+  opacity: 0.6;
+}
+
+.task-item.completed .task-name {
+  text-decoration: line-through;
+}
+
+.task-item.selected {
+  background-color: #e3f2fd;
+  border-left-color: #2196f3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.task-item.selected .task-name {
+  color: #1976d2;
+  font-weight: 700;
+}
+
+/* Specific Task Control Buttons */
+.task-complete {
+  background-color: #4caf50;
+  color: white;
+}
+
+.task-edit {
+  background-color: #2196f3;
+  color: white;
+}
+
+.task-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.task-complete:hover,
+.task-edit:hover,
+.task-delete:hover {
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   5. Modal Styles (Settings & Music & Task)
+   ========================================================================== */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal.open {
+  display: block;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+  /* --- START: Change to hide the close button (the 'x') --- */
+  display: none;
+  /* --- END: Change to hide the close button (the 'x') --- */
+  /* color: #aaa; */
+  /* float: right; */
+  /* font-size: 28px; */
+  /* font-weight: bold; */
+  /* cursor: pointer; */
+  /* transition: color 0.3s; */
+}
+
+/* .close:hover, */
+/* .close:focus { */
+/* color: black; */
+/* } */
+
+.modal h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* Settings Form */
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--pomodoro);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.save-button {
+  padding: 10px 16px;
+  background-color: var(--pomodoro);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  opacity: 0.9;
+}
+
+/* Music Player */
+.music-player {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.music-controls,
+.volume-control {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.music-button {
+  flex: 1;
+  padding: 8px;
+  background-color: var(--pomodoro);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.3s;
+}
+
+.music-button:hover {
+  opacity: 0.9;
+}
+
+.volume-control input {
+  flex: 1;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   6. Utility & Animations
+   ========================================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+/* Notification Animations */
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   7. Responsive Design (Media Queries)
+   ========================================================================== */
+
+/* Mobile Devices (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+  }
+  .header-button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  progress {
+    height: 8px;
+  }
+  .timer {
+    padding: 10px;
+  }
+  .clock {
+    font-size: 5rem;
+  }
+  .mode-button {
+    font-size: 12px;
+    height: 24px;
+  }
+  .main-button {
+    font-size: 16px;
+    height: 45px;
+    width: 150px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .main-button.active {
+    transform: translateY(5px);
+  }
+  .control-button {
+    height: 45px;
+    width: 80px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .control-button:active {
+    transform: translateY(5px);
+  }
+  .control-button.reset-button {
+    font-size: 14px;
+  }
+  .modal-content {
+    margin: 30% auto;
+    max-width: 280px;
+  }
+}
+
+/* Small Tablets (481px - 768px) */
+@media screen and (min-width: 481px) and (max-width: 768px) {
+  .clock {
+    font-size: 10rem;
+  }
+  .main-button {
+    font-size: 18px;
+    height: 48px;
+    width: 160px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .control-button {
+    height: 48px;
+    width: 90px;
+    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
+  }
+  .control-button:active {
+    transform: translateY(5px);
+  }
+}
+
+/* Large Tablets & Small Desktops (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .clock {
+    font-size: 12rem;
+  }
+  .main-button {
+    font-size: 20px;
+    height: 50px;
+    width: 180px;
+  }
+  .control-button {
+    height: 50px;
+    width: 95px;
+  }
+}
+
+/* Desktop (1025px and above) */
+@media screen and (min-width: 1025px) {
+}
+
+/* Ultra-wide screens (1600px and above) */
+@media screen and (min-width: 1600px) {
+  .clock {
+    font-size: 18rem;
+  }
+  .main-button {
+    font-size: 24px;
+    height: 60px;
+    width: 220px;
+  }
+  .control-button {
+    height: 60px;
+    width: 110px;
+  }
+}
