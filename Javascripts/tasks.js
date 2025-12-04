@@ -158,9 +158,10 @@ export function updateTaskNameDisplay() {
   }
 }
 
-// ==================== UI RENDERING AND MODAL LOGIC ====================
+// ==================== UI RENDERING AND TOGGLE ====================
 export function renderTasks() {
   const tasksList = document.getElementById("js-tasks-list");
+  const taskSection = document.getElementById("js-task-section");
   tasksList.innerHTML = "";
 
   tasks.forEach((task) => {
@@ -211,34 +212,21 @@ export function renderTasks() {
   });
 
   updateTaskNameDisplay();
+
+  // Scroll to bottom of task list when tasks are rendered
+  setTimeout(() => {
+    // Only scroll if the task section is NOT hidden to avoid weird jumping
+    if (!taskSection.classList.contains("hidden")) {
+      taskSection.scrollTop = taskSection.scrollHeight;
+    }
+  }, 0);
 }
 
-/**
- * Explicitly opens the task modal.
- */
-export function openTaskModal() {
-  const taskModal = document.getElementById("js-task-modal");
-  taskModal.classList.add("open");
-  renderTasks();
-}
-
-/**
- * Explicitly closes the task modal.
- */
-export function closeTaskModal() {
-  const taskModal = document.getElementById("js-task-modal");
-  taskModal.classList.remove("open");
-}
-
-/**
- * Toggles the visibility of the task modal.
- * This is the function connected to the '📋 Tasks' button.
- */
 export function toggleTaskSection() {
-  const taskModal = document.getElementById("js-task-modal");
-  if (taskModal.classList.contains("open")) {
-    closeTaskModal();
-  } else {
-    openTaskModal();
+  const taskSection = document.getElementById("js-task-section");
+  taskSection.classList.toggle("hidden");
+  // Re-render on open to ensure scroll position is correct
+  if (!taskSection.classList.contains("hidden")) {
+    renderTasks();
   }
 }

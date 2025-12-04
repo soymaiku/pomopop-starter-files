@@ -8,23 +8,10 @@ export function loadSettings() {
   if (saved) {
     try {
       const settings = JSON.parse(saved);
-      // Ensure loaded values are numbers, defaulting if not
-      timer.pomodoro =
-        settings.pomodoro && !isNaN(settings.pomodoro)
-          ? Number(settings.pomodoro)
-          : 25;
-      timer.shortBreak =
-        settings.shortBreak && !isNaN(settings.shortBreak)
-          ? Number(settings.shortBreak)
-          : 5;
-      timer.longBreak =
-        settings.longBreak && !isNaN(settings.longBreak)
-          ? Number(settings.longBreak)
-          : 15;
-      timer.longBreakInterval =
-        settings.longBreakInterval && !isNaN(settings.longBreakInterval)
-          ? Number(settings.longBreakInterval)
-          : 4;
+      timer.pomodoro = settings.pomodoro || 25;
+      timer.shortBreak = settings.shortBreak || 5;
+      timer.longBreak = settings.longBreak || 15;
+      timer.longBreakInterval = settings.longBreakInterval || 4;
 
       document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
       document.getElementById("js-short-break-duration").value =
@@ -35,48 +22,18 @@ export function loadSettings() {
     } catch (e) {
       console.error("Error loading settings:", e);
     }
-  } else {
-    // Set default values in the UI if nothing is saved
-    document.getElementById("js-pomodoro-duration").value =
-      timer.pomodoro || 25;
-    document.getElementById("js-short-break-duration").value =
-      timer.shortBreak || 5;
-    document.getElementById("js-long-break-duration").value =
-      timer.longBreak || 15;
-    document.getElementById("js-long-break-interval").value =
-      timer.longBreakInterval || 4;
   }
 }
 
 export function saveSettings() {
-  // Get values from input fields
-  const pomodoroInput = document.getElementById("js-pomodoro-duration").value;
-  const shortBreakInput = document.getElementById(
-    "js-short-break-duration"
-  ).value;
-  const longBreakInput = document.getElementById(
-    "js-long-break-duration"
-  ).value;
-  const longBreakIntervalInput = document.getElementById(
-    "js-long-break-interval"
-  ).value;
-
-  // Use Number() for strict conversion and isNaN check for non-numeric input
-  const pomodoro = Number(pomodoroInput);
-  const shortBreak = Number(shortBreakInput);
-  const longBreak = Number(longBreakInput);
-  const longBreakInterval = Number(longBreakIntervalInput);
-
-  // Validation: Check if values are not NaN (meaning they are valid numbers) and meet the minimum requirement
-  if (
-    isNaN(pomodoro) ||
-    isNaN(shortBreak) ||
-    isNaN(longBreak) ||
-    isNaN(longBreakInterval)
-  ) {
-    alert("Please enter only numbers for all settings.");
-    return;
-  }
+  const pomodoro =
+    parseInt(document.getElementById("js-pomodoro-duration").value) || 25;
+  const shortBreak =
+    parseInt(document.getElementById("js-short-break-duration").value) || 5;
+  const longBreak =
+    parseInt(document.getElementById("js-long-break-duration").value) || 15;
+  const longBreakInterval =
+    parseInt(document.getElementById("js-long-break-interval").value) || 4;
 
   if (
     pomodoro < 1 ||
