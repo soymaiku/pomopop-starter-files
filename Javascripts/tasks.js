@@ -5,6 +5,7 @@ import {
   currentTaskId,
   setNextTaskId,
   setCurrentTaskId,
+  interval,
 } from "./config.js";
 import { switchMode, stopTimer } from "./timer.js";
 import { escapeHtml } from "./utils.js";
@@ -135,6 +136,13 @@ export function updateTaskProgress() {
 }
 
 export function setCurrentTask(taskId) {
+  // --- MODIFICATION START ---
+  // If the user is deselecting the current task AND the timer is running
+  if (taskId === null && interval !== null) {
+    stopTimer(); // Stop the timer and reset the button
+  }
+  // --- MODIFICATION END ---
+  
   setCurrentTaskId(taskId);
   updateTaskNameDisplay();
   saveTasks();

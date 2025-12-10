@@ -105,6 +105,8 @@ progress::-webkit-progress-value {
 
 /* Clock Display */
 .clock {
+  color: var(--color-text-light);
+  /* ADDED to make digits white */
   margin-top: 50px;
   margin-bottom: 30px;
   font-size: 15rem;
@@ -529,6 +531,7 @@ progress::-webkit-progress-value {
     transform: translateX(-50%) translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
@@ -540,6 +543,7 @@ progress::-webkit-progress-value {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(-50%) translateY(-20px);
     opacity: 0;
@@ -557,47 +561,59 @@ progress::-webkit-progress-value {
     gap: 5px;
     padding: 8px;
   }
+
   .header-button {
     padding: 6px 10px;
     font-size: 12px;
   }
+
   progress {
     height: 8px;
   }
+
   .timer {
     padding: 10px;
   }
+
   .clock {
     font-size: 5rem;
   }
+
   .mode-button {
     font-size: 12px;
     height: 24px;
   }
+
   .main-button {
     font-size: 16px;
     height: 45px;
     width: 150px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .main-button.active {
     transform: translateY(5px);
   }
+
   .control-button {
     height: 45px;
     width: 80px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .control-button:active {
     transform: translateY(5px);
   }
+
   .control-button.reset-button {
     font-size: 14px;
   }
+
   .modal-content {
     margin: 30% auto;
     max-width: 280px;
   }
+
   /* Task Section - Mobile (Fixed to bottom) */
   .task-section {
     bottom: 10px;
@@ -610,6 +626,7 @@ progress::-webkit-progress-value {
     top: auto;
     max-height: 45vh;
   }
+
   .task-item {
     padding: 8px;
   }
@@ -620,20 +637,24 @@ progress::-webkit-progress-value {
   .clock {
     font-size: 10rem;
   }
+
   .main-button {
     font-size: 18px;
     height: 48px;
     width: 160px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .control-button {
     height: 48px;
     width: 90px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .control-button:active {
     transform: translateY(5px);
   }
+
   /* Task Section - Tablet (Fixed to bottom) */
   .task-section {
     bottom: 15px;
@@ -648,15 +669,18 @@ progress::-webkit-progress-value {
   .clock {
     font-size: 12rem;
   }
+
   .main-button {
     font-size: 20px;
     height: 50px;
     width: 180px;
   }
+
   .control-button {
     height: 50px;
     width: 95px;
   }
+
   .task-section {
     top: 80px;
     bottom: auto;
@@ -676,11 +700,13 @@ progress::-webkit-progress-value {
   .clock {
     font-size: 18rem;
   }
+
   .main-button {
     font-size: 24px;
     height: 60px;
     width: 220px;
   }
+
   .control-button {
     height: 60px;
     width: 110px;
