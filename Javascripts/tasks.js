@@ -6,9 +6,10 @@ import {
   setNextTaskId,
   setCurrentTaskId,
   interval,
+  timer,
 } from "./config.js";
 import { switchMode, stopTimer } from "./timer.js";
-import { escapeHtml } from "./utils.js";
+import { escapeHtml, showNotification } from "./utils.js";
 
 // ==================== LOCAL STORAGE AND CORE TASK LOGIC ====================
 export function loadTasks() {
@@ -74,7 +75,15 @@ export function deleteTask(taskId) {
   if (index > -1) {
     // If the deleted task was the current one, deselect it
     if (currentTaskId === taskId) {
-      setCurrentTask(null);
+      // 1. Stop the timer and reset time to the full duration of the current mode.
+      stopTimer(); // Clears interval and resets button state
+      switchMode(timer.mode); // Resets the timer to the full duration (e.g., 25:00)
+
+      // 2. Show the warning message
+      showNotification("Task deleted. Please create or select a task to start.");
+
+      // 3. Clear current task state
+      setCurrentTask(null); // Deselects the task, updates state/display
     }
     tasks.splice(index, 1);
     saveTasks();
@@ -136,13 +145,11 @@ export function updateTaskProgress() {
 }
 
 export function setCurrentTask(taskId) {
-  // --- MODIFICATION START ---
   // If the user is deselecting the current task AND the timer is running
   if (taskId === null && interval !== null) {
     stopTimer(); // Stop the timer and reset the button
   }
-  // --- MODIFICATION END ---
-  
+
   setCurrentTaskId(taskId);
   updateTaskNameDisplay();
   saveTasks();
