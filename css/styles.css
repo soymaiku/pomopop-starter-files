@@ -113,6 +113,8 @@ progress::-webkit-progress-value {
   line-height: 1;
   display: flex;
   align-items: center;
+  /* ADDED for mobile centering */
+  justify-content: center;
   font-family: arial, sans-serif;
 }
 
