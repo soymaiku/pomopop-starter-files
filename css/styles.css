@@ -25,6 +25,8 @@ html {
   --color-text-medium: rgba(255, 255, 255, 0.6);
   --color-bg-light: #fff;
   --color-progress-bar: rgba(0, 0, 0, 0.1);
+  --burger-icon-color: #fff;
+  /* White for the burger icon */
 }
 
 /* Body and Global Typography */
@@ -47,34 +49,126 @@ button:active {
    2. Layout & Structure (Header, Timer, Progress)
    ========================================================================== */
 
-/* Header & Header Buttons */
+/* Main Title - Pomopop */
+.main-title {
+  position: fixed;
+  top: 15px;
+  /* Aligned with the header buttons */
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text-light);
+  /* Bright text color */
+  font-size: 28px;
+  /* Prominent size */
+  font-weight: 700;
+  /* Bold font */
+  letter-spacing: 2px;
+  /* Spread the letters out */
+  z-index: 101;
+  /* Ensure it's above the header and progress bar */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* Subtle shadow for depth */
+}
+
+/* Header */
 .header {
+  /* No changes needed here, just holds the burger menu */
+}
+
+/* --- START: BURGER MENU STYLES --- */
+.burger-menu {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 100;
-  display: flex;
-  gap: 10px;
+  z-index: 200;
+  /* High z-index to be on top of everything */
   padding: 15px;
 }
 
-.header-button {
-  cursor: pointer;
-  background-color: var(--color-text-light);
+.menu-toggle-btn {
+  background: none;
   border: none;
-  padding: 8px 12px;
+  cursor: pointer;
+  padding: 10px;
+  /* Make button area a circle for aesthetics */
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.menu-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.burger-icon {
+  width: 24px;
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: var(--burger-icon-color);
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Dropdown Menu Container */
+.menu-dropdown {
+  position: absolute;
+  top: 100%;
+  /* Position right below the burger icon button */
+  right: 15px;
+  background-color: var(--color-bg-light);
   border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  min-width: 150px;
+
+  /* Initial hidden state */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  /* Slightly move up when hidden */
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.menu-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  /* Slide down into view */
+}
+
+/* Dropdown Menu Buttons (Settings, Music, Tasks) */
+.dropdown-button {
+  cursor: pointer;
+  background-color: var(--color-bg-light);
+  border: none;
+  padding: 10px 15px;
   font-size: 14px;
   font-weight: 600;
   color: var(--pomodoro);
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.header-button:hover {
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.dropdown-button:hover {
+  background-color: #e0e0e0;
 }
+
+/* --- END: BURGER MENU STYLES --- */
+
 
 /* Progress Bar */
 progress {
@@ -93,14 +187,21 @@ progress::-webkit-progress-value {
   background-color: var(--color-bg-light);
 }
 
-/* Main Timer Container */
+/* Main Timer Container - MODIFIED FOR BETTER CENTERING */
 .timer {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
+
+  /* ADDED FLEXBOX CENTERING FOR INNER ELEMENTS */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Center items horizontally within the timer div */
   text-align: center;
+  /* Fallback for text elements */
 }
 
 /* Clock Display */
@@ -112,6 +213,12 @@ progress::-webkit-progress-value {
   display: flex;
   align-items: center;
   font-family: arial, sans-serif;
+  color: var(--color-text-light);
+  /* Ensure clock text is visible */
+}
+
+.separator {
+  color: var(--color-text-medium);
 }
 
 /* Current Task Name Display */
@@ -260,14 +367,16 @@ progress::-webkit-progress-value {
   opacity: 0.9;
 }
 
-/* Task List - ADDED scrolling for modal content */
+/* Task List */
 .tasks-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 40vh; /* Set max height for scrolling within the modal */
+  max-height: 40vh;
+  /* Set max height for scrolling within the modal */
   overflow-y: auto;
-  padding-right: 5px; /* Add some padding for the scrollbar */
+  padding-right: 5px;
+  /* Add some padding for the scrollbar */
 }
 
 /* Individual Task Item */
@@ -390,21 +499,8 @@ progress::-webkit-progress-value {
 }
 
 .close {
-  /* --- START: Change to hide the close button (the 'x') --- */
   display: none;
-  /* --- END: Change to hide the close button (the 'x') --- */
-  /* color: #aaa; */
-  /* float: right; */
-  /* font-size: 28px; */
-  /* font-weight: bold; */
-  /* cursor: pointer; */
-  /* transition: color 0.3s; */
 }
-
-/* .close:hover, */
-/* .close:focus { */
-/* color: black; */
-/* } */
 
 .modal h2 {
   margin-top: 0;
@@ -512,6 +608,7 @@ progress::-webkit-progress-value {
     transform: translateX(-50%) translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
@@ -523,6 +620,7 @@ progress::-webkit-progress-value {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(-50%) translateY(-20px);
     opacity: 0;
@@ -535,48 +633,69 @@ progress::-webkit-progress-value {
 
 /* Mobile Devices (max-width: 480px) */
 @media screen and (max-width: 480px) {
-  .header {
-    flex-direction: column;
-    gap: 5px;
-    padding: 8px;
+
+  /* Adjust title size for small screens */
+  .main-title {
+    font-size: 20px;
+    top: 10px;
   }
-  .header-button {
-    padding: 6px 10px;
-    font-size: 12px;
+
+  /* Adjust menu position for small screens */
+  .burger-menu {
+    padding: 10px;
   }
+
+  .menu-dropdown {
+    right: 10px;
+    min-width: 120px;
+  }
+
   progress {
     height: 8px;
   }
+
   .timer {
     padding: 10px;
   }
+
+  /* CLOCK FONT SIZE REDUCED FURTHER FOR BETTER CENTERING ON SMALL SCREENS */
   .clock {
-    font-size: 5rem;
+    font-size: 4.5rem;
+    /* Reduced for better fit and centering */
+    margin-top: 40px;
+    margin-bottom: 20px;
   }
+
   .mode-button {
     font-size: 12px;
     height: 24px;
   }
+
   .main-button {
     font-size: 16px;
     height: 45px;
     width: 150px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .main-button.active {
     transform: translateY(5px);
   }
+
   .control-button {
     height: 45px;
     width: 80px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .control-button:active {
     transform: translateY(5px);
   }
+
   .control-button.reset-button {
     font-size: 14px;
   }
+
   .modal-content {
     margin: 30% auto;
     max-width: 280px;
@@ -585,20 +704,29 @@ progress::-webkit-progress-value {
 
 /* Small Tablets (481px - 768px) */
 @media screen and (min-width: 481px) and (max-width: 768px) {
+
+  /* Adjust title size for medium screens */
+  .main-title {
+    font-size: 24px;
+  }
+
   .clock {
     font-size: 10rem;
   }
+
   .main-button {
     font-size: 18px;
     height: 48px;
     width: 160px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .control-button {
     height: 48px;
     width: 90px;
     box-shadow: rgb(235, 235, 235) 0px 5px 0px;
   }
+
   .control-button:active {
     transform: translateY(5px);
   }
@@ -609,11 +737,13 @@ progress::-webkit-progress-value {
   .clock {
     font-size: 12rem;
   }
+
   .main-button {
     font-size: 20px;
     height: 50px;
     width: 180px;
   }
+
   .control-button {
     height: 50px;
     width: 95px;
@@ -621,19 +751,20 @@ progress::-webkit-progress-value {
 }
 
 /* Desktop (1025px and above) */
-@media screen and (min-width: 1025px) {
-}
+@media screen and (min-width: 1025px) {}
 
 /* Ultra-wide screens (1600px and above) */
 @media screen and (min-width: 1600px) {
   .clock {
     font-size: 18rem;
   }
+
   .main-button {
     font-size: 24px;
     height: 60px;
     width: 220px;
   }
+
   .control-button {
     height: 60px;
     width: 110px;

@@ -9,8 +9,8 @@ import {
   loadTasks,
   updateTaskNameDisplay,
   addTask,
-  toggleTaskSection,
-  closeTaskModal, // ADDED: Import the new modal close function
+  openTaskModal, 
+  closeTaskModal,
 } from "./tasks.js";
 import {
   switchMode,
@@ -27,6 +27,19 @@ import {
 } from "./music.js";
 import { timer } from "./config.js";
 
+// ==================== BURGER MENU LOGIC ====================
+
+const menuToggleBtn = document.getElementById("js-menu-toggle-btn");
+const menuDropdown = document.getElementById("js-menu-dropdown");
+
+function toggleBurgerMenu() {
+  menuDropdown.classList.toggle("open");
+}
+
+function closeBurgerMenu() {
+  menuDropdown.classList.remove("open");
+}
+
 // ==================== EVENT LISTENERS ====================
 document.addEventListener("DOMContentLoaded", () => {
   // Load settings and tasks
@@ -34,16 +47,27 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTasks();
   updateTaskNameDisplay();
 
-  // Header Buttons
-  document
-    .getElementById("js-settings-btn")
-    .addEventListener("click", openSettingsModal);
-  document
-    .getElementById("js-music-btn")
-    .addEventListener("click", openMusicModal);
-  document
-    .getElementById("js-tasks-toggle-btn")
-    .addEventListener("click", toggleTaskSection);
+  // --- BURGER MENU HANDLERS ---
+  menuToggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // Prevent document click listener from immediately closing it
+    toggleBurgerMenu();
+  });
+
+  // Header Buttons are now dropdown buttons
+  document.getElementById("js-settings-btn").addEventListener("click", () => {
+    openSettingsModal();
+    closeBurgerMenu();
+  });
+  document.getElementById("js-music-btn").addEventListener("click", () => {
+    openMusicModal();
+    closeBurgerMenu();
+  });
+  document.getElementById("js-tasks-toggle-btn").addEventListener("click", () => {
+    openTaskModal(); 
+    closeBurgerMenu();
+  });
+  // -----------------------------
+
 
   // Settings Modal Handlers
   document
@@ -52,6 +76,15 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("js-save-settings")
     .addEventListener("click", saveSettings);
+  // Also save settings on Enter keypress inside inputs
+  document
+    .getElementById("js-settings-modal")
+    .querySelectorAll("input")
+    .forEach((input) => {
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") saveSettings();
+      });
+    });
 
   // Music Modal Handlers
   document
@@ -59,22 +92,25 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", closeMusicModal);
   document.getElementById("js-music-play").addEventListener("click", playMusic);
   document.getElementById("js-music-stop").addEventListener("click", stopMusic);
-
-  // Task Modal Handlers
   document
-    .getElementById("js-close-tasks") // ADDED: Close button handler for the new task modal
-    .addEventListener("click", closeTaskModal);
-
-  // Volume control
+    .getElementById("js-music-select")
+    .addEventListener("change", playMusic); // Auto-play when a new track is selected
   document
     .getElementById("js-volume")
     .addEventListener("input", handleVolumeChange);
 
-  // Task system
+  // Tasks Modal Handlers
+  // Task open is now handled by the dropdown button above
+  document
+    .getElementById("js-close-tasks")
+    .addEventListener("click", closeTaskModal);
   document.getElementById("js-add-task").addEventListener("click", addTask);
-  document.getElementById("js-task-name").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addTask();
-  });
+  // Add task on Enter keypress
+  document
+    .getElementById("js-task-name")
+    .addEventListener("keypress", (e) => {
+      if (e.key === "Enter") addTask();
+    });
   document
     .getElementById("js-task-pomodoros")
     .addEventListener("keypress", (e) => {
@@ -92,12 +128,22 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", handleMainButtonClick);
   document.getElementById("js-reset-btn").addEventListener("click", resetTimer);
 
-  // Close modals on outside click
+  // Close modals AND BURGER MENU on outside click
   window.addEventListener("click", (e) => {
     const settingsModal = document.getElementById("js-settings-modal");
     const musicModal = document.getElementById("js-music-modal");
-    const taskModal = document.getElementById("js-task-modal"); // UPDATED ID
+    const taskModal = document.getElementById("js-task-modal");
 
+    // Close Burger Menu if click is outside of the menu area
+    if (
+      !menuDropdown.contains(e.target) && 
+      e.target !== menuToggleBtn && 
+      !menuToggleBtn.contains(e.target)
+    ) {
+      closeBurgerMenu();
+    }
+    
+    // Close Modals
     if (e.target === settingsModal) {
       closeSettingsModal();
     }
@@ -105,7 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
       closeMusicModal();
     }
     if (e.target === taskModal) {
-      // ADDED: Handler for the task modal
       closeTaskModal();
     }
   });
@@ -126,6 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Initial state setup
-  switchMode(timer.mode); // Set the initial mode based on loaded settings
+  // Initial setup: switch to pomodoro mode and update clock
+  switchMode(timer.mode);
 });
