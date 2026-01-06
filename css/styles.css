@@ -228,7 +228,7 @@ progress::-webkit-progress-value {
   font-size: 22px;
   height: 55px;
   text-transform: uppercase;
-  color: var(--pomodoro);
+  color: #4caf50;
   font-weight: bold;
   width: 200px;
   background-color: white;
