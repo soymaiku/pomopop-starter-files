@@ -9,24 +9,20 @@ import {
 import { switchMode, stopTimer } from "./timer.js";
 import { escapeHtml } from "./utils.js";
 
-// ==================== LOCAL STORAGE AND CORE TASK LOGIC ====================
+/* ==================== LOAD & SAVE ==================== */
+
 export function loadTasks() {
   const saved = localStorage.getItem("pomodoroTasks");
   if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      tasks.length = 0;
-      tasks.push(...parsed.tasks);
-      setNextTaskId(parsed.nextTaskId || 1);
-      setCurrentTaskId(parsed.currentTaskId || null); // Load current task ID
-      renderTasks();
-    } catch (e) {
-      console.error("Error loading tasks:", e);
-    }
+    const parsed = JSON.parse(saved);
+    tasks.length = 0;
+    tasks.push(...parsed.tasks);
+    setNextTaskId(parsed.nextTaskId || 1);
+    setCurrentTaskId(parsed.currentTaskId ?? null);
+    renderTasks();
   }
 }
 
-// FIX/IMPROVEMENT: Now saves currentTaskId to persist selected task
 export function saveTasks() {
   localStorage.setItem(
     "pomodoroTasks",
@@ -34,77 +30,77 @@ export function saveTasks() {
   );
 }
 
+/* ==================== TASK ACTIONS ==================== */
+
 export function addTask() {
   const nameInput = document.getElementById("js-task-name");
-  const pomodorosInput = document.getElementById("js-task-pomodoros");
+  const pomosInput = document.getElementById("js-task-pomodoros");
 
   const name = nameInput.value.trim();
-  const pomodoros = parseInt(pomodorosInput.value) || 1;
+  const pomodoros = Math.max(1, Number(pomosInput.value) || 1);
 
   if (!name) {
-    alert("Please enter a task name.");
-    return;
-  }
-  if (pomodoros < 1) {
-    alert("Estimated pomodoros must be at least 1.");
+    alert("Please enter a task name");
     return;
   }
 
-  const newTask = {
+  tasks.push({
     id: nextTaskId,
-    name: name,
-    pomodoros: pomodoros,
+    name,
+    pomodoros,
     completedPomodoros: 0,
     completed: false,
-  };
-  tasks.push(newTask);
-  setNextTaskId(nextTaskId + 1);
+    editing: false,
+  });
 
-  // Clear inputs
+  setNextTaskId(nextTaskId + 1);
   nameInput.value = "";
-  pomodorosInput.value = 1;
+  pomosInput.value = 1;
 
   saveTasks();
   renderTasks();
-
-  // If no task is currently selected, select the new one automatically
-  if (currentTaskId === null) {
-    setCurrentTask(newTask.id);
-  }
 }
 
-export function deleteTask(taskId) {
-  const index = tasks.findIndex((t) => t.id === taskId);
+export function deleteTask(id) {
+  const index = tasks.findIndex((t) => t.id === id);
   if (index !== -1) {
+    if (currentTaskId === id) setCurrentTask(null);
     tasks.splice(index, 1);
-    // If the deleted task was the current task, deselect it
-    if (currentTaskId === taskId) {
-      setCurrentTask(null);
-    }
     saveTasks();
     renderTasks();
   }
 }
 
-export function completeTask(taskId) {
-  const task = tasks.find((t) => t.id === taskId);
-  if (task) {
-    task.completed = !task.completed;
-    if (task.completed && currentTaskId === taskId) {
-      setCurrentTask(null);
-    }
-    saveTasks();
-    renderTasks();
+export function completeTask(id) {
+  const task = tasks.find((t) => t.id === id);
+  if (!task) return;
+
+  task.completed = !task.completed;
+  if (task.completed && currentTaskId === id) {
+    setCurrentTask(null);
   }
+
+  saveTasks();
+  renderTasks();
 }
 
 export function updateTaskProgress() {
   const task = tasks.find((t) => t.id === currentTaskId);
-  if (task) {
-    task.completedPomodoros++;
-    saveTasks();
-    renderTasks();
-  }
+  if (!task) return;
+
+  task.completedPomodoros++;
+  saveTasks();
+  renderTasks();
+}
+
+/* ==================== CURRENT TASK ==================== */
+
+export function setCurrentTask(id) {
+  stopTimer();
+  setCurrentTaskId(id);
+  switchMode("pomodoro");
+  saveTasks();
+  renderTasks();
 }
 
 export function getCurrentTask() {
@@ -112,97 +108,105 @@ export function getCurrentTask() {
 }
 
 export function updateTaskNameDisplay() {
-  const display = document.getElementById("js-task-name-display");
-  const currentTask = getCurrentTask();
-  if (currentTask) {
-    display.textContent = `Current: ${currentTask.name}`;
-  } else {
-    display.textContent = "No task selected";
-  }
+  const el = document.getElementById("js-task-name-display");
+  const task = getCurrentTask();
+  el.textContent = task ? `Current: ${task.name}` : "No task selected";
 }
 
-export function setCurrentTask(taskId) {
-  // If we are currently running a timer, stop it before switching tasks
-  stopTimer();
-  
-  setCurrentTaskId(taskId);
-  switchMode("pomodoro"); // Always revert to Pomodoro mode when a task is selected/deselected
-  saveTasks();
-  renderTasks(); // Re-render to show selection
-}
+/* ==================== RENDER ==================== */
 
-// ==================== RENDERING AND MODAL CONTROL ====================
-
-/**
- * Creates the HTML markup for a single task item.
- */
 function getTaskHtml(task) {
-  const taskClass = `task-item ${task.completed ? "completed" : ""} ${
-    currentTaskId === task.id ? "selected" : ""
-  }`;
-  
   return `
-    <div class="${taskClass}" data-task-id="${task.id}">
+    <div class="task-item ${currentTaskId === task.id ? "selected" : ""} ${
+    task.completed ? "completed" : ""
+  }">
       <div class="task-info">
-        <div class="task-name">${escapeHtml(task.name)}</div>
-        <div class="task-progress">${task.completedPomodoros} / ${task.pomodoros} Pomodoros</div>
+        ${
+          task.editing
+            ? `
+          <input class="task-edit-name" value="${escapeHtml(task.name)}">
+          <input class="task-edit-pomos" type="number" min="1" value="${
+            task.pomodoros
+          }">
+        `
+            : `
+          <div class="task-name">${escapeHtml(task.name)}</div>
+          <div class="task-progress">${task.completedPomodoros} / ${
+                task.pomodoros
+              } Pomodoros</div>
+        `
+        }
       </div>
+
       <div class="task-controls">
-        <button class="task-button task-complete">${task.completed ? "Unmark" : "Done"}</button>
-        <button class="task-button task-delete">Delete</button>
+        ${
+          task.editing
+            ? `<button class="task-btn save">Save</button>`
+            : `<button class="task-btn edit">Edit</button>
+        <button class="task-btn done">${
+          task.completed ? "Undo" : "Done"
+        }</button>`
+        }
+        <button class="task-btn delete">✕</button>
       </div>
     </div>
   `;
 }
 
-/**
- * Renders the tasks list in the modal.
- */
 export function renderTasks() {
-  const tasksList = document.getElementById("js-tasks-list");
-  tasksList.innerHTML = "";
+  const list = document.getElementById("js-tasks-list");
+  list.innerHTML = "";
 
   tasks.forEach((task) => {
-    const taskItem = document.createElement("div");
-    taskItem.innerHTML = getTaskHtml(task);
-    
-    // Get inner elements for event listeners
-    const completeBtn = taskItem.querySelector(".task-complete");
-    const deleteBtn = taskItem.querySelector(".task-delete");
-    const taskInfo = taskItem.querySelector(".task-info");
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = getTaskHtml(task);
+    const el = wrapper.firstElementChild;
 
-    completeBtn.addEventListener("click", () => completeTask(task.id));
-    deleteBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      deleteTask(task.id);
-    });
-    taskInfo.addEventListener("click", () => {
-      if (!task.completed) {
-        // Toggle selection
+    el.querySelector(".task-info")?.addEventListener("click", () => {
+      if (!task.completed && !task.editing) {
         setCurrentTask(currentTaskId === task.id ? null : task.id);
       }
     });
 
-    tasksList.appendChild(taskItem);
+    el.querySelector(".edit")?.addEventListener("click", () => {
+      task.editing = true;
+      renderTasks();
+    });
+
+    el.querySelector(".save")?.addEventListener("click", () => {
+      task.name = el.querySelector(".task-edit-name").value.trim() || task.name;
+      task.pomodoros = Math.max(
+        1,
+        Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros
+      );
+      task.editing = false;
+      saveTasks();
+      renderTasks();
+    });
+
+    el.querySelector(".done")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      completeTask(task.id);
+    });
+
+    el.querySelector(".delete").addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteTask(task.id);
+    });
+
+    list.appendChild(el);
   });
 
   updateTaskNameDisplay();
 }
 
-/**
- * Explicitly opens the task modal.
- */
+/* ==================== MODAL ==================== */
+
 export function openTaskModal() {
-  const taskModal = document.getElementById("js-task-modal");
-  taskModal.classList.add("open");
+  document.getElementById("js-task-modal").classList.add("open");
   renderTasks();
 }
 
-/**
- * Explicitly closes the task modal.
- */
 export function closeTaskModal() {
-  const taskModal = document.getElementById("js-task-modal");
-  taskModal.classList.remove("open");
+  document.getElementById("js-task-modal").classList.remove("open");
 }
-// END of file - no extra brace here.

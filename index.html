@@ -1,170 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Freshman Pomodoro Clock Demo</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Freshman Pomodoro Clock Demo</title>
-  <link rel="stylesheet" href="/css/styles.css" />
-</head>
+  <body>
+    <header class="header">
+      <div class="burger-menu" id="js-burger-menu">
+        <button class="menu-toggle-btn" id="js-menu-toggle-btn">
+          <div class="burger-icon">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </button>
 
-<body>
-  <header class="header">
-    <div class="burger-menu" id="js-burger-menu">
-      <button class="menu-toggle-btn" id="js-menu-toggle-btn">
-        <div class="burger-icon">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
+        <div class="menu-dropdown" id="js-menu-dropdown">
+          <button class="dropdown-button" id="js-settings-btn" title="Settings">
+            ⚙️ Settings
+          </button>
+          <button
+            class="dropdown-button"
+            id="js-music-btn"
+            title="Background Music"
+          >
+            🎵 Music
+          </button>
+          <button
+            class="dropdown-button"
+            id="js-tasks-toggle-btn"
+            title="Tasks"
+          >
+            📋 Tasks
+          </button>
         </div>
-      </button>
+      </div>
+    </header>
 
-      <div class="menu-dropdown" id="js-menu-dropdown">
-        <button class="dropdown-button" id="js-settings-btn" title="Settings">
-          ⚙️ Settings
-        </button>
-        <button class="dropdown-button" id="js-music-btn" title="Background Music">
-          🎵 Music
-        </button>
-        <button class="dropdown-button" id="js-tasks-toggle-btn" title="Tasks">
-          📋 Tasks
-        </button>
+    <main class="app">
+      <h1 class="main-title">Pomopop</h1>
+      <progress id="js-progress" value="0"></progress>
+      <div class="progress-bar"></div>
+      <div class="timer">
+        <div class="button-group mode-buttons" id="js-mode-buttons">
+          <button
+            data-mode="pomodoro"
+            class="button active mode-button"
+            id="js-pomodoro"
+          >
+            Pomodoro
+          </button>
+          <button
+            data-mode="shortBreak"
+            class="button mode-button"
+            id="js-short-break"
+          >
+            Short break
+          </button>
+          <button
+            data-mode="longBreak"
+            class="button mode-button"
+            id="js-long-break"
+          >
+            Long break
+          </button>
+        </div>
+        <div class="clock" id="js-clock">
+          <span id="js-minutes">25</span>
+          <span class="separator">:</span>
+          <span id="js-seconds">00</span>
+        </div>
+        <div class="task-name-display" id="js-task-name-display">
+          No task selected
+        </div>
+        <div class="timer-controls">
+          <button class="main-button" data-action="start" id="js-btn">
+            Start
+          </button>
+          <button
+            class="control-button reset-button"
+            id="js-reset-btn"
+            title="Reset timer"
+          >
+            Reset
+          </button>
+        </div>
       </div>
-    </div>
-  </header>
+    </main>
 
-  <main class="app">
-    <h1 class="main-title">Pomopop</h1>
-    <progress id="js-progress" value="0"></progress>
-    <div class="progress-bar"></div>
-    <div class="timer">
-      <div class="button-group mode-buttons" id="js-mode-buttons">
-        <button data-mode="pomodoro" class="button active mode-button" id="js-pomodoro">
-          Pomodoro
-        </button>
-        <button data-mode="shortBreak" class="button mode-button" id="js-short-break">
-          Short break
-        </button>
-        <button data-mode="longBreak" class="button mode-button" id="js-long-break">
-          Long break
-        </button>
-      </div>
-      <div class="clock" id="js-clock">
-        <span id="js-minutes">25</span>
-        <span class="separator">:</span>
-        <span id="js-seconds">00</span>
-      </div>
-      <div class="task-name-display" id="js-task-name-display">
-        No task selected
-      </div>
-      <div class="timer-controls">
-        <button class="main-button" data-action="start" id="js-btn">
-          Start
-        </button>
-        <button class="control-button reset-button" id="js-reset-btn" title="Reset timer">
-          Reset
-        </button>
-      </div>
-    </div>
-  </main>
+    <div class="modal" id="js-settings-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-settings">&times;</span>
+        <h2>Settings</h2>
+        <div class="settings-form">
+          <div class="form-group">
+            <label for="js-pomodoro-duration"
+              >Pomodoro Duration (minutes):</label
+            >
+            <input
+              type="number"
+              id="js-pomodoro-duration"
+              min="1"
+              max="60"
+              value="25"
+            />
+          </div>
+          <div class="form-group">
+            <label for="js-short-break-duration"
+              >Short Break Duration (minutes):</label
+            >
+            <input
+              type="number"
+              id="js-short-break-duration"
+              min="1"
+              max="30"
+              value="5"
+            />
+          </div>
+          <div class="form-group">
+            <label for="js-long-break-duration"
+              >Long Break Duration (minutes):</label
+            >
+            <input
+              type="number"
+              id="js-long-break-duration"
+              min="1"
+              max="60"
+              value="15"
+            />
+          </div>
+          <div class="form-group">
+            <label for="js-long-break-interval"
+              >Long Break Interval (pomodoros):</label
+            >
+            <input
+              type="number"
+              id="js-long-break-interval"
+              min="1"
+              max="10"
+              value="4"
+            />
+          </div>
 
-  <div class="modal" id="js-settings-modal">
-    <div class="modal-content">
-      <span class="close" id="js-close-settings">&times;</span>
-      <h2>Settings</h2>
-      <div class="settings-form">
-        <div class="form-group">
-          <label for="js-pomodoro-duration">Pomodoro Duration (minutes):</label>
-          <input type="number" id="js-pomodoro-duration" min="1" max="60" value="25" />
-        </div>
-        <div class="form-group">
-          <label for="js-short-break-duration">Short Break Duration (minutes):</label>
-          <input type="number" id="js-short-break-duration" min="1" max="30" value="5" />
-        </div>
-        <div class="form-group">
-          <label for="js-long-break-duration">Long Break Duration (minutes):</label>
-          <input type="number" id="js-long-break-duration" min="1" max="60" value="15" />
-        </div>
-        <div class="form-group">
-          <label for="js-long-break-interval">Long Break Interval (pomodoros):</label>
-          <input type="number" id="js-long-break-interval" min="1" max="10" value="4" />
-        </div>
-
-        <div class="theme-section">
-          <p class="theme-label">🎨 THEME</p>
-          <div class="color-picker-container">
-            <div class="color-picker-item">
-              <span>Pomodoro</span>
-              <input type="color" id="js-color-pomodoro" value="#ba4949">
-            </div>
-            <div class="color-picker-item">
-              <span>Short Break</span>
-              <input type="color" id="js-color-short" value="#38858a">
-            </div>
-            <div class="color-picker-item">
-              <span>Long Break</span>
-              <input type="color" id="js-color-long" value="#397097">
+          <div class="theme-section">
+            <p class="theme-label">🎨 THEME</p>
+            <div class="color-picker-container">
+              <div class="color-picker-item">
+                <span>Pomodoro</span>
+                <input type="color" id="js-color-pomodoro" value="#ba4949" />
+              </div>
+              <div class="color-picker-item">
+                <span>Short Break</span>
+                <input type="color" id="js-color-short" value="#38858a" />
+              </div>
+              <div class="color-picker-item">
+                <span>Long Break</span>
+                <input type="color" id="js-color-long" value="#397097" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <button class="save-button" id="js-save-settings">
-          Save Settings
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="js-music-modal">
-    <div class="modal-content">
-      <span class="close" id="js-close-music">&times;</span>
-      <h2>Background Music</h2>
-      <div class="music-player">
-        <div class="form-group">
-          <label for="js-music-select">Choose a track:</label>
-          <select id="js-music-select">
-            <option value="">No Music</option>
-            <option value="lofi">Lo-Fi Hip Hop</option>
-            <option value="ambient">Ambient Relaxation</option>
-            <option value="classical">Classical Focus</option>
-            <option value="jazz">Jazz Vibes</option>
-            <option value="nature">Nature Sounds</option>
-          </select>
-        </div>
-        <div class="music-controls">
-          <button class="music-button" id="js-music-play">Play</button>
-          <button class="music-button" id="js-music-stop">Stop</button>
-        </div>
-        <div class="volume-control">
-          <label for="js-volume">Volume:</label>
-          <input type="range" id="js-volume" min="0" max="100" value="50" />
+          <button class="save-button" id="js-save-settings">
+            Save Settings
+          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="modal" id="js-task-modal">
-    <div class="modal-content">
-      <span class="close" id="js-close-tasks">&times;</span>
-      <h2>Tasks</h2>
-      <div class="task-input-group">
-        <input type="text" id="js-task-name" placeholder="Task name" />
-        <input type="number" id="js-task-pomodoros" placeholder="Est. pomodoros" min="1" max="20" value="1" />
-        <button class="add-task-button" id="js-add-task">Add Task</button>
+    <div class="modal" id="js-music-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-music">&times;</span>
+        <h2>Background Music</h2>
+        <div class="music-player">
+          <div class="form-group">
+            <label for="js-music-select">Choose a track:</label>
+            <select id="js-music-select">
+              <option value="">No Music</option>
+              <option value="lofi">Lo-Fi Hip Hop</option>
+              <option value="rain">Rain Sound</option>
+              <option value="classical">Classical Focus</option>
+              <option value="jazz">Jazz Vibes</option>
+              <option value="nature">Nature Sounds</option>
+            </select>
+          </div>
+          <div class="music-controls">
+            <button class="music-button" id="js-music-play">Play</button>
+            <button class="music-button" id="js-music-stop">Stop</button>
+          </div>
+          <div class="volume-control">
+            <label for="js-volume">Volume:</label>
+            <input type="range" id="js-volume" min="0" max="100" value="50" />
+          </div>
+        </div>
       </div>
-      <div class="tasks-list" id="js-tasks-list"></div>
     </div>
-  </div>
 
-  <div class="hidden">
-    <audio src="/Audio/backtowork.mp3" data-sound="pomodoro"></audio>
-    <audio src="/Audio/break.mp3" data-sound="shortBreak"></audio>
-    <audio src="/Audio/break.mp3" data-sound="longBreak"></audio>
-    <audio id="js-music-player" loop></audio>
-  </div>
+    <div class="modal" id="js-task-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-tasks">&times;</span>
+        <h2>Tasks</h2>
+        <div class="task-input-group">
+          <input type="text" id="js-task-name" placeholder="Task name" />
+          <input
+            type="number"
+            id="js-task-pomodoros"
+            placeholder="Est. pomodoros"
+            min="1"
+            max="20"
+            value="1"
+          />
+          <button class="add-task-button" id="js-add-task">Add Task</button>
+        </div>
+        <div class="tasks-list" id="js-tasks-list"></div>
+      </div>
+    </div>
 
-  <script src="/Javascripts/app.js" type="module"></script>
-</body>
+    <div class="hidden">
+      <audio src="/Audio/backtowork.mp3" data-sound="pomodoro"></audio>
+      <audio src="/Audio/break.mp3" data-sound="shortBreak"></audio>
+      <audio src="/Audio/break.mp3" data-sound="longBreak"></audio>
+      <audio id="js-music-player" loop></audio>
+    </div>
 
+    <script src="/Javascripts/app.js" type="module"></script>
+  </body>
 </html>
