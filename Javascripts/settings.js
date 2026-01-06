@@ -2,99 +2,87 @@
 import { timer } from "./config.js";
 import { switchMode } from "./timer.js";
 
+/**
+ * Applies custom hex colors to CSS variables
+ */
+function applyTheme(colors) {
+  const root = document.documentElement;
+  
+  if (colors.pomodoro) root.style.setProperty('--pomodoro', colors.pomodoro);
+  if (colors.shortBreak) root.style.setProperty('--shortBreak', colors.shortBreak);
+  if (colors.longBreak) root.style.setProperty('--longBreak', colors.longBreak);
+}
+
 // ==================== SETTINGS MODAL AND LOGIC ====================
 export function loadSettings() {
   const saved = localStorage.getItem("pomodoroSettings");
+
   if (saved) {
     try {
       const settings = JSON.parse(saved);
-      // Ensure loaded values are numbers, defaulting if not
-      timer.pomodoro =
-        settings.pomodoro && !isNaN(settings.pomodoro)
-          ? Number(settings.pomodoro)
-          : 25;
-      timer.shortBreak =
-        settings.shortBreak && !isNaN(settings.shortBreak)
-          ? Number(settings.shortBreak)
-          : 5;
-      timer.longBreak =
-        settings.longBreak && !isNaN(settings.longBreak)
-          ? Number(settings.longBreak)
-          : 15;
-      timer.longBreakInterval =
-        settings.longBreakInterval && !isNaN(settings.longBreakInterval)
-          ? Number(settings.longBreakInterval)
-          : 4;
+      
+      // Load Durations
+      timer.pomodoro = Number(settings.pomodoro) || 25;
+      timer.shortBreak = Number(settings.shortBreak) || 5;
+      timer.longBreak = Number(settings.longBreak) || 15;
+      timer.longBreakInterval = Number(settings.longBreakInterval) || 4;
 
       document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
-      document.getElementById("js-short-break-duration").value =
-        timer.shortBreak;
+      document.getElementById("js-short-break-duration").value = timer.shortBreak;
       document.getElementById("js-long-break-duration").value = timer.longBreak;
-      document.getElementById("js-long-break-interval").value =
-        timer.longBreakInterval;
+      document.getElementById("js-long-break-interval").value = timer.longBreakInterval;
+
+      // Load Colors if they exist, otherwise use defaults
+      const colors = {
+        pomodoro: settings.colors?.pomodoro || "#ba4949",
+        shortBreak: settings.colors?.shortBreak || "#38858a",
+        longBreak: settings.colors?.longBreak || "#397097"
+      };
+
+      document.getElementById("js-color-pomodoro").value = colors.pomodoro;
+      document.getElementById("js-color-short").value = colors.shortBreak;
+      document.getElementById("js-color-long").value = colors.longBreak;
+
+      applyTheme(colors);
+
     } catch (e) {
       console.error("Error loading settings:", e);
     }
   } else {
-    // Set default values in the UI if nothing is saved
-    document.getElementById("js-pomodoro-duration").value =
-      timer.pomodoro || 25;
-    document.getElementById("js-short-break-duration").value =
-      timer.shortBreak || 5;
-    document.getElementById("js-long-break-duration").value =
-      timer.longBreak || 15;
-    document.getElementById("js-long-break-interval").value =
-      timer.longBreakInterval || 4;
+    // Apply defaults if no storage found
+    applyTheme({
+      pomodoro: "#ba4949",
+      shortBreak: "#38858a",
+      longBreak: "#397097"
+    });
   }
 }
 
 export function saveSettings() {
-  // Get values from input fields
-  const pomodoroInput = document.getElementById("js-pomodoro-duration").value;
-  const shortBreakInput = document.getElementById(
-    "js-short-break-duration"
-  ).value;
-  const longBreakInput = document.getElementById(
-    "js-long-break-duration"
-  ).value;
-  const longBreakIntervalInput = document.getElementById(
-    "js-long-break-interval"
-  ).value;
+  const pomodoro = Number(document.getElementById("js-pomodoro-duration").value);
+  const shortBreak = Number(document.getElementById("js-short-break-duration").value);
+  const longBreak = Number(document.getElementById("js-long-break-duration").value);
+  const longBreakInterval = Number(document.getElementById("js-long-break-interval").value);
 
-  // Use Number() for strict conversion and isNaN check for non-numeric input
-  const pomodoro = Number(pomodoroInput);
-  const shortBreak = Number(shortBreakInput);
-  const longBreak = Number(longBreakInput);
-  const longBreakInterval = Number(longBreakIntervalInput);
+  // Get Colors from Pickers
+  const colors = {
+    pomodoro: document.getElementById("js-color-pomodoro").value,
+    shortBreak: document.getElementById("js-color-short").value,
+    longBreak: document.getElementById("js-color-long").value
+  };
 
-  // Validation: Check if values are not NaN (meaning they are valid numbers) and meet the minimum requirement
-  if (
-    isNaN(pomodoro) ||
-    isNaN(shortBreak) ||
-    isNaN(longBreak) ||
-    isNaN(longBreakInterval)
-  ) {
-    alert("Please enter only numbers for all settings.");
+  if (isNaN(pomodoro) || isNaN(shortBreak) || isNaN(longBreak) || isNaN(longBreakInterval)) {
+    alert("Please enter valid numbers.");
     return;
   }
 
-  if (
-    pomodoro < 1 ||
-    shortBreak < 1 ||
-    longBreak < 1 ||
-    longBreakInterval < 1
-  ) {
-    alert("All settings must be a minimum of 1.");
-    return;
-  }
-
-  // Update in-memory state
+  // Update State
   timer.pomodoro = pomodoro;
   timer.shortBreak = shortBreak;
   timer.longBreak = longBreak;
   timer.longBreakInterval = longBreakInterval;
 
-  // Save to local storage
+  // Save to Local Storage
   localStorage.setItem(
     "pomodoroSettings",
     JSON.stringify({
@@ -102,20 +90,21 @@ export function saveSettings() {
       shortBreak,
       longBreak,
       longBreakInterval,
+      colors
     })
   );
 
+  applyTheme(colors);
   closeSettingsModal();
-  // Reset the timer to the current mode (which now uses the new duration)
+  
+  // Instantly update the current background and clock display
   switchMode(timer.mode);
 }
 
 export function openSettingsModal() {
-  const modal = document.getElementById("js-settings-modal");
-  modal.classList.add("open");
+  document.getElementById("js-settings-modal").classList.add("open");
 }
 
 export function closeSettingsModal() {
-  const modal = document.getElementById("js-settings-modal");
-  modal.classList.remove("open");
+  document.getElementById("js-settings-modal").classList.remove("open");
 }

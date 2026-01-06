@@ -2,7 +2,6 @@
    1. CSS Setup & Global Variables
    ========================================================================== */
 
-/* Global Reset & Box Sizing */
 html {
   box-sizing: border-box;
 }
@@ -15,21 +14,17 @@ html {
   padding: 0;
 }
 
-/* CSS Custom Properties (Variables) */
 :root {
-  --pomodoro: hsl(223, 25%, 40%);
-  --shortBreak: hsl(48, 23%, 40%);
-  --longBreak: hsl(105, 16%, 40%);
-  /* New variables for easier color management */
+  --pomodoro: #ba4949;
+  --shortBreak: #38858a;
+  --longBreak: #397097;
   --color-text-light: rgba(255, 255, 255, 0.9);
   --color-text-medium: rgba(255, 255, 255, 0.6);
   --color-bg-light: #fff;
   --color-progress-bar: rgba(0, 0, 0, 0.1);
   --burger-icon-color: #fff;
-  /* White for the burger icon */
 }
 
-/* Body and Global Typography */
 body {
   background-color: var(--pomodoro);
   transition: background-color 1s ease;
@@ -49,39 +44,24 @@ button:active {
    2. Layout & Structure (Header, Timer, Progress)
    ========================================================================== */
 
-/* Main Title - Pomopop */
 .main-title {
   position: fixed;
   top: 15px;
-  /* Aligned with the header buttons */
   left: 50%;
   transform: translateX(-50%);
   color: var(--color-text-light);
-  /* Bright text color */
   font-size: 28px;
-  /* Prominent size */
   font-weight: 700;
-  /* Bold font */
   letter-spacing: 2px;
-  /* Spread the letters out */
   z-index: 101;
-  /* Ensure it's above the header and progress bar */
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  /* Subtle shadow for depth */
 }
 
-/* Header */
-.header {
-  /* No changes needed here, just holds the burger menu */
-}
-
-/* --- START: BURGER MENU STYLES --- */
 .burger-menu {
   position: fixed;
   top: 0;
   right: 0;
   z-index: 200;
-  /* High z-index to be on top of everything */
   padding: 15px;
 }
 
@@ -90,7 +70,6 @@ button:active {
   border: none;
   cursor: pointer;
   padding: 10px;
-  /* Make button area a circle for aesthetics */
   width: 44px;
   height: 44px;
   display: flex;
@@ -121,11 +100,9 @@ button:active {
   transition: all 0.3s ease-in-out;
 }
 
-/* Dropdown Menu Container */
 .menu-dropdown {
   position: absolute;
   top: 100%;
-  /* Position right below the burger icon button */
   right: 15px;
   background-color: var(--color-bg-light);
   border-radius: 4px;
@@ -134,12 +111,9 @@ button:active {
   flex-direction: column;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   min-width: 150px;
-
-  /* Initial hidden state */
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
-  /* Slightly move up when hidden */
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 }
 
@@ -147,10 +121,8 @@ button:active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  /* Slide down into view */
 }
 
-/* Dropdown Menu Buttons (Settings, Music, Tasks) */
 .dropdown-button {
   cursor: pointer;
   background-color: var(--color-bg-light);
@@ -158,7 +130,7 @@ button:active {
   padding: 10px 15px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--pomodoro);
+  color: #333;
   text-align: left;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -167,10 +139,6 @@ button:active {
   background-color: #e0e0e0;
 }
 
-/* --- END: BURGER MENU STYLES --- */
-
-
-/* Progress Bar */
 progress {
   border-radius: 2px;
   width: 100%;
@@ -187,24 +155,18 @@ progress::-webkit-progress-value {
   background-color: var(--color-bg-light);
 }
 
-/* Main Timer Container - MODIFIED FOR BETTER CENTERING */
 .timer {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
-
-  /* ADDED FLEXBOX CENTERING FOR INNER ELEMENTS */
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Center items horizontally within the timer div */
   text-align: center;
-  /* Fallback for text elements */
 }
 
-/* Clock Display */
 .clock {
   margin-top: 50px;
   margin-bottom: 30px;
@@ -214,14 +176,12 @@ progress::-webkit-progress-value {
   align-items: center;
   font-family: arial, sans-serif;
   color: var(--color-text-light);
-  /* Ensure clock text is visible */
 }
 
 .separator {
   color: var(--color-text-medium);
 }
 
-/* Current Task Name Display */
 .task-name-display {
   margin-bottom: 20px;
   font-size: 18px;
@@ -244,7 +204,6 @@ progress::-webkit-progress-value {
    3. Timer Buttons (Mode, Main, Control)
    ========================================================================== */
 
-/* Mode Buttons (Pomodoro, Break) */
 .mode-button {
   font-size: 16px;
   height: 28px;
@@ -263,14 +222,13 @@ progress::-webkit-progress-value {
   border-color: #fff;
 }
 
-/* Main Start/Pause Button */
 .main-button {
   cursor: pointer;
   box-shadow: rgb(235, 235, 235) 0px 6px 0px;
   font-size: 22px;
   height: 55px;
   text-transform: uppercase;
-  color: hsl(175, 26%, 41%);
+  color: var(--pomodoro);
   font-weight: bold;
   width: 200px;
   background-color: white;
@@ -288,7 +246,6 @@ progress::-webkit-progress-value {
   outline: none;
 }
 
-/* Reset/Control Buttons */
 .control-button {
   cursor: pointer;
   background-color: white;
@@ -296,7 +253,7 @@ progress::-webkit-progress-value {
   padding: 0 12px;
   border-radius: 4px;
   font-weight: bold;
-  color: var(--pomodoro);
+  color: #333;
   transition: all 0.3s ease;
   box-shadow: rgb(235, 235, 235) 0px 6px 0px;
   height: 55px;
@@ -309,7 +266,6 @@ progress::-webkit-progress-value {
 
 .control-button:hover {
   background-color: #f0f0f0;
-  color: var(--pomodoro);
   box-shadow: rgb(220, 220, 220) 0px 6px 0px;
 }
 
@@ -317,7 +273,6 @@ progress::-webkit-progress-value {
   transform: translateY(6px);
   box-shadow: none;
   outline: none;
-  background-color: #e0e0e0;
 }
 
 .control-button.reset-button {
@@ -329,7 +284,6 @@ progress::-webkit-progress-value {
    4. Task System
    ========================================================================== */
 
-/* Input Group for Adding Tasks */
 .task-input-group {
   display: flex;
   flex-direction: column;
@@ -342,129 +296,39 @@ progress::-webkit-progress-value {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: inherit;
-}
-
-.task-input-group input:focus {
-  outline: none;
-  border-color: var(--pomodoro);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .add-task-button {
   padding: 10px 16px;
-  background-color: var(--pomodoro);
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.3s;
 }
 
-.add-task-button:hover {
-  opacity: 0.9;
-}
-
-/* Task List */
 .tasks-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
   max-height: 40vh;
-  /* Set max height for scrolling within the modal */
   overflow-y: auto;
-  padding-right: 5px;
-  /* Add some padding for the scrollbar */
 }
 
-/* Individual Task Item */
 .task-item {
   background-color: #f9f9f9;
   padding: 10px;
   border-radius: 4px;
-  border-left: 4px solid var(--pomodoro);
+  border-left: 4px solid #555;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.task-info {
-  flex: 1;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.task-name {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-  word-break: break-word;
-}
-
-.task-progress {
-  font-size: 13px;
-  color: #666;
-}
-
-.task-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.task-button {
-  padding: 4px 8px;
-  font-size: 12px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: opacity 0.3s;
-  font-weight: 600;
-}
-
-/* Task State Modifiers */
-.task-item.completed {
-  opacity: 0.6;
-}
-
-.task-item.completed .task-name {
-  text-decoration: line-through;
 }
 
 .task-item.selected {
   background-color: #e3f2fd;
   border-left-color: #2196f3;
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
-}
-
-.task-item.selected .task-name {
-  color: #1976d2;
-  font-weight: 700;
-}
-
-/* Specific Task Control Buttons */
-.task-complete {
-  background-color: #4caf50;
-  color: white;
-}
-
-.task-edit {
-  background-color: #2196f3;
-  color: white;
-}
-
-.task-delete {
-  background-color: #f44336;
-  color: white;
-}
-
-.task-complete:hover,
-.task-edit:hover,
-.task-delete:hover {
-  opacity: 0.8;
 }
 
 /* ==========================================================================
@@ -479,7 +343,6 @@ progress::-webkit-progress-value {
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -491,23 +354,17 @@ progress::-webkit-progress-value {
   background-color: #fefefe;
   margin: 10% auto;
   padding: 20px;
-  border: 1px solid #888;
   border-radius: 8px;
   width: 90%;
-  max-width: 500px;
+  max-width: 400px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.close {
-  display: none;
-}
-
 .modal h2 {
-  margin-top: 0;
+  margin-bottom: 20px;
   color: #333;
 }
 
-/* Settings Form */
 .settings-form {
   display: flex;
   flex-direction: column;
@@ -526,72 +383,72 @@ progress::-webkit-progress-value {
   font-size: 14px;
 }
 
-.form-group input,
-.form-group select {
+.form-group input {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--pomodoro);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+/* THEME SECTION STYLES */
+.theme-section {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.theme-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.color-picker-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Custom Color Input Styling to look like Rounded Squares */
+.color-picker-item input[type="color"] {
+  -webkit-appearance: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.color-picker-item input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker-item input[type="color"]::-webkit-color-swatch {
+  border: 2px solid #eee;
+  border-radius: 8px;
+  /* Rounded corners like the image */
 }
 
 .save-button {
-  padding: 10px 16px;
-  background-color: var(--pomodoro);
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background-color 0.3s;
-}
-
-.save-button:hover {
-  opacity: 0.9;
-}
-
-/* Music Player */
-.music-player {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.music-controls,
-.volume-control {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.music-button {
-  flex: 1;
-  padding: 8px;
-  background-color: var(--pomodoro);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: opacity 0.3s;
-}
-
-.music-button:hover {
-  opacity: 0.9;
-}
-
-.volume-control input {
-  flex: 1;
-  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 /* ==========================================================================
@@ -602,171 +459,17 @@ progress::-webkit-progress-value {
   display: none !important;
 }
 
-/* Notification Animations */
-@keyframes slideDown {
-  from {
-    transform: translateX(-50%) translateY(-20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(-50%) translateY(-20px);
-    opacity: 0;
-  }
-}
-
 /* ==========================================================================
-   7. Responsive Design (Media Queries)
+   7. Responsive Design
    ========================================================================== */
 
-/* Mobile Devices (max-width: 480px) */
 @media screen and (max-width: 480px) {
-
-  /* Adjust title size for small screens */
-  .main-title {
-    font-size: 20px;
-    top: 10px;
-  }
-
-  /* Adjust menu position for small screens */
-  .burger-menu {
-    padding: 10px;
-  }
-
-  .menu-dropdown {
-    right: 10px;
-    min-width: 120px;
-  }
-
-  progress {
-    height: 8px;
-  }
-
-  .timer {
-    padding: 10px;
-  }
-
-  /* CLOCK FONT SIZE REDUCED FURTHER FOR BETTER CENTERING ON SMALL SCREENS */
   .clock {
-    font-size: 4.5rem;
-    /* Reduced for better fit and centering */
-    margin-top: 40px;
-    margin-bottom: 20px;
-  }
-
-  .mode-button {
-    font-size: 12px;
-    height: 24px;
-  }
-
-  .main-button {
-    font-size: 16px;
-    height: 45px;
-    width: 150px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .main-button.active {
-    transform: translateY(5px);
-  }
-
-  .control-button {
-    height: 45px;
-    width: 80px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button:active {
-    transform: translateY(5px);
-  }
-
-  .control-button.reset-button {
-    font-size: 14px;
+    font-size: 5rem;
   }
 
   .modal-content {
-    margin: 30% auto;
-    max-width: 280px;
-  }
-}
-
-/* Small Tablets (481px - 768px) */
-@media screen and (min-width: 481px) and (max-width: 768px) {
-
-  /* Adjust title size for medium screens */
-  .main-title {
-    font-size: 24px;
-  }
-
-  .clock {
-    font-size: 10rem;
-  }
-
-  .main-button {
-    font-size: 18px;
-    height: 48px;
-    width: 160px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button {
-    height: 48px;
-    width: 90px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button:active {
-    transform: translateY(5px);
-  }
-}
-
-/* Large Tablets & Small Desktops (769px - 1024px) */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-  .clock {
-    font-size: 12rem;
-  }
-
-  .main-button {
-    font-size: 20px;
-    height: 50px;
-    width: 180px;
-  }
-
-  .control-button {
-    height: 50px;
-    width: 95px;
-  }
-}
-
-/* Desktop (1025px and above) */
-@media screen and (min-width: 1025px) {}
-
-/* Ultra-wide screens (1600px and above) */
-@media screen and (min-width: 1600px) {
-  .clock {
-    font-size: 18rem;
-  }
-
-  .main-button {
-    font-size: 24px;
-    height: 60px;
-    width: 220px;
-  }
-
-  .control-button {
-    height: 60px;
-    width: 110px;
+    width: 95%;
+    margin-top: 20%;
   }
 }
