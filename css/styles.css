@@ -609,3 +609,76 @@ progress::-webkit-progress-value {
     margin-top: 20%;
   }
 }
+
+/* ==========================================================================
+   8. Video Background Feature
+   ========================================================================== */
+
+.video-bg-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+}
+
+.video-bg-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  display: none;
+  filter: brightness(0.6); /* Darken video to ensure text readability */
+}
+
+/* Override body background when video is active */
+body.video-active {
+  background-color: transparent !important;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.video-option {
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.video-option:hover {
+  background: #e0e0e0;
+  transform: scale(1.02);
+}
+
+.video-option.active {
+  background: #333;
+  color: #fff;
+}

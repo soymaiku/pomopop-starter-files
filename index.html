@@ -226,6 +226,58 @@
       <audio id="js-music-player" loop></audio>
     </div>
 
+    <!-- Video Background Elements -->
+    <button id="js-video-bg-btn" class="video-bg-btn">Video Background</button>
+
+    <video id="bg-video" loop muted playsinline>
+      <source src="" type="video/mp4" />
+    </video>
+
+    <div class="modal" id="js-video-modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-video">&times;</span>
+        <h2>Select Background</h2>
+        <div class="video-grid">
+          <!-- Using reliable placeholder video links -->
+          <div
+            class="video-option"
+            data-video="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4"
+          >
+            Forest
+          </div>
+          <div
+            class="video-option"
+            data-video="https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4"
+          >
+            Space
+          </div>
+          <div
+            class="video-option"
+            data-video="https://assets.mixkit.co/videos/preview/mixkit-white-clouds-on-blue-sky-1084-large.mp4"
+          >
+            Sky
+          </div>
+          <div
+            class="video-option"
+            data-video="https://assets.mixkit.co/videos/preview/mixkit-rain-falling-on-the-window-sill-1639-large.mp4"
+          >
+            Rain
+          </div>
+          <div
+            class="video-option"
+            data-video="off"
+            style="
+              grid-column: span 2;
+              background-color: #ffcdd2;
+              color: #c62828;
+            "
+          >
+            Turn Off
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="/Javascripts/app.js" type="module"></script>
   </body>
 </html>
