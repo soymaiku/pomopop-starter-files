@@ -26,6 +26,14 @@ import {
   handleVolumeChange,
 } from "./music.js";
 import { timer } from "./config.js";
+import {
+  openStatsModal,
+  closeStatsModal,
+  getCurrentUser,
+  loginWithGoogle,
+  loginAsGuest,
+  logout,
+} from "./stats.js";
 
 // ==================== BURGER MENU LOGIC ====================
 
@@ -59,12 +67,60 @@ const modalObserver = new MutationObserver(() => {
   updateModalState();
 });
 
+// ==================== AUTH & LOGIN LOGIC ====================
+
+const loginModal = document.getElementById("js-login-modal");
+const googleLoginBtn = document.getElementById("js-google-login-btn");
+const guestLoginBtn = document.getElementById("js-guest-login-btn");
+const logoutBtn = document.getElementById("js-logout-btn");
+const loginBtn = document.getElementById("js-login-btn");
+const userProfile = document.getElementById("js-user-profile");
+const profilePic = document.getElementById("js-profile-pic");
+const profileName = document.getElementById("js-profile-name");
+
+function checkAuth() {
+  const user = getCurrentUser();
+  if (user) {
+    // User is logged in
+    loginModal.classList.remove("open");
+    updateProfileUI(user);
+  } else {
+    // No user, show login
+    loginModal.classList.add("open");
+  }
+}
+
+function updateProfileUI(user) {
+  if (user.isGuest) {
+    userProfile.classList.add("hidden");
+    logoutBtn.classList.add("hidden");
+    loginBtn.classList.remove("hidden");
+  } else {
+    userProfile.classList.remove("hidden");
+    logoutBtn.classList.remove("hidden");
+    loginBtn.classList.add("hidden");
+    profilePic.src = user.photoURL;
+    profileName.textContent = user.displayName;
+  }
+}
+
+async function handleLogin(type) {
+  if (type === "google") {
+    await loginWithGoogle();
+  } else {
+    loginAsGuest();
+  }
+  checkAuth();
+}
+
 // ==================== EVENT LISTENERS ====================
 document.addEventListener("DOMContentLoaded", () => {
   // Load settings and tasks
   loadSettings();
   loadTasks();
   updateTaskNameDisplay();
+
+  checkAuth(); // Check if user is logged in
 
   // Observe all modals for class changes
   document.querySelectorAll(".modal").forEach((modal) => {
@@ -96,6 +152,26 @@ document.addEventListener("DOMContentLoaded", () => {
       openTaskModal();
       closeBurgerMenu();
     });
+  document.getElementById("js-stats-btn").addEventListener("click", () => {
+    openStatsModal();
+    closeBurgerMenu();
+  });
+
+  // Auth Event Listeners
+  googleLoginBtn.addEventListener("click", () => handleLogin("google"));
+  guestLoginBtn.addEventListener("click", () => handleLogin("guest"));
+
+  loginBtn.addEventListener("click", () => {
+    loginModal.classList.add("open");
+    closeBurgerMenu();
+  });
+
+  logoutBtn.addEventListener("click", () => {
+    logout();
+    closeBurgerMenu();
+    checkAuth(); // Will reopen login modal
+  });
+
   // -----------------------------
 
   // Settings Modal Handlers
@@ -133,6 +209,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("js-close-tasks")
     .addEventListener("click", closeTaskModal);
+  // Stats Modal Handlers
+  document
+    .getElementById("js-close-stats")
+    .addEventListener("click", closeStatsModal);
   document.getElementById("js-add-task").addEventListener("click", addTask);
   // Add task on Enter keypress
   document.getElementById("js-task-name").addEventListener("keypress", (e) => {
@@ -218,6 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const musicModal = document.getElementById("js-music-modal");
     const taskModal = document.getElementById("js-task-modal");
     const videoModal = document.getElementById("js-video-modal");
+    const statsModal = document.getElementById("js-stats-modal");
+    // Note: Login modal is NOT closed by outside click
 
     // Close Burger Menu if click is outside of the menu area
     if (
@@ -243,6 +325,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (e.target === aboutModal) {
       closeAboutModal();
+    }
+    if (e.target === statsModal) {
+      closeStatsModal();
     }
   });
 

@@ -2,8 +2,9 @@
 import { timer, interval, setIntervalId } from "./config.js";
 import { updateTaskProgress, getCurrentTask } from "./tasks.js";
 import { showNotification } from "./utils.js";
+import { incrementPomodoroCount } from "./stats.js";
 
-const buttonSound = new Audio("/Audio/button-sound.mp3");
+const buttonSound = new Audio("./Audio/button-sound.mp3");
 const mainButton = document.getElementById("js-btn");
 
 export function getRemainingTime(endTime) {
@@ -48,6 +49,7 @@ export function startTimer() {
       // Update task progress when pomodoro completes
       if (timer.mode === "pomodoro") {
         updateTaskProgress();
+        incrementPomodoroCount(timer.pomodoro);
       }
 
       switch (timer.mode) {

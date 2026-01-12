@@ -1,0 +1,19 @@
+[debug] [2026-01-12T05:29:35.265Z] ----------------------------------------------------------------------
+[debug] [2026-01-12T05:29:35.268Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Nonong PC\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2026-01-12T05:29:35.269Z] CLI Version:   15.2.1
+[debug] [2026-01-12T05:29:35.269Z] Platform:      win32
+[debug] [2026-01-12T05:29:35.269Z] Node Version:  v22.18.0
+[debug] [2026-01-12T05:29:35.270Z] Time:          Mon Jan 12 2026 13:29:35 GMT+0800 (Singapore Standard Time)
+[debug] [2026-01-12T05:29:35.270Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  D:\Nanays in IT\Capstone\Pomopop\pomopop-starter-files
+

@@ -2,7 +2,7 @@
 const musicPlayer = document.getElementById("js-music-player");
 const musicTracks = {
   lofi: "https://usa9.fastcast4u.com/proxy/jamz?mp=/1",
-  rain: "/Audio/rain.wav",
+  rain: "./Audio/rain.wav",
   classical: "https://c32.radioboss.fm:8332/autodj",
   jazz: "https://listen.radioking.com/radio/637990/stream/700915",
   nature: "",
