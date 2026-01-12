@@ -1,27 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
 import {
-  getAuth,
   signInWithPopup,
-  GoogleAuthProvider,
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-// Get these values from the Firebase Console: https://console.firebase.google.com/
-const firebaseConfig = {
-  apiKey: "AIzaSyDKMAuZRVGcInVsmvMbjmuiehR4rcBzsC8",
-  authDomain: "pomopop-1f51b.firebaseapp.com",
-  projectId: "pomopop-1f51b",
-  storageBucket: "pomopop-1f51b.firebasestorage.app",
-  messagingSenderId: "954235877516",
-  appId: "1:954235877516:web:082ba58ec5c0829da1e3a9",
-  measurementId: "G-SGW375DYCG",
-};
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+import { auth, googleProvider, githubProvider } from "./firebase-config.js";
 
 const initialStats = {
   totalPomodoros: 0,
@@ -43,7 +24,7 @@ export function getCurrentUser() {
 
 export async function loginWithGoogle() {
   try {
-    const result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
     const appUser = {
@@ -57,6 +38,26 @@ export async function loginWithGoogle() {
   } catch (error) {
     console.error("Google login failed:", error);
     alert("Google Login Error: " + error.message);
+    return null;
+  }
+}
+
+export async function loginWithGithub() {
+  try {
+    const result = await signInWithPopup(auth, githubProvider);
+    const user = result.user;
+
+    const appUser = {
+      uid: user.uid,
+      displayName: user.displayName || "GitHub User",
+      photoURL: user.photoURL,
+      isGuest: false,
+    };
+    localStorage.setItem("pomopop-user", JSON.stringify(appUser));
+    return appUser;
+  } catch (error) {
+    console.error("GitHub login failed:", error);
+    alert("GitHub Login Error: " + error.message);
     return null;
   }
 }
