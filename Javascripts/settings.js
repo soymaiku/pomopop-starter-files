@@ -7,6 +7,7 @@ import {
 import { db, auth } from "./firebase-config.js";
 import { timer } from "./config.js";
 import { switchMode } from "./timer.js";
+import { getCurrentUser } from "./stats.js";
 
 /**
  * Applies custom hex colors to CSS variables
@@ -21,6 +22,31 @@ function applyTheme(colors) {
 }
 
 // ==================== SETTINGS MODAL AND LOGIC ====================
+
+function resetSettingsToDefaults() {
+  timer.pomodoro = 25;
+  timer.shortBreak = 5;
+  timer.longBreak = 15;
+  timer.longBreakInterval = 4;
+
+  document.getElementById("js-pomodoro-duration").value = 25;
+  document.getElementById("js-short-break-duration").value = 5;
+  document.getElementById("js-long-break-duration").value = 15;
+  document.getElementById("js-long-break-interval").value = 4;
+
+  const defaultColors = {
+    pomodoro: "#ba4949",
+    shortBreak: "#38858a",
+    longBreak: "#397097",
+  };
+
+  document.getElementById("js-color-pomodoro").value = defaultColors.pomodoro;
+  document.getElementById("js-color-short").value = defaultColors.shortBreak;
+  document.getElementById("js-color-long").value = defaultColors.longBreak;
+
+  applyTheme(defaultColors);
+  switchMode(timer.mode);
+}
 
 export async function fetchUserSettings(userId) {
   try {
@@ -57,8 +83,12 @@ export async function fetchUserSettings(userId) {
 
         applyTheme(colors);
         switchMode(timer.mode); // Refresh UI with new settings
+        return;
       }
     }
+
+    // If no settings found in cloud, reset to defaults (don't use guest settings)
+    resetSettingsToDefaults();
   } catch (error) {
     console.error("Error fetching user settings:", error);
   }
@@ -115,6 +145,7 @@ export function loadSettings() {
       longBreak: "#397097",
     });
   }
+  switchMode(timer.mode);
 }
 
 export function saveSettings() {
@@ -163,8 +194,11 @@ export function saveSettings() {
   };
 
   // Check Auth: Save to Cloud if logged in, otherwise LocalStorage
-  if (auth.currentUser) {
-    saveUserSettings(auth.currentUser.uid, settingsData);
+  const user = auth.currentUser;
+  const localUser = getCurrentUser();
+
+  if (user || (localUser && !localUser.isGuest)) {
+    saveUserSettings(user ? user.uid : localUser.uid, settingsData);
   } else {
     localStorage.setItem("pomodoroSettings", JSON.stringify(settingsData));
   }

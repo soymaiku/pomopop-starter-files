@@ -13,6 +13,7 @@ import {
   setCurrentTaskId,
 } from "./config.js";
 import { switchMode, stopTimer } from "./timer.js";
+import { getCurrentUser } from "./stats.js";
 import { escapeHtml } from "./utils.js";
 
 /* ==================== LOAD & SAVE ==================== */
@@ -66,8 +67,15 @@ export function clearTasks() {
 }
 
 export function saveTasks() {
-  if (auth.currentUser) {
-    saveUserTasks(auth.currentUser.uid, { tasks, nextTaskId, currentTaskId });
+  const user = auth.currentUser;
+  const localUser = getCurrentUser();
+
+  if (user || (localUser && !localUser.isGuest)) {
+    saveUserTasks(user ? user.uid : localUser.uid, {
+      tasks,
+      nextTaskId,
+      currentTaskId,
+    });
   } else {
     localStorage.setItem(
       "pomodoroTasks",
