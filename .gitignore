@@ -1,5 +1,0 @@
-# Ignore the actual Firebase config with real keys
-Javascripts/firebase-config.js
-
-# OS generated files
-.DS_Store
