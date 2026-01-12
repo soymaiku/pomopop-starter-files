@@ -1,11 +1,11 @@
 // music.js
 const musicPlayer = document.getElementById("js-music-player");
 const musicTracks = {
-  lofi: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-  ambient: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-  classical: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-  jazz: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-  nature: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+  lofi: "https://usa9.fastcast4u.com/proxy/jamz?mp=/1",
+  rain: "/Audio/rain.wav",
+  classical: "https://c32.radioboss.fm:8332/autodj",
+  jazz: "https://listen.radioking.com/radio/637990/stream/700915",
+  nature: "",
 };
 
 export function playMusic() {
