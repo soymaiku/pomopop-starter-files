@@ -8,6 +8,7 @@ import {
 
 // RENAME this file to "firebase-config.js" and add your actual keys
 // Get these values from the Firebase Console: https://console.firebase.google.com/
+// WARNING:
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY_HERE",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",

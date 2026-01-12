@@ -1,0 +1,5 @@
+# Ignore the file containing real API keys
+Javascripts/firebase-config.js
+
+# Ignore system files
+.DS_Store
