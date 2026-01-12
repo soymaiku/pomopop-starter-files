@@ -639,6 +639,30 @@ progress::-webkit-progress-value {
   transform: translateY(-2px);
 }
 
+.info-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+}
+
+.info-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
 #bg-video {
   position: fixed;
   top: 0;
@@ -682,4 +706,81 @@ body.video-active {
 .video-option.active {
   background: #333;
   color: #fff;
+}
+
+/* ==========================================================================
+   9. About Modal Styles
+   ========================================================================== */
+
+.about-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.about-section {
+  margin-bottom: 30px;
+}
+
+.about-section:last-child {
+  margin-bottom: 0;
+}
+
+.about-section h3 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.about-section h4 {
+  color: #555;
+  font-size: 16px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.about-section p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.about-section ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.about-section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.about-section li strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Make about modal wider for better readability */
+#js-about-modal .modal-content {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#js-about-modal .modal-content h2 {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+#js-about-modal .about-content {
+  flex: 1;
+  overflow-y: auto;
 }

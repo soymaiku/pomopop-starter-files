@@ -116,6 +116,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Enter") addTask();
     });
 
+  // ==================== ABOUT MODAL LOGIC ====================
+  const infoBtn = document.getElementById("js-info-btn");
+  const aboutModal = document.getElementById("js-about-modal");
+
+  function openAboutModal() {
+    aboutModal.classList.add("open");
+  }
+
+  function closeAboutModal() {
+    aboutModal.classList.remove("open");
+  }
+
+  // Open About Modal
+  infoBtn.addEventListener("click", openAboutModal);
+
   // ==================== VIDEO BACKGROUND LOGIC ====================
   const videoBtn = document.getElementById("js-video-bg-btn");
   const videoModal = document.getElementById("js-video-modal");
@@ -197,6 +212,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (e.target === videoModal) {
       videoModal.classList.remove("open");
+    }
+    if (e.target === aboutModal) {
+      closeAboutModal();
     }
   });
 
