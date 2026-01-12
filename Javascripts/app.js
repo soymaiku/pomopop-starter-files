@@ -40,12 +40,40 @@ function closeBurgerMenu() {
   menuDropdown.classList.remove("open");
 }
 
+// ==================== MODAL STATE TRACKING ====================
+// Track modal open state to hide buttons on mobile
+function updateModalState() {
+  const modals = document.querySelectorAll(".modal");
+  const hasOpenModal = Array.from(modals).some((modal) =>
+    modal.classList.contains("open")
+  );
+  if (hasOpenModal) {
+    document.body.classList.add("modal-open");
+  } else {
+    document.body.classList.remove("modal-open");
+  }
+}
+
+// Watch for modal state changes
+const modalObserver = new MutationObserver(() => {
+  updateModalState();
+});
+
 // ==================== EVENT LISTENERS ====================
 document.addEventListener("DOMContentLoaded", () => {
   // Load settings and tasks
   loadSettings();
   loadTasks();
   updateTaskNameDisplay();
+
+  // Observe all modals for class changes
+  document.querySelectorAll(".modal").forEach((modal) => {
+    modalObserver.observe(modal, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+  });
+  updateModalState(); // Initial check
 
   // --- BURGER MENU HANDLERS ---
   menuToggleBtn.addEventListener("click", (e) => {
