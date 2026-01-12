@@ -2,7 +2,6 @@
    1. CSS Setup & Global Variables
    ========================================================================== */
 
-/* Global Reset & Box Sizing */
 html {
   box-sizing: border-box;
 }
@@ -15,19 +14,17 @@ html {
   padding: 0;
 }
 
-/* CSS Custom Properties (Variables) */
 :root {
-  --pomodoro: hsl(223, 25%, 40%);
-  --shortBreak: hsl(48, 23%, 40%);
-  --longBreak: hsl(105, 16%, 40%);
-  /* New variables for easier color management */
+  --pomodoro: #ba4949;
+  --shortBreak: #38858a;
+  --longBreak: #397097;
   --color-text-light: rgba(255, 255, 255, 0.9);
   --color-text-medium: rgba(255, 255, 255, 0.6);
   --color-bg-light: #fff;
   --color-progress-bar: rgba(0, 0, 0, 0.1);
+  --burger-icon-color: #fff;
 }
 
-/* Body and Global Typography */
 body {
   background-color: var(--pomodoro);
   transition: background-color 1s ease;
@@ -47,36 +44,101 @@ button:active {
    2. Layout & Structure (Header, Timer, Progress)
    ========================================================================== */
 
-/* Header & Header Buttons */
-.header {
+.main-title {
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text-light);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  z-index: 101;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.burger-menu {
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 100;
-  display: flex;
-  gap: 10px;
+  z-index: 200;
   padding: 15px;
 }
 
-.header-button {
-  cursor: pointer;
-  background-color: var(--color-text-light);
+.menu-toggle-btn {
+  background: none;
   border: none;
-  padding: 8px 12px;
+  cursor: pointer;
+  padding: 10px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.menu-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.burger-icon {
+  width: 24px;
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: var(--burger-icon-color);
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 15px;
+  background-color: var(--color-bg-light);
   border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  min-width: 150px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.menu-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-button {
+  cursor: pointer;
+  background-color: var(--color-bg-light);
+  border: none;
+  padding: 10px 15px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--pomodoro);
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333;
+  text-align: left;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.header-button:hover {
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.dropdown-button:hover {
+  background-color: #e0e0e0;
 }
 
-/* Progress Bar */
 progress {
   border-radius: 2px;
   width: 100%;
@@ -93,32 +155,33 @@ progress::-webkit-progress-value {
   background-color: var(--color-bg-light);
 }
 
-/* Main Timer Container */
 .timer {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-/* Clock Display */
 .clock {
-  color: var(--color-text-light);
-  /* ADDED to make digits white */
   margin-top: 50px;
   margin-bottom: 30px;
   font-size: 15rem;
   line-height: 1;
   display: flex;
   align-items: center;
-  /* ADDED for mobile centering */
-  justify-content: center;
   font-family: arial, sans-serif;
+  color: var(--color-text-light);
 }
 
-/* Current Task Name Display */
+.separator {
+  color: var(--color-text-medium);
+}
+
 .task-name-display {
   margin-bottom: 20px;
   font-size: 18px;
@@ -141,7 +204,6 @@ progress::-webkit-progress-value {
    3. Timer Buttons (Mode, Main, Control)
    ========================================================================== */
 
-/* Mode Buttons (Pomodoro, Break) */
 .mode-button {
   font-size: 16px;
   height: 28px;
@@ -160,14 +222,13 @@ progress::-webkit-progress-value {
   border-color: #fff;
 }
 
-/* Main Start/Pause Button */
 .main-button {
   cursor: pointer;
   box-shadow: rgb(235, 235, 235) 0px 6px 0px;
   font-size: 22px;
   height: 55px;
   text-transform: uppercase;
-  color: hsl(175, 26%, 41%);
+  color: #4caf50;
   font-weight: bold;
   width: 200px;
   background-color: white;
@@ -185,7 +246,6 @@ progress::-webkit-progress-value {
   outline: none;
 }
 
-/* Reset/Control Buttons */
 .control-button {
   cursor: pointer;
   background-color: white;
@@ -193,7 +253,7 @@ progress::-webkit-progress-value {
   padding: 0 12px;
   border-radius: 4px;
   font-weight: bold;
-  color: var(--pomodoro);
+  color: #333;
   transition: all 0.3s ease;
   box-shadow: rgb(235, 235, 235) 0px 6px 0px;
   height: 55px;
@@ -206,7 +266,6 @@ progress::-webkit-progress-value {
 
 .control-button:hover {
   background-color: #f0f0f0;
-  color: var(--pomodoro);
   box-shadow: rgb(220, 220, 220) 0px 6px 0px;
 }
 
@@ -214,7 +273,6 @@ progress::-webkit-progress-value {
   transform: translateY(6px);
   box-shadow: none;
   outline: none;
-  background-color: #e0e0e0;
 }
 
 .control-button.reset-button {
@@ -226,30 +284,6 @@ progress::-webkit-progress-value {
    4. Task System
    ========================================================================== */
 
-/* Task Sidebar Container */
-.task-section {
-  position: fixed;
-  left: 20px;
-  top: 80px;
-  background-color: rgba(255, 255, 255, 0.95);
-  padding: 15px;
-  border-radius: 8px;
-  width: 320px;
-  max-height: 70vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 99;
-  transition: all 0.3s ease;
-}
-
-.task-section h2 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 18px;
-}
-
-/* Input Group for Adding Tasks */
 .task-input-group {
   display: flex;
   flex-direction: column;
@@ -262,85 +296,42 @@ progress::-webkit-progress-value {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: inherit;
-}
-
-.task-input-group input:focus {
-  outline: none;
-  border-color: var(--pomodoro);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .add-task-button {
   padding: 10px 16px;
-  background-color: var(--pomodoro);
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.3s;
 }
 
-.add-task-button:hover {
-  opacity: 0.9;
-}
-
-/* Task List */
 .tasks-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 40vh;
+  overflow-y: auto;
 }
 
-/* Individual Task Item */
 .task-item {
   background-color: #f9f9f9;
   padding: 10px;
   border-radius: 4px;
-  border-left: 4px solid var(--pomodoro);
+  border-left: 4px solid #555;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
+  gap: 10px;
 }
 
-.task-info {
-  flex: 1;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.task-item.selected {
+  background-color: #e3f2fd;
+  border-left-color: #2196f3;
 }
 
-.task-name {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
-  word-break: break-word;
-}
-
-.task-progress {
-  font-size: 13px;
-  color: #666;
-}
-
-.task-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.task-button {
-  padding: 4px 8px;
-  font-size: 12px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: opacity 0.3s;
-  font-weight: 600;
-}
-
-/* Task State Modifiers */
 .task-item.completed {
   opacity: 0.6;
 }
@@ -349,90 +340,103 @@ progress::-webkit-progress-value {
   text-decoration: line-through;
 }
 
-.task-item.selected {
-  background-color: #e3f2fd;
-  border-left-color: #2196f3;
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+.task-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 0;
 }
 
-.task-item.selected .task-name {
-  color: #1976d2;
-  font-weight: 700;
+.task-btn {
+  min-width: 52px;
+  height: 26px;
+  font-size: 11px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-/* Specific Task Control Buttons */
-.task-complete {
-  background-color: #4caf50;
+.task-btn.edit {
+  background: #e0e0e0;
+}
+
+.task-btn.save {
+  background: #4caf50;
   color: white;
 }
 
-.task-edit {
-  background-color: #2196f3;
+.task-btn.done {
+  background: #2196f3;
   color: white;
 }
 
-.task-delete {
-  background-color: #f44336;
+.task-btn.delete {
+  background: #f44336;
   color: white;
 }
 
-.task-complete:hover,
-.task-edit:hover,
-.task-delete:hover {
-  opacity: 0.8;
+/* Edit inputs */
+.task-edit-name,
+.task-edit-pomos {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 /* ==========================================================================
-   5. Modal Styles (Settings & Music)
+   5. Modal Styles (Settings & Music & Task)
    ========================================================================== */
 
 .modal {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .modal.open {
-  display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 .modal-content {
   background-color: #fefefe;
   margin: 10% auto;
   padding: 20px;
-  border: 1px solid #888;
   border-radius: 8px;
   width: 90%;
-  max-width: 500px;
+  max-width: 400px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+}
+
+.modal.open .modal-content {
+  transform: translateY(0);
 }
 
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
+  display: none;
 }
 
 .modal h2 {
-  margin-top: 0;
+  margin-bottom: 20px;
   color: #333;
 }
 
-/* Settings Form */
 .settings-form {
   display: flex;
   flex-direction: column;
@@ -451,71 +455,136 @@ progress::-webkit-progress-value {
   font-size: 14px;
 }
 
-.form-group input,
-.form-group select {
+.form-group input {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--pomodoro);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+/* THEME SECTION STYLES */
+.theme-section {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.theme-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.color-picker-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Custom Color Input Styling to look like Rounded Squares */
+.color-picker-item input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+}
+
+.color-picker-item input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker-item input[type="color"]::-webkit-color-swatch {
+  border: 2px solid #eee;
+  border-radius: 8px;
+  /* Rounded corners like the image */
 }
 
 .save-button {
-  padding: 10px 16px;
-  background-color: var(--pomodoro);
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #555;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background-color 0.3s;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-.save-button:hover {
-  opacity: 0.9;
-}
-
-/* Music Player */
+/* MUSIC PLAYER STYLES */
 .music-player {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
-.music-controls,
+/* Track selector */
+.music-player select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* Play / Stop buttons */
+.music-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.music-controls .music-button {
+  flex: 1;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  background-color: #333;
+  color: white;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.music-controls .music-button:first-child {
+  display: none;
+}
+
+.music-controls .music-button:hover {
+  background-color: #000;
+}
+
+.music-controls .music-button:active {
+  transform: scale(0.97);
+}
+
+/* Volume */
 .volume-control {
   display: flex;
-  gap: 10px;
-  align-items: center;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #555;
 }
 
-.music-button {
-  flex: 1;
-  padding: 8px;
-  background-color: var(--pomodoro);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: opacity 0.3s;
-}
-
-.music-button:hover {
-  opacity: 0.9;
-}
-
-.volume-control input {
-  flex: 1;
+.volume-control input[type="range"] {
+  width: 100%;
   cursor: pointer;
 }
 
@@ -527,190 +596,191 @@ progress::-webkit-progress-value {
   display: none !important;
 }
 
-/* Notification Animations */
-@keyframes slideDown {
-  from {
-    transform: translateX(-50%) translateY(-20px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
-
-  to {
-    transform: translateX(-50%) translateY(-20px);
-    opacity: 0;
-  }
-}
-
 /* ==========================================================================
-   7. Responsive Design (Media Queries)
+   7. Responsive Design
    ========================================================================== */
 
-/* Mobile Devices (max-width: 480px) */
 @media screen and (max-width: 480px) {
-  .header {
-    flex-direction: column;
-    gap: 5px;
-    padding: 8px;
-  }
-
-  .header-button {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-
-  progress {
-    height: 8px;
-  }
-
-  .timer {
-    padding: 10px;
-  }
-
   .clock {
     font-size: 5rem;
   }
 
-  .mode-button {
-    font-size: 12px;
-    height: 24px;
-  }
-
-  .main-button {
-    font-size: 16px;
-    height: 45px;
-    width: 150px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .main-button.active {
-    transform: translateY(5px);
-  }
-
-  .control-button {
-    height: 45px;
-    width: 80px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button:active {
-    transform: translateY(5px);
-  }
-
-  .control-button.reset-button {
-    font-size: 14px;
-  }
-
   .modal-content {
-    margin: 30% auto;
-    max-width: 280px;
-  }
-
-  /* Task Section - Mobile (Fixed to bottom) */
-  .task-section {
-    bottom: 10px;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    min-width: 90vw;
-    max-width: 350px;
-    padding: 10px;
-    top: auto;
-    max-height: 45vh;
-  }
-
-  .task-item {
-    padding: 8px;
+    width: 95%;
+    margin-top: 20%;
   }
 }
 
-/* Small Tablets (481px - 768px) */
-@media screen and (min-width: 481px) and (max-width: 768px) {
-  .clock {
-    font-size: 10rem;
-  }
+/* ==========================================================================
+   8. Video Background Feature
+   ========================================================================== */
 
-  .main-button {
-    font-size: 18px;
-    height: 48px;
-    width: 160px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button {
-    height: 48px;
-    width: 90px;
-    box-shadow: rgb(235, 235, 235) 0px 5px 0px;
-  }
-
-  .control-button:active {
-    transform: translateY(5px);
-  }
-
-  /* Task Section - Tablet (Fixed to bottom) */
-  .task-section {
-    bottom: 15px;
-    min-width: 320px;
-    max-width: 380px;
-    top: auto;
-  }
+.video-bg-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
 }
 
-/* Large Tablets & Small Desktops (769px - 1024px) */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-  .clock {
-    font-size: 12rem;
-  }
-
-  .main-button {
-    font-size: 20px;
-    height: 50px;
-    width: 180px;
-  }
-
-  .control-button {
-    height: 50px;
-    width: 95px;
-  }
-
-  .task-section {
-    top: 80px;
-    bottom: auto;
-  }
+.video-bg-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
-/* Desktop (1025px and above) */
-@media screen and (min-width: 1025px) {
-  .task-section {
-    top: 80px;
-    bottom: auto;
-  }
+.info-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
 }
 
-/* Ultra-wide screens (1600px and above) */
-@media screen and (min-width: 1600px) {
-  .clock {
-    font-size: 18rem;
-  }
+.info-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
 
-  .main-button {
-    font-size: 24px;
-    height: 60px;
-    width: 220px;
-  }
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  display: none;
+  filter: brightness(0.6); /* Darken video to ensure text readability */
+}
 
-  .control-button {
-    height: 60px;
-    width: 110px;
-  }
+/* Override body background when video is active */
+body.video-active {
+  background-color: transparent !important;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.video-option {
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  color: #333;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.video-option:hover {
+  background: #e0e0e0;
+  transform: scale(1.02);
+}
+
+.video-option.active {
+  background: #333;
+  color: #fff;
+}
+
+/* ==========================================================================
+   9. About Modal Styles
+   ========================================================================== */
+
+.about-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.about-section {
+  margin-bottom: 30px;
+}
+
+.about-section:last-child {
+  margin-bottom: 0;
+}
+
+.about-section h3 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.about-section h4 {
+  color: #555;
+  font-size: 16px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.about-section p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.about-section ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+  color: #666;
+}
+
+.about-section li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.about-section li strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Make about modal wider for better readability */
+#js-about-modal .modal-content {
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#js-about-modal .modal-content h2 {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+#js-about-modal .about-content {
+  flex: 1;
+  overflow-y: auto;
 }
