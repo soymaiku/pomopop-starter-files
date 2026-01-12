@@ -7,6 +7,7 @@ import {
   closeSettingsModal,
   saveSettings,
   fetchUserSettings,
+  stopSettingsListener,
 } from "./settings.js";
 import {
   loadTasks,
@@ -16,6 +17,7 @@ import {
   addTask,
   openTaskModal,
   closeTaskModal,
+  stopTasksListener,
 } from "./tasks.js";
 import {
   switchMode,
@@ -143,6 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
       fetchUserSettings(user.uid);
     } else {
       // User logged out: Clear memory and load guest data from localStorage
+      stopTasksListener();
+      stopSettingsListener();
       clearTasks();
       loadTasks();
       loadSettings(); // Restore guest settings

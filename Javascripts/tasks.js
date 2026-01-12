@@ -3,6 +3,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { db, auth } from "./firebase-config.js";
 import {
@@ -30,24 +31,37 @@ export function loadTasks() {
   }
 }
 
-export async function fetchUserTasks(userId) {
-  try {
-    const docRef = doc(db, "users", userId);
-    const docSnap = await getDoc(docRef);
+let unsubscribeTasks = null;
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      tasks.length = 0;
-      if (data.tasks) tasks.push(...data.tasks);
-      setNextTaskId(data.nextTaskId || 1);
-      setCurrentTaskId(data.currentTaskId ?? null);
-    } else {
-      // New user or no data found, clear state
-      clearTasks();
+export function fetchUserTasks(userId) {
+  if (unsubscribeTasks) unsubscribeTasks(); // Stop any previous listener
+
+  const docRef = doc(db, "users", userId);
+  unsubscribeTasks = onSnapshot(
+    docRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        tasks.length = 0;
+        if (data.tasks) tasks.push(...data.tasks);
+        setNextTaskId(data.nextTaskId || 1);
+        setCurrentTaskId(data.currentTaskId ?? null);
+      } else {
+        // New user or no data found, clear state
+        clearTasks();
+      }
+      renderTasks();
+    },
+    (error) => {
+      console.error("Error listening to user tasks:", error);
     }
-    renderTasks();
-  } catch (error) {
-    console.error("Error fetching user tasks:", error);
+  );
+}
+
+export function stopTasksListener() {
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
   }
 }
 

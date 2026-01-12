@@ -3,6 +3,7 @@ import {
   doc,
   getDoc,
   setDoc,
+  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { db, auth } from "./firebase-config.js";
 import { timer } from "./config.js";
@@ -48,49 +49,63 @@ function resetSettingsToDefaults() {
   switchMode(timer.mode);
 }
 
-export async function fetchUserSettings(userId) {
-  try {
-    const docRef = doc(db, "users", userId);
-    const docSnap = await getDoc(docRef);
+let unsubscribeSettings = null;
 
-    if (docSnap.exists()) {
-      const data = docSnap.data();
+export function fetchUserSettings(userId) {
+  if (unsubscribeSettings) unsubscribeSettings();
 
-      // Only update if settings exist in the cloud data
-      if (data.pomodoro) {
-        timer.pomodoro = Number(data.pomodoro) || 25;
-        timer.shortBreak = Number(data.shortBreak) || 5;
-        timer.longBreak = Number(data.longBreak) || 15;
-        timer.longBreakInterval = Number(data.longBreakInterval) || 4;
+  const docRef = doc(db, "users", userId);
+  unsubscribeSettings = onSnapshot(
+    docRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
 
-        document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
-        document.getElementById("js-short-break-duration").value =
-          timer.shortBreak;
-        document.getElementById("js-long-break-duration").value =
-          timer.longBreak;
-        document.getElementById("js-long-break-interval").value =
-          timer.longBreakInterval;
+        // Only update if settings exist in the cloud data
+        if (data.pomodoro) {
+          timer.pomodoro = Number(data.pomodoro) || 25;
+          timer.shortBreak = Number(data.shortBreak) || 5;
+          timer.longBreak = Number(data.longBreak) || 15;
+          timer.longBreakInterval = Number(data.longBreakInterval) || 4;
 
-        const colors = {
-          pomodoro: data.colors?.pomodoro || "#ba4949",
-          shortBreak: data.colors?.shortBreak || "#38858a",
-          longBreak: data.colors?.longBreak || "#397097",
-        };
+          document.getElementById("js-pomodoro-duration").value =
+            timer.pomodoro;
+          document.getElementById("js-short-break-duration").value =
+            timer.shortBreak;
+          document.getElementById("js-long-break-duration").value =
+            timer.longBreak;
+          document.getElementById("js-long-break-interval").value =
+            timer.longBreakInterval;
 
-        document.getElementById("js-color-pomodoro").value = colors.pomodoro;
-        document.getElementById("js-color-short").value = colors.shortBreak;
-        document.getElementById("js-color-long").value = colors.longBreak;
+          const colors = {
+            pomodoro: data.colors?.pomodoro || "#ba4949",
+            shortBreak: data.colors?.shortBreak || "#38858a",
+            longBreak: data.colors?.longBreak || "#397097",
+          };
 
-        applyTheme(colors);
-        switchMode(timer.mode); // Refresh UI with new settings
-        return;
+          document.getElementById("js-color-pomodoro").value = colors.pomodoro;
+          document.getElementById("js-color-short").value = colors.shortBreak;
+          document.getElementById("js-color-long").value = colors.longBreak;
+
+          applyTheme(colors);
+          switchMode(timer.mode); // Refresh UI with new settings
+          return;
+        }
       }
-    }
 
-    // If no settings found in cloud, reset to defaults (don't use guest settings)
-    resetSettingsToDefaults();
-  } catch (error) {
-    console.error("Error fetching user settings:", error);
+      // If no settings found in cloud, reset to defaults (don't use guest settings)
+      resetSettingsToDefaults();
+    },
+    (error) => {
+      console.error("Error listening to user settings:", error);
+    }
+  );
+}
+
+export function stopSettingsListener() {
+  if (unsubscribeSettings) {
+    unsubscribeSettings();
+    unsubscribeSettings = null;
   }
 }
 
