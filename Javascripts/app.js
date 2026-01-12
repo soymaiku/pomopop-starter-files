@@ -1,12 +1,17 @@
 // app.js
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { auth } from "./firebase-config.js";
 import {
   loadSettings,
   openSettingsModal,
   closeSettingsModal,
   saveSettings,
+  fetchUserSettings,
 } from "./settings.js";
 import {
   loadTasks,
+  fetchUserTasks,
+  clearTasks,
   updateTaskNameDisplay,
   addTask,
   openTaskModal,
@@ -117,7 +122,6 @@ async function handleLogin(type) {
 document.addEventListener("DOMContentLoaded", () => {
   // Load settings and tasks
   loadSettings();
-  loadTasks();
   updateTaskNameDisplay();
 
   checkAuth(); // Check if user is logged in
@@ -130,6 +134,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   updateModalState(); // Initial check
+
+  // --- AUTH STATE LISTENER ---
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      clearTasks(); // Clear guest tasks from view immediately
+      fetchUserTasks(user.uid);
+      fetchUserSettings(user.uid);
+    } else {
+      // User logged out: Clear memory and load guest data from localStorage
+      clearTasks();
+      loadTasks();
+      loadSettings(); // Restore guest settings
+    }
+  });
 
   // --- BURGER MENU HANDLERS ---
   menuToggleBtn.addEventListener("click", (e) => {

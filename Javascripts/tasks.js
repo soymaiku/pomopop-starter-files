@@ -1,5 +1,11 @@
 // tasks.js
 import {
+  doc,
+  setDoc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db, auth } from "./firebase-config.js";
+import {
   tasks,
   nextTaskId,
   currentTaskId,
@@ -23,11 +29,51 @@ export function loadTasks() {
   }
 }
 
+export async function fetchUserTasks(userId) {
+  try {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      tasks.length = 0;
+      if (data.tasks) tasks.push(...data.tasks);
+      setNextTaskId(data.nextTaskId || 1);
+      setCurrentTaskId(data.currentTaskId ?? null);
+    } else {
+      // New user or no data found, clear state
+      clearTasks();
+    }
+    renderTasks();
+  } catch (error) {
+    console.error("Error fetching user tasks:", error);
+  }
+}
+
+export async function saveUserTasks(userId, data) {
+  try {
+    await setDoc(doc(db, "users", userId), data, { merge: true });
+  } catch (error) {
+    console.error("Error saving user tasks:", error);
+  }
+}
+
+export function clearTasks() {
+  tasks.length = 0;
+  setNextTaskId(1);
+  setCurrentTaskId(null);
+  renderTasks();
+}
+
 export function saveTasks() {
-  localStorage.setItem(
-    "pomodoroTasks",
-    JSON.stringify({ tasks, nextTaskId, currentTaskId })
-  );
+  if (auth.currentUser) {
+    saveUserTasks(auth.currentUser.uid, { tasks, nextTaskId, currentTaskId });
+  } else {
+    localStorage.setItem(
+      "pomodoroTasks",
+      JSON.stringify({ tasks, nextTaskId, currentTaskId })
+    );
+  }
 }
 
 /* ==================== TASK ACTIONS ==================== */

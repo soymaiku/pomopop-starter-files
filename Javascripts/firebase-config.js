@@ -5,6 +5,7 @@ import {
   GoogleAuthProvider,
   GithubAuthProvider,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 // Get these values from the Firebase Console: https://console.firebase.google.com/
 const firebaseConfig = {
@@ -20,7 +21,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
-export { auth, googleProvider, githubProvider, analytics };
+export { auth, googleProvider, githubProvider, analytics, db };
