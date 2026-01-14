@@ -1,6 +1,6 @@
 // app.js
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { auth } from "./firebase-config-loader.js";
+import { auth, waitForFirebase } from "./firebase-config-loader.js";
 import {
   loadSettings,
   openSettingsModal,
@@ -121,7 +121,9 @@ async function handleLogin(type) {
 }
 
 // ==================== EVENT LISTENERS ====================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // Wait for Firebase to initialize before proceeding
+  await waitForFirebase();
   // Load settings and tasks
   loadSettings();
   updateTaskNameDisplay();

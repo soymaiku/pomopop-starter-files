@@ -12,6 +12,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/12.7.0/firebase
 
 // Initialize Firebase with secure config from Netlify function
 let app, analytics, auth, db, googleProvider, githubProvider;
+let firebaseInitialized = false;
 
 async function initializeFirebase() {
   try {
@@ -32,6 +33,7 @@ async function initializeFirebase() {
     googleProvider = new GoogleAuthProvider();
     githubProvider = new GithubAuthProvider();
 
+    firebaseInitialized = true;
     console.log("✅ Firebase initialized with secure config from server");
   } catch (error) {
     console.error("❌ Failed to load Firebase config:", error.message);
@@ -41,5 +43,12 @@ async function initializeFirebase() {
 
 // Initialize Firebase immediately
 initializeFirebase();
+
+// Wait helper for modules that need to use Firebase
+export async function waitForFirebase() {
+  while (!firebaseInitialized) {
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+}
 
 export { auth, googleProvider, githubProvider, analytics, db };
