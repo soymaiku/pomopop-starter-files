@@ -2,7 +2,11 @@ import {
   signInWithPopup,
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { auth, googleProvider, githubProvider } from "./firebase-config.js";
+import {
+  auth,
+  googleProvider,
+  githubProvider,
+} from "./firebase-config-loader.js";
 
 const initialStats = {
   totalPomodoros: 0,

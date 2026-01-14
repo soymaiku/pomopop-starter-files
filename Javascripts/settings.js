@@ -5,7 +5,7 @@ import {
   setDoc,
   onSnapshot,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db, auth } from "./firebase-config.js";
+import { db, auth } from "./firebase-config-loader.js";
 import { timer } from "./config.js";
 import { switchMode } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
