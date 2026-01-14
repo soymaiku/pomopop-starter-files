@@ -58,6 +58,13 @@ let unsubscribeSettings = null;
 export function fetchUserSettings(userId) {
   if (unsubscribeSettings) unsubscribeSettings();
 
+  // First, clear any guest settings from memory to prevent sync
+  // Reset timer to defaults before loading user settings
+  timer.pomodoro = 25;
+  timer.shortBreak = 5;
+  timer.longBreak = 15;
+  timer.longBreakInterval = 4;
+
   const docRef = doc(db, "users", userId);
   unsubscribeSettings = onSnapshot(
     docRef,
@@ -138,18 +145,20 @@ export function loadSettings() {
     return;
   }
 
+  // For guest mode, fully clear and reload from guest settings storage
   const saved = localStorage.getItem(guestSettingsKey);
 
   if (saved) {
     try {
       const settings = JSON.parse(saved);
 
-      // Load Durations
+      // Load Durations - explicitly set timer object
       timer.pomodoro = Number(settings.pomodoro) || 25;
       timer.shortBreak = Number(settings.shortBreak) || 5;
       timer.longBreak = Number(settings.longBreak) || 15;
       timer.longBreakInterval = Number(settings.longBreakInterval) || 4;
 
+      // Update UI inputs
       document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
       document.getElementById("js-short-break-duration").value =
         timer.shortBreak;
@@ -171,9 +180,22 @@ export function loadSettings() {
       applyTheme(colors);
     } catch (e) {
       console.error("Error loading guest settings:", e);
+      // If there's an error, reset to defaults
+      resetSettingsToDefaults();
+      return;
     }
   } else {
-    // Apply defaults if no storage found
+    // No guest settings found - apply defaults and keep defaults in memory
+    timer.pomodoro = 25;
+    timer.shortBreak = 5;
+    timer.longBreak = 15;
+    timer.longBreakInterval = 4;
+
+    document.getElementById("js-pomodoro-duration").value = 25;
+    document.getElementById("js-short-break-duration").value = 5;
+    document.getElementById("js-long-break-duration").value = 15;
+    document.getElementById("js-long-break-interval").value = 4;
+
     applyTheme({
       pomodoro: "#ba4949",
       shortBreak: "#38858a",
