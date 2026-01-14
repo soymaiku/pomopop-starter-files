@@ -59,11 +59,27 @@ export function fetchUserSettings(userId) {
   if (unsubscribeSettings) unsubscribeSettings();
 
   // First, clear any guest settings from memory to prevent sync
-  // Reset timer to defaults before loading user settings
+  // Reset timer and colors to defaults before loading user settings
   timer.pomodoro = 25;
   timer.shortBreak = 5;
   timer.longBreak = 15;
   timer.longBreakInterval = 4;
+
+  // Reset UI inputs to defaults before loading account settings
+  document.getElementById("js-pomodoro-duration").value = 25;
+  document.getElementById("js-short-break-duration").value = 5;
+  document.getElementById("js-long-break-duration").value = 15;
+  document.getElementById("js-long-break-interval").value = 4;
+  document.getElementById("js-color-pomodoro").value = "#ba4949";
+  document.getElementById("js-color-short").value = "#38858a";
+  document.getElementById("js-color-long").value = "#397097";
+
+  // Apply default theme
+  applyTheme({
+    pomodoro: "#ba4949",
+    shortBreak: "#38858a",
+    longBreak: "#397097",
+  });
 
   const docRef = doc(db, "users", userId);
   unsubscribeSettings = onSnapshot(
@@ -118,6 +134,29 @@ export function stopSettingsListener() {
     unsubscribeSettings();
     unsubscribeSettings = null;
   }
+
+  // Completely reset UI and memory to prevent account data persisting
+  // This will be followed by loadSettings() to restore guest data
+  timer.pomodoro = 25;
+  timer.shortBreak = 5;
+  timer.longBreak = 15;
+  timer.longBreakInterval = 4;
+
+  // Reset all UI inputs to defaults temporarily
+  document.getElementById("js-pomodoro-duration").value = 25;
+  document.getElementById("js-short-break-duration").value = 5;
+  document.getElementById("js-long-break-duration").value = 15;
+  document.getElementById("js-long-break-interval").value = 4;
+  document.getElementById("js-color-pomodoro").value = "#ba4949";
+  document.getElementById("js-color-short").value = "#38858a";
+  document.getElementById("js-color-long").value = "#397097";
+
+  // Reset theme to defaults
+  applyTheme({
+    pomodoro: "#ba4949",
+    shortBreak: "#38858a",
+    longBreak: "#397097",
+  });
 }
 
 export async function saveUserSettings(userId, data) {
