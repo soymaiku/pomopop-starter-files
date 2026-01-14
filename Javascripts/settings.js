@@ -10,6 +10,10 @@ import { timer } from "./config.js";
 import { switchMode } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
 
+// Clear old shared storage key to prevent sync conflicts between Google and Guest
+// This ensures complete separation between logged-in and guest modes
+localStorage.removeItem("pomodoroSettings");
+
 /**
  * Applies custom hex colors to CSS variables
  */
@@ -118,7 +122,23 @@ export async function saveUserSettings(userId, data) {
 }
 
 export function loadSettings() {
-  const saved = localStorage.getItem("pomodoroSettings");
+  // Only load from guest localStorage if actually in guest mode
+  const user = getCurrentUser();
+  const guestSettingsKey = "pomopop-guest-settings";
+
+  // If user is logged in (not guest), don't load from localStorage
+  if (user && !user.isGuest) {
+    // Apply defaults and let fetchUserSettings load from Firestore
+    applyTheme({
+      pomodoro: "#ba4949",
+      shortBreak: "#38858a",
+      longBreak: "#397097",
+    });
+    switchMode(timer.mode);
+    return;
+  }
+
+  const saved = localStorage.getItem(guestSettingsKey);
 
   if (saved) {
     try {
@@ -150,7 +170,7 @@ export function loadSettings() {
 
       applyTheme(colors);
     } catch (e) {
-      console.error("Error loading settings:", e);
+      console.error("Error loading guest settings:", e);
     }
   } else {
     // Apply defaults if no storage found
@@ -208,14 +228,20 @@ export function saveSettings() {
     colors,
   };
 
-  // Check Auth: Save to Cloud if logged in, otherwise LocalStorage
+  // Check Auth: Save to Cloud if logged in (not guest), otherwise save to guest localStorage
   const user = auth.currentUser;
   const localUser = getCurrentUser();
 
-  if (user || (localUser && !localUser.isGuest)) {
-    saveUserSettings(user ? user.uid : localUser.uid, settingsData);
-  } else {
-    localStorage.setItem("pomodoroSettings", JSON.stringify(settingsData));
+  // If user is logged in via Firebase (Google, etc.), save to Firestore
+  if (user) {
+    saveUserSettings(user.uid, settingsData);
+  }
+  // If user is guest, save to guest-specific localStorage (don't use auth.currentUser)
+  else if (localUser && localUser.isGuest) {
+    localStorage.setItem(
+      "pomopop-guest-settings",
+      JSON.stringify(settingsData)
+    );
   }
 
   applyTheme(colors);
