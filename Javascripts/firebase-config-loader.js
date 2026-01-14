@@ -47,7 +47,7 @@ initializeFirebase();
 // Wait helper for modules that need to use Firebase
 export async function waitForFirebase() {
   while (!firebaseInitialized) {
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10));
   }
 }
 
