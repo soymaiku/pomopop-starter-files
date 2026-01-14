@@ -1,5 +1,12 @@
 // tasks.js
 import {
+  doc,
+  setDoc,
+  getDoc,
+  onSnapshot,
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db, auth } from "./firebase-config-loader.js";
+import {
   tasks,
   nextTaskId,
   currentTaskId,
@@ -10,6 +17,7 @@ import {
 } from "./config.js";
 import { switchMode, stopTimer } from "./timer.js";
 import { escapeHtml, showNotification } from "./utils.js";
+import { getCurrentUser } from "./stats.js";
 
 /* ==================== LOAD & SAVE ==================== */
 
@@ -25,11 +33,71 @@ export function loadTasks() {
   }
 }
 
-export function saveTasks() {
-  localStorage.setItem(
-    "pomodoroTasks",
-    JSON.stringify({ tasks, nextTaskId, currentTaskId })
+let unsubscribeTasks = null;
+
+export function fetchUserTasks(userId) {
+  if (unsubscribeTasks) unsubscribeTasks(); // Stop any previous listener
+
+  const docRef = doc(db, "users", userId);
+  unsubscribeTasks = onSnapshot(
+    docRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        tasks.length = 0;
+        if (data.tasks) tasks.push(...data.tasks);
+        setNextTaskId(data.nextTaskId || 1);
+        setCurrentTaskId(data.currentTaskId ?? null);
+      } else {
+        // New user or no data found, clear state
+        clearTasks();
+      }
+      renderTasks();
+    },
+    (error) => {
+      console.error("Error listening to user tasks:", error);
+    }
   );
+}
+
+export function stopTasksListener() {
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
+  }
+}
+
+export async function saveUserTasks(userId, data) {
+  try {
+    await setDoc(doc(db, "users", userId), data, { merge: true });
+  } catch (error) {
+    console.error("Error saving user tasks:", error);
+  }
+}
+
+export function clearTasks() {
+  tasks.length = 0;
+  setNextTaskId(1);
+  setCurrentTaskId(null);
+  renderTasks();
+}
+
+export function saveTasks() {
+  const user = auth.currentUser;
+  const localUser = getCurrentUser();
+
+  if (user || (localUser && !localUser.isGuest)) {
+    saveUserTasks(user ? user.uid : localUser.uid, {
+      tasks,
+      nextTaskId,
+      currentTaskId,
+    });
+  } else {
+    localStorage.setItem(
+      "pomodoroTasks",
+      JSON.stringify({ tasks, nextTaskId, currentTaskId })
+    );
+  }
 }
 
 /* ==================== TASK ACTIONS ==================== */

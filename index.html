@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Pomopop Pomodoro Clock Demo</title>
-    <link rel="stylesheet" href="/css/styles.css" />
+<<<<<<< HEAD
+    <title>Freshman Pomodoro Clock Demo</title>
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
   <body>
@@ -20,6 +21,11 @@
         </button>
 
         <div class="menu-dropdown" id="js-menu-dropdown">
+          <!-- User Profile Section -->
+          <div id="js-user-profile" class="menu-profile hidden">
+            <img id="js-profile-pic" src="" alt="Profile" class="profile-pic" />
+            <span id="js-profile-name" class="profile-name">User</span>
+          </div>
           <button class="dropdown-button" id="js-settings-btn" title="Settings">
             ⚙️ Settings
           </button>
@@ -36,6 +42,23 @@
             title="Tasks"
           >
             📋 Tasks
+          </button>
+          <button class="dropdown-button" id="js-stats-btn" title="Statistics">
+            📊 Stats
+          </button>
+          <button
+            class="dropdown-button hidden"
+            id="js-login-btn"
+            title="Login"
+          >
+            🔑 Log In
+          </button>
+          <button
+            class="dropdown-button hidden"
+            id="js-logout-btn"
+            title="Logout"
+          >
+            🚪 Logout
           </button>
         </div>
       </div>
@@ -220,9 +243,9 @@
     </div>
 
     <div class="hidden">
-      <audio src="/Audio/backtowork.mp3" data-sound="pomodoro"></audio>
-      <audio src="/Audio/break.mp3" data-sound="shortBreak"></audio>
-      <audio src="/Audio/break.mp3" data-sound="longBreak"></audio>
+      <audio src="./Audio/backtowork.mp3" data-sound="pomodoro"></audio>
+      <audio src="./Audio/break.mp3" data-sound="shortBreak"></audio>
+      <audio src="./Audio/break.mp3" data-sound="longBreak"></audio>
       <audio id="js-music-player" loop></audio>
     </div>
 
@@ -344,6 +367,50 @@
       </div>
     </div>
 
-    <script src="/Javascripts/app.js" type="module"></script>
+    <!-- Stats Modal -->
+    <div id="js-stats-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-stats">&times;</span>
+        <h2>Your Progress</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3 id="js-stat-sessions">0</h3>
+            <p>Total</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="js-stat-today">0</h3>
+            <p>Today</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="js-stat-week">0</h3>
+            <p>Week</p>
+          </div>
+        </div>
+        <!-- Message for Guests -->
+        <div id="js-guest-message" class="guest-message hidden">
+          <p>🔒 Stats are only available for logged-in users.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal (Blocking) -->
+    <div id="js-login-modal" class="modal login-modal">
+      <div class="modal-content login-content">
+        <h2>Welcome to Pomopop</h2>
+        <p>Focus better, track your progress.</p>
+
+        <button id="js-google-login-btn" class="login-btn google-btn">
+          <span>G</span> Continue with Google
+        </button>
+
+        <div class="divider">OR</div>
+
+        <button id="js-guest-login-btn" class="login-btn guest-btn">
+          Continue as Guest
+        </button>
+      </div>
+    </div>
+
+    <script src="./Javascripts/app.js" type="module"></script>
   </body>
 </html>

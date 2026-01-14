@@ -1,0 +1,8 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[env]
+  # For local development with Netlify CLI
+  [env.development]
+    environment = { NODE_ENV = "development" }
