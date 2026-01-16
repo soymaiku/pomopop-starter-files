@@ -84,6 +84,8 @@ const loginBtn = document.getElementById("js-login-btn");
 const userProfile = document.getElementById("js-user-profile");
 const profilePic = document.getElementById("js-profile-pic");
 const profileName = document.getElementById("js-profile-name");
+const accountIconBtn = document.getElementById("js-account-icon-btn");
+const accountAvatarDisplay = document.getElementById("js-account-avatar");
 
 function checkAuth() {
   const user = getCurrentUser();
@@ -102,12 +104,15 @@ function updateProfileUI(user) {
     userProfile.classList.add("hidden");
     logoutBtn.classList.add("hidden");
     loginBtn.classList.remove("hidden");
+    accountIconBtn.style.display = "none";
   } else {
     userProfile.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
     loginBtn.classList.add("hidden");
+    accountIconBtn.style.display = "flex";
     profilePic.src = user.photoURL;
     profileName.textContent = user.displayName;
+    accountAvatarDisplay.src = user.photoURL;
   }
 }
 
@@ -248,6 +253,93 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (e.key === "Enter") addTask();
     });
 
+  // ==================== ACCOUNT MODAL LOGIC ====================
+  const accountModal = document.getElementById("js-account-modal");
+  const closeAccountBtn = document.getElementById("js-close-account");
+  const saveAccountBtn = document.getElementById("js-save-account");
+  const cancelAccountBtn = document.getElementById("js-cancel-account");
+  const accountEditPic = document.getElementById("js-account-edit-pic");
+  const picUploadInput = document.getElementById("js-pic-upload");
+  const accountEditName = document.getElementById("js-account-edit-name");
+
+  function openAccountModal() {
+    const user = getCurrentUser();
+    if (user && !user.isGuest) {
+      // Populate modal with current user data
+      accountEditPic.src = user.photoURL || "";
+      accountEditName.value = user.displayName || "";
+      accountModal.classList.add("open");
+    }
+  }
+
+  function closeAccountModal() {
+    accountModal.classList.remove("open");
+  }
+
+  // Handle profile picture upload
+  picUploadInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        accountEditPic.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Save account changes
+  saveAccountBtn.addEventListener("click", async () => {
+    const user = getCurrentUser();
+    if (user && !user.isGuest) {
+      const newName = accountEditName.value.trim();
+
+      if (!newName) {
+        alert("Please enter a name");
+        return;
+      }
+
+      try {
+        // Update user profile in Firebase
+        const { updateProfile } = await import(
+          "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js"
+        );
+
+        const updates = {
+          displayName: newName,
+        };
+
+        // If a new photo was selected, use it
+        if (accountEditPic.src && accountEditPic.src.startsWith("data:")) {
+          updates.photoURL = accountEditPic.src;
+        }
+
+        await updateProfile(auth.currentUser, updates);
+
+        // Update UI
+        updateProfileUI(user);
+        profilePic.src = updates.photoURL || user.photoURL;
+        profileName.textContent = newName;
+        accountAvatarDisplay.src = updates.photoURL || user.photoURL;
+
+        closeAccountModal();
+        alert("Profile updated successfully!");
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Failed to update profile. Please try again.");
+      }
+    }
+  });
+
+  // Account Icon and Modal Event Listeners
+  accountIconBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openAccountModal();
+  });
+
+  closeAccountBtn.addEventListener("click", closeAccountModal);
+  cancelAccountBtn.addEventListener("click", closeAccountModal);
+
   // ==================== ABOUT MODAL LOGIC ====================
   const infoBtn = document.getElementById("js-info-btn");
   const aboutModal = document.getElementById("js-about-modal");
@@ -323,13 +415,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const taskModal = document.getElementById("js-task-modal");
     const videoModal = document.getElementById("js-video-modal");
     const statsModal = document.getElementById("js-stats-modal");
+    const accountModalElem = document.getElementById("js-account-modal");
     // Note: Login modal is NOT closed by outside click
 
     // Close Burger Menu if click is outside of the menu area
     if (
       !menuDropdown.contains(e.target) &&
       e.target !== menuToggleBtn &&
-      !menuToggleBtn.contains(e.target)
+      !menuToggleBtn.contains(e.target) &&
+      e.target !== accountIconBtn &&
+      !accountIconBtn.contains(e.target)
     ) {
       closeBurgerMenu();
     }
@@ -352,6 +447,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (e.target === statsModal) {
       closeStatsModal();
+    }
+    if (e.target === accountModalElem) {
+      closeAccountModal();
     }
   });
 

@@ -141,10 +141,8 @@ export function updateIntervalDisplay() {
     } else {
       intervalDisplay.textContent = "";
     }
-  } else if (timer.mode === "shortBreak") {
-    intervalDisplay.textContent = "Short Break";
   } else {
-    intervalDisplay.textContent = "Long Break";
+    intervalDisplay.textContent = "";
   }
 }
 

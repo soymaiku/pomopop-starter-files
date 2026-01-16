@@ -63,6 +63,43 @@ button:active {
   right: 0;
   z-index: 200;
   padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.account-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  overflow: hidden;
+}
+
+.account-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+.account-icon-btn:hover .account-avatar {
+  border-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 .menu-toggle-btn {
@@ -948,6 +985,137 @@ body.video-active {
   font-size: 14px;
   border: 1px solid #ffeeba;
 }
+
+/* ==========================================================================
+   Account Modal Styles
+   ========================================================================== */
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.account-pic-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+.account-edit-pic {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.account-pic-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.pic-upload-label {
+  padding: 8px 16px;
+  background-color: #38858a;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.pic-upload-label:hover {
+  background-color: #2d6a6e;
+}
+
+.account-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.account-form .form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.account-form .form-group input {
+  padding: 10px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-form .form-group input:focus {
+  outline: none;
+  border-color: #38858a;
+  box-shadow: 0 0 0 3px rgba(56, 133, 138, 0.1);
+}
+
+.account-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.save-button {
+  flex: 1;
+  padding: 12px;
+  background-color: #38858a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.save-button:hover {
+  background-color: #2d6a6e;
+}
+
+.save-button:active {
+  transform: scale(0.98);
+}
+
+.cancel-button {
+  flex: 1;
+  padding: 12px;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+}
+
+.cancel-button:active {
+  transform: scale(0.98);
+}
+
+.hidden {
+  display: none !important;
+}
+
 /* ==========================================================================
    12. Leaderboard Styles
    ========================================================================== */

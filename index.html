@@ -11,6 +11,18 @@
   <body>
     <header class="header">
       <div class="burger-menu" id="js-burger-menu">
+        <button
+          class="account-icon-btn"
+          id="js-account-icon-btn"
+          title="Account"
+        >
+          <img
+            id="js-account-avatar"
+            src=""
+            alt="Account"
+            class="account-avatar"
+          />
+        </button>
         <button class="menu-toggle-btn" id="js-menu-toggle-btn">
           <div class="burger-icon">
             <span class="bar"></span>
@@ -403,6 +415,51 @@
         <button id="js-guest-login-btn" class="login-btn guest-btn">
           Continue as Guest
         </button>
+      </div>
+    </div>
+
+    <!-- Account Edit Modal -->
+    <div id="js-account-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="js-close-account">&times;</span>
+        <h2>Edit Profile</h2>
+        <div class="account-form">
+          <div class="account-pic-section">
+            <img
+              id="js-account-edit-pic"
+              src=""
+              alt="Profile"
+              class="account-edit-pic"
+            />
+            <div class="account-pic-actions">
+              <label for="js-pic-upload" class="pic-upload-label"
+                >Change Photo</label
+              >
+              <input
+                type="file"
+                id="js-pic-upload"
+                accept="image/*"
+                class="hidden"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="js-account-edit-name">Display Name:</label>
+            <input
+              type="text"
+              id="js-account-edit-name"
+              placeholder="Your name"
+            />
+          </div>
+
+          <div class="account-form-actions">
+            <button class="save-button" id="js-save-account">
+              Save Changes
+            </button>
+            <button class="cancel-button" id="js-cancel-account">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
 
