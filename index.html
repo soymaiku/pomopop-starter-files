@@ -164,11 +164,11 @@
         </div>
 
         <div
-          class="text-[25vw] md:text-[12rem] lg:text-[15rem] leading-none font-bold text-white drop-shadow-2xl mb-6 md:mb-12 tracking-tighter select-none transition-all"
+          class="text-[25vw] md:text-[12rem] lg:text-[15rem] leading-none font-bold text-white drop-shadow-2xl mb-6 md:mb-12 tracking-widest select-none transition-all"
           id="js-clock"
         >
           <span id="js-minutes" class="tabular-nums">25</span
-          ><span class="opacity-50 relative -top-4 md:-top-8">:</span
+          ><span class="opacity-50 relative -top-4 md:-top-3">:</span
           ><span id="js-seconds" class="tabular-nums">00</span>
         </div>
 
@@ -211,7 +211,7 @@
       id="js-settings-modal"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
       >
         <span
           class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
@@ -357,7 +357,7 @@
         >
           Background Music
         </h2>
-        <div class="flex flex-col gap-6 overflow-y-auto custom-scrollbar pr-1">
+        <div class="flex flex-col gap-6 pr-1 flex-1">
           <div class="flex flex-col gap-2">
             <label for="js-music-select" class="text-gray-600 font-bold text-lg"
               >Choose a track:</label

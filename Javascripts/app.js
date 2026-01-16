@@ -59,6 +59,11 @@ function applyCustomFont() {
       font-family: 'Jersey 25', sans-serif !important;
     }
 
+    /* Fix chopped focus ring in settings inputs */
+    #js-settings-modal input {
+      margin: 4px;
+    }
+
     /* Fix font size for large screens (3440x1440) */
     @media (min-width: 2600px) {
       html {
