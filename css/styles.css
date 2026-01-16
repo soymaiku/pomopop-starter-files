@@ -877,42 +877,49 @@ body.video-active {
 }
 
 .about-section h3 {
-  color: #333;
-  font-size: 20px;
+  color: #000;
+  font-size: 30px;
   margin-bottom: 12px;
   font-weight: 700;
 }
 
 .about-section h4 {
-  color: #555;
-  font-size: 16px;
+  color: #222;
+  font-size: 30px;
   margin-top: 15px;
   margin-bottom: 10px;
   font-weight: 600;
 }
 
 .about-section p {
-  color: #666;
+  color: #333;
   line-height: 1.6;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .about-section ul {
   margin-left: 20px;
   margin-bottom: 15px;
-  color: #666;
+  color: #333;
 }
 
 .about-section li {
   margin-bottom: 8px;
   line-height: 1.6;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .about-section li strong {
-  color: #333;
+  color: #000;
   font-weight: 600;
+}
+
+/* Center the About modal */
+#js-about-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Make about modal wider for better readability */
@@ -922,6 +929,7 @@ body.video-active {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  margin: 0;
 }
 
 #js-about-modal .modal-content h2 {

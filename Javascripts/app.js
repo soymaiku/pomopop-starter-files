@@ -58,6 +58,13 @@ function applyCustomFont() {
     body, button, input, textarea, select {
       font-family: 'Jersey 25', sans-serif !important;
     }
+
+    /* Fix font size for large screens (3440x1440) */
+    @media (min-width: 2600px) {
+      html {
+        font-size: 24px;
+      }
+    }
   `;
   document.head.appendChild(style);
 }
