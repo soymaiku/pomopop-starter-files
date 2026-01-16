@@ -1,20 +1,22 @@
 import {
   signInWithPopup,
   signOut,
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { auth, googleProvider } from "./firebase-config-loader.js";
 import {
-  auth,
-  googleProvider,
-  githubProvider,
-} from "./firebase-config-loader.js";
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  serverTimestamp,
+  increment,
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase-config-loader.js";
+import { initializeLeaderboard, destroyLeaderboard } from "./leaderboard.js";
 
-const initialStats = {
-  totalPomodoros: 0,
-  totalWorkTime: 0, // in minutes
-  longestStreak: 0,
-  currentStreak: 0,
-  lastPomodoroDate: null,
-};
+// Track whether we've already incremented today/week's pomodoro counter this session
+let lastPomodoroIncrement = null;
 
 // ==================== AUTH LOGIC ====================
 
@@ -28,6 +30,14 @@ export async function loginWithGoogle() {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
 
+    // IMPORTANT: Google-only authentication
+    // Only use displayName and photoURL from Google
+    if (!user.displayName || !user.photoURL) {
+      throw new Error(
+        "Google account must have a display name and profile photo"
+      );
+    }
+
     const appUser = {
       uid: user.uid,
       displayName: user.displayName,
@@ -35,30 +45,14 @@ export async function loginWithGoogle() {
       isGuest: false,
     };
     localStorage.setItem("pomopop-user", JSON.stringify(appUser));
+
+    // Initialize user stats in Firestore if they don't exist
+    await initializeUserStats(appUser);
+
     return appUser;
   } catch (error) {
-    console.error("Google login failed:", error);
+    console.error("❌ Google login failed:", error);
     alert("Google Login Error: " + error.message);
-    return null;
-  }
-}
-
-export async function loginWithGithub() {
-  try {
-    const result = await signInWithPopup(auth, githubProvider);
-    const user = result.user;
-
-    const appUser = {
-      uid: user.uid,
-      displayName: user.displayName || "GitHub User",
-      photoURL: user.photoURL,
-      isGuest: false,
-    };
-    localStorage.setItem("pomopop-user", JSON.stringify(appUser));
-    return appUser;
-  } catch (error) {
-    console.error("GitHub login failed:", error);
-    alert("GitHub Login Error: " + error.message);
     return null;
   }
 }
@@ -75,113 +69,248 @@ export function loginAsGuest() {
 }
 
 export async function logout() {
-  localStorage.removeItem("pomopop-user"); // Clear local state immediately for UI
-  await signOut(auth); // Sign out from Firebase
+  localStorage.removeItem("pomopop-user");
+  destroyLeaderboard(); // Stop real-time listener
+  await signOut(auth);
 }
 
-// ==================== STATS LOGIC ====================
+// ==================== FIRESTORE STATS LOGIC ====================
 
-function getStats(uid) {
-  const storedStats = localStorage.getItem(`pomopop-stats-${uid}`);
-  return storedStats ? JSON.parse(storedStats) : { ...initialStats };
+/**
+ * Firestore schema for user stats:
+ * {
+ *   displayName: string,       // Google account name
+ *   photoURL: string,          // Google profile photo
+ *   todayPomodoros: number,    // Resets daily
+ *   weeklyPomodoros: number,   // Resets weekly (7 days)
+ *   totalPomodoros: number,    // Never resets
+ *   todayDate: string,         // ISO date string for tracking daily reset
+ *   weekStartDate: string,     // ISO date string for tracking weekly reset
+ *   lastUpdated: timestamp,    // Server timestamp
+ * }
+ */
+
+/**
+ * Initialize user stats in Firestore (called on first login)
+ */
+async function initializeUserStats(appUser) {
+  try {
+    const userRef = doc(db, "users", appUser.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      // New user - create their stats document
+      const today = new Date().toISOString().split("T")[0];
+      const weekStartDate = getWeekStartDate().toISOString().split("T")[0];
+
+      await setDoc(userRef, {
+        displayName: appUser.displayName,
+        photoURL: appUser.photoURL,
+        todayPomodoros: 0,
+        weeklyPomodoros: 0,
+        totalPomodoros: 0,
+        todayDate: today,
+        weekStartDate: weekStartDate,
+        lastUpdated: serverTimestamp(),
+      });
+
+      console.log("✅ Created new user stats for:", appUser.uid);
+    } else {
+      // Existing user - update profile info in case it changed
+      const userData = userSnap.data();
+
+      // Always update displayName and photoURL from latest Google auth
+      await updateDoc(userRef, {
+        displayName: appUser.displayName,
+        photoURL: appUser.photoURL,
+        lastUpdated: serverTimestamp(),
+      });
+
+      // Check if daily/weekly resets are needed
+      await checkAndResetStats(appUser.uid, userData);
+    }
+  } catch (error) {
+    console.error("❌ Error initializing user stats:", error);
+  }
 }
 
-function saveStats(uid, stats) {
-  localStorage.setItem(`pomopop-stats-${uid}`, JSON.stringify(stats));
+/**
+ * Get the start date of the current week (Monday)
+ */
+function getWeekStartDate() {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+  return new Date(today.setDate(diff));
 }
 
-function formatTime(minutes) {
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  return `${hours}h ${remainingMinutes}m`;
+/**
+ * Check and reset daily/weekly pomodoro counts if needed
+ */
+async function checkAndResetStats(uid, userData) {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const weekStartDate = getWeekStartDate().toISOString().split("T")[0];
+    const updates = {};
+
+    // Check if day changed - reset todayPomodoros
+    if (userData.todayDate !== today) {
+      updates.todayPomodoros = 0;
+      updates.todayDate = today;
+    }
+
+    // Check if week changed - reset weeklyPomodoros
+    if (userData.weekStartDate !== weekStartDate) {
+      updates.weeklyPomodoros = 0;
+      updates.weekStartDate = weekStartDate;
+    }
+
+    // Apply updates if any resets are needed
+    if (Object.keys(updates).length > 0) {
+      updates.lastUpdated = serverTimestamp();
+      await updateDoc(doc(db, "users", uid), updates);
+      console.log("✅ Stats reset applied for user:", uid);
+    }
+  } catch (error) {
+    console.error("❌ Error checking/resetting stats:", error);
+  }
 }
 
-function updateStatsDisplay(user) {
+/**
+ * Increment pomodoro counts when session completes
+ * IMPORTANT: Only called on successful session completion
+ * Do NOT count partial or cancelled sessions
+ */
+export async function incrementPomodoroCount(pomodoroDuration) {
+  const user = getCurrentUser();
+  if (!user || user.isGuest) {
+    console.log("⚠️ Stats not saved: guest or no user");
+    return;
+  }
+
+  try {
+    // Prevent duplicate counting on page refresh
+    // Only increment once per session completion
+    const now = Date.now();
+    if (lastPomodoroIncrement && now - lastPomodoroIncrement < 5000) {
+      console.log("⏱️ Duplicate increment blocked (too soon)");
+      return;
+    }
+    lastPomodoroIncrement = now;
+
+    const userRef = doc(db, "users", user.uid);
+
+    // Atomically increment all three counters
+    await updateDoc(userRef, {
+      todayPomodoros: increment(1),
+      weeklyPomodoros: increment(1),
+      totalPomodoros: increment(1),
+      lastUpdated: serverTimestamp(),
+    });
+
+    console.log("✅ Pomodoro count incremented for:", user.uid);
+    updateStatsDisplay(user);
+  } catch (error) {
+    console.error("❌ Error incrementing pomodoro:", error);
+  }
+}
+
+/**
+ * Get user's current stats from Firestore
+ */
+async function getUserStats(uid) {
+  try {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      return userSnap.data();
+    }
+    return null;
+  } catch (error) {
+    console.error("❌ Error getting user stats:", error);
+    return null;
+  }
+}
+
+// ==================== UI LOGIC ====================
+
+async function updateStatsDisplay(user) {
   const statsGrid = document.querySelector(".stats-grid");
   const guestMsg = document.getElementById("js-guest-message");
 
   if (user.isGuest) {
-    // Hide stats, show message
+    // Hide stats, show message for guests
     if (statsGrid) statsGrid.classList.add("hidden");
     if (guestMsg) guestMsg.classList.remove("hidden");
     return;
   }
 
-  // Show stats, hide message
+  // Show stats grid, hide guest message
   if (statsGrid) statsGrid.classList.remove("hidden");
   if (guestMsg) guestMsg.classList.add("hidden");
 
-  const stats = getStats(user.uid);
+  // Fetch latest stats from Firestore
+  const stats = await getUserStats(user.uid);
+  if (!stats) {
+    console.warn("Could not load stats for user:", user.uid);
+    return;
+  }
 
-  // Update the new modal elements if they exist
-  const sessionsEl = document.getElementById("js-stat-sessions");
-
-  if (sessionsEl) sessionsEl.textContent = stats.totalPomodoros;
-
-  // Hide Today and Week stats from the modal
+  // Update stat cards with pomodoro totals
+  const totalEl = document.getElementById("js-stat-sessions");
   const todayEl = document.getElementById("js-stat-today");
   const weekEl = document.getElementById("js-stat-week");
-  if (todayEl && todayEl.parentElement)
-    todayEl.parentElement.style.display = "none";
-  if (weekEl && weekEl.parentElement)
-    weekEl.parentElement.style.display = "none";
 
-  // Center the remaining Total stat
-  if (statsGrid) {
-    statsGrid.style.display = "flex";
-    statsGrid.style.justifyContent = "center";
+  if (totalEl) totalEl.textContent = stats.totalPomodoros || 0;
+  if (todayEl) todayEl.textContent = stats.todayPomodoros || 0;
+  if (weekEl) weekEl.textContent = stats.weeklyPomodoros || 0;
+
+  // Make all stats visible (they show different pomodoro counts now)
+  if (totalEl && totalEl.parentElement) {
+    totalEl.parentElement.style.display = "flex";
+    totalEl.parentElement.innerHTML = `
+      <h3 id="js-stat-sessions">${stats.totalPomodoros || 0}</h3>
+      <p>Total</p>
+    `;
+  }
+  if (todayEl && todayEl.parentElement) {
+    todayEl.parentElement.style.display = "flex";
+    todayEl.parentElement.innerHTML = `
+      <h3 id="js-stat-today">${stats.todayPomodoros || 0}</h3>
+      <p>Today</p>
+    `;
+  }
+  if (weekEl && weekEl.parentElement) {
+    weekEl.parentElement.style.display = "flex";
+    weekEl.parentElement.innerHTML = `
+      <h3 id="js-stat-week">${stats.weeklyPomodoros || 0}</h3>
+      <p>This Week</p>
+    `;
   }
 }
 
-export function loadStats() {
+export async function loadStats() {
   const user = getCurrentUser();
   if (user) {
-    updateStatsDisplay(user);
+    await updateStatsDisplay(user);
   }
 }
 
-export function incrementPomodoroCount(pomodoroDuration) {
-  const user = getCurrentUser();
-  if (!user || user.isGuest) return; // Don't save stats for guests
-
-  let stats = getStats(user.uid);
-
-  stats.totalPomodoros += 1;
-  stats.totalWorkTime += pomodoroDuration;
-
-  const today = new Date().toDateString();
-
-  // Daily & Streak Logic
-  if (stats.lastPomodoroDate === today) {
-    stats.currentStreak += 1;
-  } else if (
-    stats.lastPomodoroDate &&
-    new Date(stats.lastPomodoroDate).toDateString() ===
-      new Date(Date.now() - 86400000).toDateString()
-  ) {
-    // Yesterday
-    stats.currentStreak = stats.currentStreak + 1;
-  } else {
-    // Streak broken
-    stats.currentStreak = 1;
-  }
-  stats.lastPomodoroDate = today;
-
-  if (stats.currentStreak > stats.longestStreak) {
-    stats.longestStreak = stats.currentStreak;
-  }
-
-  saveStats(user.uid, stats);
-  updateStatsDisplay(user);
-}
-
-export function openStatsModal() {
+export async function openStatsModal() {
   const statsModal = document.getElementById("js-stats-modal");
   statsModal.classList.add("open");
-  loadStats();
+
+  await loadStats();
+
+  // Initialize real-time leaderboard when stats modal opens
+  initializeLeaderboard();
 }
 
 export function closeStatsModal() {
   const statsModal = document.getElementById("js-stats-modal");
   statsModal.classList.remove("open");
+
+  // Stop real-time listener to save resources
+  destroyLeaderboard();
 }

@@ -929,3 +929,107 @@ body.video-active {
   font-size: 14px;
   border: 1px solid #ffeeba;
 }
+/* ==========================================================================
+   12. Leaderboard Styles
+   ========================================================================== */
+
+.leaderboard-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.leaderboard-section h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.leaderboard-container {
+  background: #f9f9f9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.leaderboard-header {
+  display: grid;
+  grid-template-columns: 50px 50px 1fr 80px;
+  gap: 10px;
+  padding: 12px 15px;
+  background: #e8e8e8;
+  font-weight: 700;
+  font-size: 12px;
+  color: #555;
+  text-transform: uppercase;
+  border-bottom: 2px solid #ccc;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 50px 50px 1fr 80px;
+  gap: 10px;
+  padding: 12px 15px;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.leaderboard-row:hover {
+  background-color: #f0f0f0;
+}
+
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-rank {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--pomodoro);
+}
+
+.leaderboard-photo {
+  display: flex;
+  justify-content: center;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.leaderboard-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-pomodoros {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--pomodoro);
+}
+
+.leaderboard-empty,
+.leaderboard-error {
+  padding: 40px 15px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.leaderboard-loading {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+}

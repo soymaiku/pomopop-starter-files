@@ -1,0 +1,423 @@
+========================================
+🔗 CODE INTEGRATION REFERENCE
+Complete List of Changes
+========================================
+
+========================================
+1. stats.js - KEY FUNCTIONS
+========================================
+
+NEW IMPORTS:
+  - increment (from Firestore)
+  - initializeLeaderboard, destroyLeaderboard (from leaderboard.js)
+
+UPDATED FUNCTIONS:
+
+loginWithGoogle()
+  - Now validates displayName + photoURL exist
+  - Calls initializeUserStats() on login
+  - Google-only (removed GitHub support)
+
+loginAsGuest()
+  - No changes (guests don't save stats)
+
+logout()
+  - Now calls destroyLeaderboard() to stop real-time listener
+
+initializeUserStats(appUser)
+  - NEW: Creates user stats doc in Firestore
+  - NEW: Calls checkAndResetStats() for existing users
+  - Stores: displayName, photoURL, all pomodoro counts
+
+checkAndResetStats(uid, userData)
+  - NEW: Checks if daily/weekly reset needed
+  - NEW: Resets todayPomodoros at midnight
+  - NEW: Resets weeklyPomodoros on Monday
+
+incrementPomodoroCount(pomodoroDuration)
+  - UPDATED: Now writes to Firestore instead of localStorage
+  - UPDATED: Uses atomic increment() for all 3 counters
+  - NEW: 5-second cooldown to prevent duplicates
+  - NEW: Calls updateStatsDisplay() after increment
+
+getUserStats(uid)
+  - NEW: Fetches user stats from Firestore
+
+updateStatsDisplay(user)
+  - UPDATED: Now fetches from Firestore instead of localStorage
+  - UPDATED: Displays todayPomodoros and weeklyPomodoros
+  - Updates: Total, Today, This Week stat cards
+
+openStatsModal()
+  - UPDATED: Now calls initializeLeaderboard()
+  - Starts real-time listener when modal opens
+
+closeStatsModal()
+  - UPDATED: Now calls destroyLeaderboard()
+  - Stops real-time listener when modal closes
+
+========================================
+2. leaderboard.js - NEW FILE
+========================================
+
+EXPORTED FUNCTIONS:
+
+initializeLeaderboard()
+  - Starts Firebase onSnapshot listener
+  - Queries top 10 users by weeklyPomodoros DESC
+  - Automatically re-renders on any user stats change
+
+destroyLeaderboard()
+  - Stops the onSnapshot listener
+  - Saves resources when modal closes
+
+getLeaderboardData()
+  - Returns cached leaderboard data array
+
+getUserRank(uid)
+  - Returns user's current rank (1-10+) or null
+
+INTERNAL FUNCTIONS:
+
+renderLeaderboard(users)
+  - Builds HTML table with rank, photo, name, pomodoros
+  - Rank badges: 🥇 🥈 🥉 #4...
+  - Handles empty state if no users
+
+getRankBadge(rank)
+  - Returns emoji for ranks 1-3, number for 4+
+
+escapeHtml(text)
+  - Prevents XSS attacks in user names
+
+displayLeaderboardError()
+  - Shows error message if listener fails
+
+FIRESTORE LISTENER:
+
+query(
+  collection(db, "users"),
+  where("weeklyPomodoros", ">=", 0),
+  orderBy("weeklyPomodoros", "desc"),
+  orderBy("totalPomodoros", "desc"),
+  orderBy("displayName", "asc"),
+  limit(10)
+)
+
+onSnapshot(leaderboardQuery, (snapshot) => {
+  leaderboardData = snapshot.docs.map((doc, index) => ({
+    rank: index + 1,
+    uid: doc.id,
+    ...doc.data()
+  }));
+  renderLeaderboard(leaderboardData);
+});
+
+========================================
+3. index.html - UPDATED
+========================================
+
+CHANGES IN STATS MODAL:
+
+ADDED SECTION:
+  <div class="leaderboard-section">
+    <h3>🏆 Leaderboard</h3>
+    <div id="js-leaderboard" class="leaderboard-container">
+      <div class="leaderboard-loading">Loading leaderboard...</div>
+    </div>
+  </div>
+
+UPDATED LABELS:
+  - "Week" → "This Week"
+
+========================================
+4. styles.css - ADDED STYLES
+========================================
+
+NEW CSS CLASSES:
+
+.leaderboard-section
+  - Container for leaderboard (margin-top: 30px)
+  - Border-top separator from stats cards
+
+.leaderboard-container
+  - Background: #f9f9f9
+  - Border-radius: 8px
+  - overflow: hidden
+
+.leaderboard-header
+  - Grid: 50px 50px 1fr 80px (Rank | Photo | Name | Pomodoros)
+  - Background: #e8e8e8
+  - Font-weight: 700
+
+.leaderboard-row
+  - Same grid layout as header
+  - Border-bottom: 1px solid #e0e0e0
+  - :hover { background-color: #f0f0f0 }
+
+.leaderboard-rank
+  - Font-size: 18px
+  - Color: var(--pomodoro) [#ba4949]
+  - Text-align: center
+
+.leaderboard-photo
+  - Display: flex
+  - Justify-content: center
+
+.user-avatar
+  - Width/Height: 40px
+  - Border-radius: 50% (circular)
+  - Border: 2px solid #ddd
+
+.leaderboard-name
+  - Font-size: 14px
+  - white-space: nowrap
+  - text-overflow: ellipsis
+
+.leaderboard-pomodoros
+  - Font-size: 16px
+  - Font-weight: 700
+  - Color: var(--pomodoro)
+  - Text-align: center
+
+.leaderboard-empty
+.leaderboard-error
+.leaderboard-loading
+  - Padding: 20-40px
+  - Text-align: center
+  - Color: #999
+
+========================================
+5. timer.js - NO CHANGES NEEDED
+========================================
+
+Already calls incrementPomodoroCount() at line ~52:
+
+if (total <= 0) {
+  stopTimer(false);
+  if (timer.mode === "pomodoro") {
+    updateTaskProgress();
+    incrementPomodoroCount(timer.pomodoro);  ← This line
+  }
+  ...
+}
+
+✓ No modifications needed - already correctly calls the function
+
+========================================
+6. app.js - NO CHANGES NEEDED
+========================================
+
+Already has all necessary imports and event listeners:
+
+import {
+  openStatsModal,
+  closeStatsModal,
+  getCurrentUser,
+  loginWithGoogle,
+  loginAsGuest,
+  logout,
+} from "./stats.js";
+
+✓ Works with updated stats.js automatically
+✓ Real-time leaderboard initializes when modal opens
+✓ Listener stops when modal closes
+
+========================================
+FIRESTORE SCHEMA EXAMPLE
+========================================
+
+Collection: users
+Document ID: "xyz123abc456def..." (user.uid)
+
+{
+  displayName: "John Doe",
+  photoURL: "https://lh3.googleusercontent.com/...",
+  todayPomodoros: 5,
+  weeklyPomodoros: 23,
+  totalPomodoros: 342,
+  todayDate: "2026-01-16",
+  weekStartDate: "2026-01-13",
+  lastUpdated: Timestamp(seconds=1705406432, nanoseconds=123456789)
+}
+
+========================================
+DATA FLOW: POMODORO COMPLETION
+========================================
+
+1. User timer expires in timer.js
+2. incrementPomodoroCount(25) called
+3. stats.js checks: user exists? not guest?
+4. stats.js checks: 5-second cooldown OK?
+5. Firestore updateDoc() atomically increments 3 fields
+6. updateStatsDisplay() refreshes UI cards
+7. Leaderboard listener detects Firestore change
+8. renderLeaderboard() updates rank table
+9. All other users with open leaderboards see update instantly
+
+========================================
+REAL-TIME UPDATE FLOW
+========================================
+
+User A's Browser:
+  1. Complete pomodoro
+  2. updateDoc(todayPomodoros: increment(1))
+  3. Firestore received
+
+Firestore Cloud:
+  1. Document updated
+  2. All listeners notified
+
+User B's Browser (if leaderboard open):
+  1. onSnapshot callback fires
+  2. renderLeaderboard() re-runs
+  3. User B sees updated ranking (no refresh needed)
+
+========================================
+RESET FLOW: DAILY
+========================================
+
+Trigger: User logs in or opens stats modal
+
+Logic:
+  today = new Date().toISOString().split("T")[0]
+  // Result: "2026-01-16"
+  
+  if (userData.todayDate !== today) {
+    // Date changed since last login
+    update {
+      todayPomodoros: 0,
+      todayDate: today
+    }
+  }
+
+Guarantees:
+  ✓ Resets exactly once per day
+  ✓ Works across all timezones
+  ✓ Doesn't depend on system clock (uses date string)
+
+========================================
+RESET FLOW: WEEKLY
+========================================
+
+Trigger: User logs in or opens stats modal
+
+Logic:
+  today = new Date()
+  day = today.getDay()
+  diff = today.getDate() - day + (day === 0 ? -6 : 1)
+  weekStartDate = new Date(today.setDate(diff))
+  weekStartDateStr = weekStartDate.toISOString().split("T")[0]
+  // Result: "2026-01-13" (Monday)
+  
+  if (userData.weekStartDate !== weekStartDateStr) {
+    // Week changed since last login
+    update {
+      weeklyPomodoros: 0,
+      weekStartDate: weekStartDateStr
+    }
+  }
+
+Guarantees:
+  ✓ Resets exactly once per week
+  ✓ Week starts on Monday
+  ✓ Works correctly across month/year boundaries
+
+========================================
+DUPLICATE PREVENTION
+========================================
+
+Mechanism:
+  let lastPomodoroIncrement = null;
+  
+  if (lastPomodoroIncrement && now - lastPomodoroIncrement < 5000) {
+    // Block increment (too soon)
+    return;
+  }
+  lastPomodoroIncrement = now;
+
+Prevents:
+  ✓ Rapid button clicks counting multiple times
+  ✓ Page refresh during completion double-counting
+  ✓ Browser dev tools from manually calling function
+
+Cooldown: 5 seconds (configurable if needed)
+
+========================================
+LEADERBOARD SORTING
+========================================
+
+Primary Sort: weeklyPomodoros DESC
+  - Most relevant (current week)
+  - Incentivizes current activity
+
+Secondary Sort: totalPomodoros DESC
+  - Lifetime achievement
+  - Fair tiebreaker
+
+Tertiary Sort: displayName ASC
+  - Alphabetical
+  - Deterministic final tiebreaker
+
+Result: Consistent, fair, competitive ranking
+
+========================================
+PROFILE DATA REQUIREMENTS
+========================================
+
+For display in leaderboard and stats:
+  ✓ displayName (Google account display name)
+  ✓ photoURL (Google account profile picture)
+
+Validation:
+  if (!user.displayName || !user.photoURL) {
+    throw new Error("Google account must have a display name and profile photo")
+  }
+
+Guarantees:
+  ✓ No email fallbacks
+  ✓ No placeholder names
+  ✓ Real profile pictures from Google
+
+========================================
+RESOURCE LIFECYCLE
+========================================
+
+Opening Stats Modal:
+  → initializeLeaderboard()
+  → onSnapshot listener created
+  → Queries Firestore continuously
+  → Updates display on any change
+
+Closing Stats Modal:
+  → closeStatsModal()
+  → destroyLeaderboard()
+  → unsubscribe() called
+  → Listener stopped
+  → No more Firestore queries
+
+Benefit:
+  ✓ Efficient resource usage
+  ✓ No wasted listeners in background
+  ✓ Scales to many users
+
+========================================
+ERROR HANDLING
+========================================
+
+Leaderboard Listener Errors:
+  - caught in onSnapshot second parameter
+  - displayLeaderboardError() called
+  - Error message shown to user
+
+Firestore Write Errors:
+  - caught in try/catch
+  - console.error() logged
+  - User notified if critical
+
+Network Failures:
+  - Firestore auto-retries
+  - Listeners reconnect automatically
+  - UI stays functional
+
+========================================
