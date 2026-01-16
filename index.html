@@ -6,13 +6,33 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Freshman Pomodoro Clock Demo</title>
     <link rel="stylesheet" href="./css/styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              pomodoro: "var(--pomodoro)",
+              shortBreak: "var(--shortBreak)",
+              longBreak: "var(--longBreak)",
+              bgLight: "var(--color-bg-light)",
+            },
+            fontFamily: {
+              sans: ['"Jersey 25"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
   </head>
 
-  <body>
-    <header class="header">
-      <div class="burger-menu" id="js-burger-menu">
+  <body
+    class="bg-pomodoro text-white min-h-screen transition-colors duration-700 overflow-x-hidden font-sans selection:bg-black/20"
+  >
+    <header class="fixed top-0 right-0 p-4 z-[200]">
+      <div class="flex items-center gap-3" id="js-burger-menu">
         <button
-          class="account-icon-btn"
+          class="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95 border border-white/20 shadow-lg"
           id="js-account-icon-btn"
           title="Account"
         >
@@ -20,45 +40,77 @@
             id="js-account-avatar"
             src=""
             alt="Account"
-            class="account-avatar"
+            class="w-8 h-8 rounded-full object-cover border-2 border-white/80"
           />
         </button>
-        <button class="menu-toggle-btn" id="js-menu-toggle-btn">
-          <div class="burger-icon">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+        <button
+          class="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95 border border-white/20 shadow-lg group"
+          id="js-menu-toggle-btn"
+        >
+          <div class="w-6 h-5 flex flex-col justify-between">
+            <span
+              class="block w-full h-0.5 bg-white rounded-full transition-all group-hover:w-3/4 ml-auto"
+            ></span>
+            <span
+              class="block w-full h-0.5 bg-white rounded-full transition-all"
+            ></span>
+            <span
+              class="block w-full h-0.5 bg-white rounded-full transition-all group-hover:w-1/2 ml-auto"
+            ></span>
           </div>
         </button>
 
-        <div class="menu-dropdown" id="js-menu-dropdown">
+        <div
+          class="menu-dropdown absolute top-full right-4 mt-2 w-48 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl py-2 flex flex-col origin-top-right transition-all duration-300 transform scale-95 opacity-0 invisible [&.open]:scale-100 [&.open]:opacity-100 [&.open]:visible z-50"
+          id="js-menu-dropdown"
+        >
           <!-- User Profile Section -->
-          <div id="js-user-profile" class="menu-profile hidden">
-            <img id="js-profile-pic" src="" alt="Profile" class="profile-pic" />
-            <span id="js-profile-name" class="profile-name">User</span>
+          <div
+            id="js-user-profile"
+            class="px-4 py-3 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50 hidden"
+          >
+            <img
+              id="js-profile-pic"
+              src=""
+              alt="Profile"
+              class="w-8 h-8 rounded-full border border-gray-200 object-cover"
+            />
+            <span
+              id="js-profile-name"
+              class="font-bold text-gray-700 text-sm truncate"
+              >User</span
+            >
           </div>
-          <button class="dropdown-button" id="js-settings-btn" title="Settings">
+          <button
+            class="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100/80 font-semibold transition-colors flex items-center gap-2"
+            id="js-settings-btn"
+            title="Settings"
+          >
             ⚙️ Settings
           </button>
           <button
-            class="dropdown-button"
+            class="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100/80 font-semibold transition-colors flex items-center gap-2"
             id="js-tasks-toggle-btn"
             title="Tasks"
           >
             📋 Tasks
           </button>
-          <button class="dropdown-button" id="js-stats-btn" title="Statistics">
+          <button
+            class="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100/80 font-semibold transition-colors flex items-center gap-2"
+            id="js-stats-btn"
+            title="Statistics"
+          >
             📊 Stats
           </button>
           <button
-            class="dropdown-button hidden"
+            class="w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100/80 font-semibold transition-colors flex items-center gap-2 hidden"
             id="js-login-btn"
             title="Login"
           >
             🔑 Log In
           </button>
           <button
-            class="dropdown-button hidden"
+            class="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 font-semibold transition-colors flex items-center gap-2 hidden"
             id="js-logout-btn"
             title="Logout"
           >
@@ -68,67 +120,115 @@
       </div>
     </header>
 
-    <main class="app">
-      <h1 class="main-title">Pomopop</h1>
-      <progress id="js-progress" value="0"></progress>
-      <div class="progress-bar"></div>
-      <div class="timer">
-        <div class="button-group mode-buttons" id="js-mode-buttons">
+    <main
+      class="relative min-h-screen flex flex-col items-center justify-center p-4"
+    >
+      <h1
+        class="fixed top-6 left-1/2 -translate-x-1/2 text-white/90 text-2xl md:text-3xl font-bold tracking-[0.2em] uppercase drop-shadow-sm z-[101]"
+      >
+        Pomopop
+      </h1>
+
+      <progress
+        id="js-progress"
+        value="0"
+        class="fixed top-0 left-0 w-full h-1.5 bg-black/10 [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:bg-white/80 z-[150]"
+      ></progress>
+
+      <div class="flex flex-col items-center w-full max-w-2xl z-10">
+        <div
+          class="flex gap-2 md:gap-4 mb-8 md:mb-12 p-1.5 bg-black/20 backdrop-blur-md rounded-full"
+          id="js-mode-buttons"
+        >
           <button
             data-mode="pomodoro"
-            class="button active mode-button"
+            class="px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-pomodoro [&.active]:shadow-lg"
             id="js-pomodoro"
           >
             Pomodoro
           </button>
           <button
             data-mode="shortBreak"
-            class="button mode-button"
+            class="px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-shortBreak [&.active]:shadow-lg"
             id="js-short-break"
           >
             Short break
           </button>
           <button
             data-mode="longBreak"
-            class="button mode-button"
+            class="px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-longBreak [&.active]:shadow-lg"
             id="js-long-break"
           >
             Long break
           </button>
         </div>
-        <div class="clock" id="js-clock">
-          <span id="js-minutes">25</span>
-          <span class="separator">:</span>
-          <span id="js-seconds">00</span>
+
+        <div
+          class="text-[8rem] md:text-[12rem] lg:text-[15rem] leading-none font-bold text-white drop-shadow-2xl mb-8 md:mb-12 tracking-tighter select-none transition-all"
+          id="js-clock"
+        >
+          <span id="js-minutes" class="tabular-nums">25</span
+          ><span class="opacity-50 relative -top-4 md:-top-8">:</span
+          ><span id="js-seconds" class="tabular-nums">00</span>
         </div>
-        <div class="pomodoro-interval-display" id="js-interval-display">
+
+        <div
+          class="text-xl md:text-2xl text-white/80 font-medium tracking-widest uppercase mb-4"
+          id="js-interval-display"
+        >
           Work 1/1
         </div>
-        <div class="task-name-display" id="js-task-name-display">
+
+        <div
+          class="text-lg text-white/90 font-light mb-10 min-h-[30px] text-center max-w-md px-4 truncate"
+          id="js-task-name-display"
+        >
           No task selected
         </div>
-        <div class="timer-controls">
-          <button class="main-button" data-action="start" id="js-btn">
+
+        <div class="flex items-center gap-6">
+          <button
+            class="bg-white text-pomodoro text-2xl md:text-3xl font-bold uppercase px-10 py-4 md:px-12 md:py-5 rounded-3xl shadow-[0_8px_0_rgb(230,230,230)] active:shadow-none active:translate-y-[8px] transition-all hover:bg-gray-50 min-w-[180px]"
+            data-action="start"
+            id="js-btn"
+          >
             Start
           </button>
           <button
-            class="control-button reset-button"
+            class="bg-white/20 backdrop-blur-md text-white text-3xl font-bold p-4 md:p-5 rounded-3xl shadow-[0_8px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-[8px] transition-all hover:bg-white/30 flex items-center justify-center w-[80px] md:w-[90px]"
             id="js-reset-btn"
             title="Reset timer"
           >
-            Reset
+            ↺
           </button>
         </div>
       </div>
     </main>
 
-    <div class="modal" id="js-settings-modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-settings">&times;</span>
-        <h2>Settings</h2>
-        <div class="settings-form">
-          <div class="form-group">
-            <label for="js-pomodoro-duration"
+    <!-- Settings Modal -->
+    <div
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      id="js-settings-modal"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-6 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[85vh] flex flex-col"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-settings"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Settings
+        </h2>
+
+        <div class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2">
+          <div class="flex flex-col gap-2">
+            <label
+              for="js-pomodoro-duration"
+              class="text-gray-600 font-bold text-lg"
               >Pomodoro Duration (minutes):</label
             >
             <input
@@ -137,10 +237,13 @@
               min="1"
               max="60"
               value="25"
+              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-pomodoro outline-none transition-all text-lg text-gray-800"
             />
           </div>
-          <div class="form-group">
-            <label for="js-short-break-duration"
+          <div class="flex flex-col gap-2">
+            <label
+              for="js-short-break-duration"
+              class="text-gray-600 font-bold text-lg"
               >Short Break Duration (minutes):</label
             >
             <input
@@ -149,10 +252,13 @@
               min="1"
               max="30"
               value="5"
+              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-shortBreak outline-none transition-all text-lg text-gray-800"
             />
           </div>
-          <div class="form-group">
-            <label for="js-long-break-duration"
+          <div class="flex flex-col gap-2">
+            <label
+              for="js-long-break-duration"
+              class="text-gray-600 font-bold text-lg"
               >Long Break Duration (minutes):</label
             >
             <input
@@ -161,10 +267,13 @@
               min="1"
               max="60"
               value="15"
+              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-longBreak outline-none transition-all text-lg text-gray-800"
             />
           </div>
-          <div class="form-group">
-            <label for="js-long-break-interval"
+          <div class="flex flex-col gap-2">
+            <label
+              for="js-long-break-interval"
+              class="text-gray-600 font-bold text-lg"
               >Long Break Interval (pomodoros):</label
             >
             <input
@@ -173,42 +282,90 @@
               min="1"
               max="10"
               value="4"
+              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-gray-400 outline-none transition-all text-lg text-gray-800"
             />
           </div>
 
-          <div class="theme-section">
-            <p class="theme-label">🎨 THEME</p>
-            <div class="color-picker-container">
-              <div class="color-picker-item">
-                <span>Pomodoro</span>
-                <input type="color" id="js-color-pomodoro" value="#ba4949" />
+          <div class="border-t border-gray-200 pt-5 mt-2">
+            <p
+              class="text-xs font-bold text-gray-400 tracking-widest mb-4 uppercase"
+            >
+              🎨 Theme Colors
+            </p>
+            <div class="flex flex-col gap-3">
+              <div
+                class="flex justify-between items-center p-3 bg-gray-50 rounded-xl"
+              >
+                <span class="text-gray-600 font-semibold">Pomodoro</span>
+                <input
+                  type="color"
+                  id="js-color-pomodoro"
+                  value="#ba4949"
+                  class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none"
+                />
               </div>
-              <div class="color-picker-item">
-                <span>Short Break</span>
-                <input type="color" id="js-color-short" value="#38858a" />
+              <div
+                class="flex justify-between items-center p-3 bg-gray-50 rounded-xl"
+              >
+                <span class="text-gray-600 font-semibold">Short Break</span>
+                <input
+                  type="color"
+                  id="js-color-short"
+                  value="#38858a"
+                  class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none"
+                />
               </div>
-              <div class="color-picker-item">
-                <span>Long Break</span>
-                <input type="color" id="js-color-long" value="#397097" />
+              <div
+                class="flex justify-between items-center p-3 bg-gray-50 rounded-xl"
+              >
+                <span class="text-gray-600 font-semibold">Long Break</span>
+                <input
+                  type="color"
+                  id="js-color-long"
+                  value="#397097"
+                  class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-none"
+                />
               </div>
             </div>
           </div>
 
-          <button class="save-button" id="js-save-settings">
+          <button
+            class="w-full py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transform active:scale-[0.98] transition-all mt-2 uppercase tracking-wide"
+            id="js-save-settings"
+          >
             Save Settings
           </button>
         </div>
       </div>
     </div>
 
-    <div class="modal" id="js-music-modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-music">&times;</span>
-        <h2>Background Music</h2>
-        <div class="music-player">
-          <div class="form-group">
-            <label for="js-music-select">Choose a track:</label>
-            <select id="js-music-select">
+    <!-- Music Modal -->
+    <div
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      id="js-music-modal"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-music"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Background Music
+        </h2>
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <label for="js-music-select" class="text-gray-600 font-bold text-lg"
+              >Choose a track:</label
+            >
+            <select
+              id="js-music-select"
+              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-gray-400 outline-none transition-all text-lg cursor-pointer text-gray-800"
+            >
               <option value="">No Music</option>
               <option value="lofi">Lo-Fi Hip Hop</option>
               <option value="rain">Rain Sound</option>
@@ -217,24 +374,63 @@
               <option value="nature">Nature Sounds</option>
             </select>
           </div>
-          <div class="music-controls">
-            <button class="music-button" id="js-music-play">Play</button>
-            <button class="music-button" id="js-music-stop">Stop</button>
+          <div class="flex gap-4">
+            <button
+              class="flex-1 py-3 bg-gray-800 text-white font-bold rounded-xl shadow-md hover:bg-gray-900 active:scale-95 transition-all hidden"
+              id="js-music-play"
+            >
+              Play
+            </button>
+            <button
+              class="flex-1 py-3 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 active:scale-95 transition-all"
+              id="js-music-stop"
+            >
+              Stop Music
+            </button>
           </div>
-          <div class="volume-control">
-            <label for="js-volume">Volume:</label>
-            <input type="range" id="js-volume" min="0" max="100" value="50" />
+          <div class="flex flex-col gap-2">
+            <label for="js-volume" class="text-gray-500 font-semibold"
+              >Volume:</label
+            >
+            <input
+              type="range"
+              id="js-volume"
+              min="0"
+              max="100"
+              value="50"
+              class="w-full h-2 bg-gray-400 rounded-lg appearance-none cursor-pointer accent-gray-700"
+            />
           </div>
         </div>
       </div>
     </div>
 
-    <div class="modal" id="js-task-modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-tasks">&times;</span>
-        <h2>Tasks</h2>
-        <div class="task-input-group">
-          <input type="text" id="js-task-name" placeholder="Task name" />
+    <!-- Tasks Modal -->
+    <div
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      id="js-task-modal"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[85vh] flex flex-col"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-tasks"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Tasks
+        </h2>
+
+        <div class="flex flex-col gap-3 mb-6">
+          <input
+            type="text"
+            id="js-task-name"
+            placeholder="What are you working on?"
+            class="w-full p-4 rounded-xl bg-white border-2 border-gray-100 focus:border-gray-400 outline-none transition-all text-lg shadow-sm text-gray-800"
+          />
           <input
             type="number"
             id="js-task-pomodoros"
@@ -242,10 +438,20 @@
             min="1"
             max="20"
             value="1"
+            class="w-full p-4 rounded-xl bg-white border-2 border-gray-100 focus:border-gray-400 outline-none transition-all text-lg shadow-sm text-gray-800"
           />
-          <button class="add-task-button" id="js-add-task">Add Task</button>
+          <button
+            class="w-full py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transform active:scale-[0.98] transition-all mt-2 uppercase tracking-wide"
+            id="js-add-task"
+          >
+            Add Task
+          </button>
         </div>
-        <div class="tasks-list" id="js-tasks-list"></div>
+
+        <div
+          class="tasks-list flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar"
+          id="js-tasks-list"
+        ></div>
       </div>
     </div>
 
@@ -257,38 +463,78 @@
     </div>
 
     <!-- Video Background Elements -->
-    <button id="js-video-bg-btn" class="video-bg-btn">🎥</button>
-    <button id="js-music-btn" class="music-btn">🎵</button>
+    <button
+      id="js-video-bg-btn"
+      class="fixed bottom-6 left-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
+    >
+      🎥
+    </button>
+    <button
+      id="js-music-btn"
+      class="fixed bottom-6 left-24 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
+    >
+      🎵
+    </button>
 
     <!-- Info/About Button -->
-    <button id="js-info-btn" class="info-btn">ℹ️</button>
+    <button
+      id="js-info-btn"
+      class="fixed bottom-6 right-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
+    >
+      ℹ️
+    </button>
 
     <video id="bg-video" loop muted playsinline>
       <source src="" type="video/mp4" />
     </video>
 
-    <div class="modal" id="js-video-modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-video">&times;</span>
-        <h2>Select Background</h2>
-        <div class="video-grid">
+    <!-- Video Selection Modal -->
+    <div
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      id="js-video-modal"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-2xl p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-video"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Select Background
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
           <!-- Using reliable placeholder video links -->
-          <div class="video-option" data-video="/Video/forest.mp4">Forest</div>
-          <div class="video-option" data-video="/Video/studygirl.mp4">
+          <div
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            data-video="./Video/forest.mp4"
+          >
+            Forest
+          </div>
+          <div
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            data-video="./Video/studygirl.mp4"
+          >
             Study Girl
           </div>
-          <div class="video-option" data-video="/Video/livingroom.mp4">
+          <div
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            data-video="./Video/livingroom.mp4"
+          >
             Living Room
           </div>
-          <div class="video-option" data-video="/Video/sakura.mp4">Sakura</div>
           <div
-            class="video-option"
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            data-video="./Video/sakura.mp4"
+          >
+            Sakura
+          </div>
+          <div
+            class="video-option p-4 bg-red-50 text-red-500 rounded-xl text-center font-bold cursor-pointer hover:bg-red-100 hover:scale-105 transition-all col-span-2 md:col-span-1 border border-red-100"
             data-video="off"
-            style="
-              grid-column: span 2;
-              background-color: #ffcdd2;
-              color: #c62828;
-            "
           >
             Turn Off
           </div>
@@ -296,14 +542,30 @@
       </div>
     </div>
 
-    <div class="modal" id="js-about-modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-about">&times;</span>
-        <h2>About Pomodoro & Pomopop</h2>
-        <div class="about-content">
-          <section class="about-section">
-            <h3>What is the Pomodoro Technique?</h3>
-            <p>
+    <!-- About Modal -->
+    <div
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      id="js-about-modal"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-3xl p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[85vh] flex flex-col"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-about"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          About Pomodoro & Pomopop
+        </h2>
+        <div class="about-content overflow-y-auto pr-4 custom-scrollbar">
+          <section class="mb-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">
+              What is the Pomodoro Technique?
+            </h3>
+            <p class="text-lg text-gray-600 leading-relaxed mb-4">
               The Pomodoro Technique is a time management method developed by
               Francesco Cirillo in the late 1980s. The technique uses a timer to
               break work into intervals, traditionally 25 minutes in length,
@@ -312,35 +574,41 @@
               (tomato), after the tomato-shaped kitchen timer that Cirillo used
               as a university student.
             </p>
-            <h4>How it works:</h4>
-            <ul>
-              <li><strong>Work for 25 minutes</strong> on a focused task</li>
+            <h4 class="text-lg font-bold text-gray-700 mt-4 mb-2">
+              How it works:
+            </h4>
+            <ul class="list-disc pl-5 space-y-2 text-gray-600 text-lg">
               <li>
-                <strong>Take a 5-minute break</strong> after each pomodoro
+                <strong class="text-gray-800">Work for 25 minutes</strong> on a
+                focused task
               </li>
               <li>
-                <strong>After 4 pomodoros</strong>, take a longer break (15-30
-                minutes)
+                <strong class="text-gray-800">Take a 5-minute break</strong>
+                after each pomodoro
+              </li>
+              <li>
+                <strong class="text-gray-800">After 4 pomodoros</strong>, take a
+                longer break (15-30 minutes)
               </li>
               <li>Repeat the cycle to maintain productivity and focus</li>
             </ul>
-            <p>
+            <p class="text-lg text-gray-600 leading-relaxed mt-4">
               This method helps improve productivity by reducing mental fatigue,
               maintaining focus, and preventing burnout. The structured breaks
               allow your brain to recharge while keeping you engaged with your
               work.
             </p>
           </section>
-          <section class="about-section">
-            <h3>About Pomopop</h3>
-            <p>
+          <section>
+            <h3 class="text-xl font-bold text-gray-800 mb-3">About Pomopop</h3>
+            <p class="text-lg text-gray-600 leading-relaxed mb-4">
               Pomopop is a modern, feature-rich Pomodoro timer application
               designed to help you stay focused and productive. Our app combines
               the proven Pomodoro Technique with additional features to enhance
               your work experience.
             </p>
-            <h4>Features:</h4>
-            <ul>
+            <h4 class="text-lg font-bold text-gray-700 mt-4 mb-2">Features:</h4>
+            <ul class="space-y-2 text-gray-600 text-lg">
               <li>
                 ⏱️ Customizable timer durations for Pomodoro, short breaks, and
                 long breaks
@@ -351,7 +619,9 @@
               <li>🎥 Beautiful video backgrounds</li>
               <li>📊 Progress tracking to visualize your productivity</li>
             </ul>
-            <p>
+            <p
+              class="text-lg text-gray-600 leading-relaxed mt-6 font-medium text-center"
+            >
               Start your first Pomodoro session and experience the power of
               focused work intervals!
             </p>
@@ -361,73 +631,157 @@
     </div>
 
     <!-- Stats Modal -->
-    <div id="js-stats-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-stats">&times;</span>
-        <h2>Your Progress</h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3 id="js-stat-sessions">0</h3>
-            <p>Total</p>
+    <div
+      id="js-stats-modal"
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-stats"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Your Progress
+        </h2>
+        <div
+          class="stats-grid flex justify-center gap-4 text-center mt-4 flex-wrap"
+        >
+          <div
+            class="bg-white/60 p-4 rounded-2xl border border-white shadow-sm flex-1 min-w-[100px]"
+          >
+            <h3
+              id="js-stat-sessions"
+              class="text-3xl font-bold text-pomodoro mb-1"
+            >
+              0
+            </h3>
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              Total
+            </p>
           </div>
-          <div class="stat-card">
-            <h3 id="js-stat-today">0</h3>
-            <p>Today</p>
+          <div
+            class="bg-white/60 p-4 rounded-2xl border border-white shadow-sm flex-1 min-w-[100px]"
+          >
+            <h3
+              id="js-stat-today"
+              class="text-3xl font-bold text-pomodoro mb-1"
+            >
+              0
+            </h3>
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              Today
+            </p>
           </div>
-          <div class="stat-card">
-            <h3 id="js-stat-week">0</h3>
-            <p>This Week</p>
+          <div
+            class="bg-white/60 p-4 rounded-2xl border border-white shadow-sm flex-1 min-w-[100px]"
+          >
+            <h3 id="js-stat-week" class="text-3xl font-bold text-pomodoro mb-1">
+              0
+            </h3>
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+              This Week
+            </p>
           </div>
         </div>
 
         <!-- Leaderboard Section -->
-        <div class="leaderboard-section">
-          <h3>🏆 Leaderboard</h3>
-          <div id="js-leaderboard" class="leaderboard-container">
-            <div class="leaderboard-loading">Loading leaderboard...</div>
+        <div class="mt-8 pt-6 border-t border-gray-200">
+          <h3 class="text-lg font-bold text-gray-700 mb-4 text-center">
+            🏆 Leaderboard
+          </h3>
+          <div
+            id="js-leaderboard"
+            class="bg-gray-50 rounded-xl overflow-hidden shadow-inner max-h-[200px] overflow-y-auto custom-scrollbar"
+          >
+            <div class="p-6 text-center text-gray-400 text-sm">
+              Loading leaderboard...
+            </div>
           </div>
         </div>
 
         <!-- Message for Guests -->
-        <div id="js-guest-message" class="guest-message hidden">
-          <p>🔒 Stats are only available for logged-in users.</p>
+        <div
+          id="js-guest-message"
+          class="mt-6 p-4 bg-yellow-50 text-yellow-700 rounded-xl border border-yellow-100 text-center hidden"
+        >
+          <p class="font-medium">
+            🔒 Stats are only available for logged-in users.
+          </p>
         </div>
       </div>
     </div>
 
     <!-- Login Modal (Blocking) -->
-    <div id="js-login-modal" class="modal login-modal">
-      <div class="modal-content login-content">
-        <h2>Welcome to Pomopop</h2>
-        <p>Focus better, track your progress.</p>
+    <div
+      id="js-login-modal"
+      class="modal fixed inset-0 z-[2000] flex items-center justify-center bg-pomodoro transition-all duration-500 opacity-0 invisible [&.open]:opacity-100 [&.open]:visible"
+    >
+      <div
+        class="modal-content bg-white p-10 rounded-3xl shadow-2xl text-center max-w-sm w-full transform scale-95 transition-all duration-300 [&.open]:scale-100"
+      >
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">
+          Welcome to Pomopop
+        </h2>
+        <p class="text-gray-500 mb-8">Focus better, track your progress.</p>
 
-        <button id="js-google-login-btn" class="login-btn google-btn">
-          <span>G</span> Continue with Google
+        <button
+          id="js-google-login-btn"
+          class="w-full py-3 px-4 bg-white text-gray-600 font-bold rounded-xl shadow-md border border-gray-100 hover:bg-gray-50 hover:shadow-lg transition-all flex items-center justify-center gap-3 mb-4"
+        >
+          <span class="text-blue-500 text-xl font-bold">G</span> Continue with
+          Google
         </button>
 
-        <div class="divider">OR</div>
+        <div class="my-4 text-xs font-bold text-gray-300 tracking-widest">
+          OR
+        </div>
 
-        <button id="js-guest-login-btn" class="login-btn guest-btn">
+        <button
+          id="js-guest-login-btn"
+          class="w-full py-3 px-4 bg-transparent text-gray-500 font-bold rounded-xl border-2 border-gray-100 hover:bg-gray-50 hover:text-gray-700 transition-all"
+        >
           Continue as Guest
         </button>
       </div>
     </div>
 
     <!-- Account Edit Modal -->
-    <div id="js-account-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-account">&times;</span>
-        <h2>Edit Profile</h2>
-        <div class="account-form">
-          <div class="account-pic-section">
+    <div
+      id="js-account-modal"
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-account"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Edit Profile
+        </h2>
+        <div class="flex flex-col gap-6">
+          <div
+            class="flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100"
+          >
             <img
               id="js-account-edit-pic"
               src=""
               alt="Profile"
-              class="account-edit-pic"
+              class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
             />
-            <div class="account-pic-actions">
-              <label for="js-pic-upload" class="pic-upload-label"
+            <div class="w-full flex flex-col items-center gap-2">
+              <label
+                for="js-pic-upload"
+                class="px-4 py-2 bg-shortBreak text-white rounded-lg cursor-pointer font-bold text-sm hover:bg-opacity-90 transition-all shadow-sm"
                 >Change Photo</label
               >
               <input
@@ -439,36 +793,65 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="js-account-edit-name">Display Name:</label>
+          <div class="flex flex-col gap-2">
+            <label
+              for="js-account-edit-name"
+              class="text-gray-600 font-bold text-lg"
+              >Display Name:</label
+            >
             <input
               type="text"
               id="js-account-edit-name"
               placeholder="Your name"
+              class="w-full p-3 rounded-xl bg-white border-2 border-gray-100 focus:border-shortBreak outline-none transition-all text-lg shadow-sm text-gray-800"
             />
           </div>
 
-          <div class="account-form-actions">
-            <button class="save-button" id="js-save-account">
+          <div class="flex gap-3 mt-2">
+            <button
+              class="flex-1 py-3 bg-shortBreak text-white font-bold rounded-xl shadow-md hover:bg-opacity-90 active:scale-95 transition-all"
+              id="js-save-account"
+            >
               Save Changes
             </button>
-            <button class="cancel-button" id="js-cancel-account">Cancel</button>
+            <button
+              class="flex-1 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-200 active:scale-95 transition-all"
+              id="js-cancel-account"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Guest Warning Modal -->
-    <div id="js-guest-warning-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="js-close-guest-warning">&times;</span>
-        <h2>Restricted Access</h2>
+    <div
+      id="js-guest-warning-modal"
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-guest-warning"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          Restricted Access
+        </h2>
         <div style="text-align: center; margin: 20px 0">
-          <p style="font-size: 22px; color: #555; margin-bottom: 20px">
+          <p
+            style="font-size: 22px; color: #555; margin-bottom: 20px"
+            class="font-medium"
+          >
             🔒 Video backgrounds are available only for logged-in users.
           </p>
           <button
-            class="save-button"
+            class="w-full py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transform active:scale-[0.98] transition-all mt-2 uppercase tracking-wide"
             id="js-warning-login-btn"
             style="width: 100%"
           >
