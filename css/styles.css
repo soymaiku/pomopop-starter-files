@@ -165,7 +165,7 @@ button:active {
   background-color: var(--color-bg-light);
   border: none;
   padding: 10px 15px;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 600;
   color: #333;
   text-align: left;
@@ -354,7 +354,7 @@ progress::-webkit-progress-value {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.5);
-  font-size: 14px;
+  font-size: 16px;
   transition: all 0.3s ease;
 }
 
@@ -490,7 +490,7 @@ progress::-webkit-progress-value {
   padding: 25px;
   border-radius: 24px;
   width: 90%;
-  max-width: 400px;
+  max-width: 450px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   transform: translateY(-20px);
   transition: transform 0.3s ease;
@@ -531,6 +531,7 @@ progress::-webkit-progress-value {
   text-align: center;
   font-weight: 800;
   letter-spacing: -0.5px;
+  font-size: 32px;
 }
 
 .settings-form {
@@ -548,7 +549,7 @@ progress::-webkit-progress-value {
 .form-group label {
   font-weight: 600;
   color: #333;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .form-group input {
@@ -556,6 +557,7 @@ progress::-webkit-progress-value {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
   transition: all 0.3s ease;
 }
 
@@ -592,7 +594,7 @@ progress::-webkit-progress-value {
   align-items: center;
   font-weight: 600;
   color: #555;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 /* Custom Color Input Styling to look like Rounded Squares */
@@ -626,6 +628,7 @@ progress::-webkit-progress-value {
   border-radius: 12px;
   cursor: pointer;
   font-weight: 700;
+  font-size: 18px;
   text-transform: uppercase;
 }
 
@@ -640,7 +643,7 @@ progress::-webkit-progress-value {
 .music-player select {
   width: 100%;
   padding: 12px;
-  font-size: 14px;
+  font-size: 18px;
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: rgba(255, 255, 255, 0.5);
@@ -668,7 +671,7 @@ progress::-webkit-progress-value {
   border-radius: 10px;
   border: none;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 18px;
   letter-spacing: 0.5px;
   background-color: #333;
   color: white;
@@ -692,7 +695,7 @@ progress::-webkit-progress-value {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 13px;
+  font-size: 18px;
   color: #555;
 }
 
@@ -895,7 +898,7 @@ body.video-active {
   color: #333;
   line-height: 1.6;
   margin-bottom: 12px;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .about-section ul {
@@ -907,7 +910,7 @@ body.video-active {
 .about-section li {
   margin-bottom: 8px;
   line-height: 1.6;
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .about-section li strong {
@@ -1001,7 +1004,7 @@ body.video-active {
   margin: 10px 0;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -1077,7 +1080,7 @@ body.video-active {
   background: #fff3cd;
   color: #856404;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
   border: 1px solid #ffeeba;
 }
 
@@ -1125,7 +1128,7 @@ body.video-active {
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   transition: background-color 0.2s ease;
 }
 
@@ -1142,14 +1145,14 @@ body.video-active {
 .account-form .form-group label {
   font-weight: 600;
   color: #333;
-  font-size: 14px;
+  font-size: 20px;
 }
 
 .account-form .form-group input {
   padding: 10px 12px;
   border: 2px solid #e0e0e0;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 18px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -1173,7 +1176,7 @@ body.video-active {
   border: none;
   border-radius: 4px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -1194,7 +1197,7 @@ body.video-active {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 18px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
@@ -1241,7 +1244,7 @@ body.video-active {
   padding: 12px 15px;
   background: #e8e8e8;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 16px;
   color: #555;
   text-transform: uppercase;
   border-bottom: 2px solid #ccc;
@@ -1286,7 +1289,7 @@ body.video-active {
 }
 
 .leaderboard-name {
-  font-size: 14px;
+  font-size: 18px;
   color: #333;
   font-weight: 500;
   white-space: nowrap;
@@ -1296,7 +1299,7 @@ body.video-active {
 
 .leaderboard-pomodoros {
   text-align: center;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--pomodoro);
 }
@@ -1306,12 +1309,12 @@ body.video-active {
   padding: 40px 15px;
   text-align: center;
   color: #999;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .leaderboard-loading {
   padding: 20px;
   text-align: center;
   color: #999;
-  font-size: 12px;
+  font-size: 16px;
 }

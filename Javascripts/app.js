@@ -382,6 +382,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   infoBtn.addEventListener("click", openAboutModal);
   closeAboutBtn.addEventListener("click", closeAboutModal);
 
+  // ==================== GUEST WARNING MODAL LOGIC ====================
+  const guestWarningModal = document.getElementById("js-guest-warning-modal");
+  const closeGuestWarningBtn = document.getElementById(
+    "js-close-guest-warning"
+  );
+  const warningLoginBtn = document.getElementById("js-warning-login-btn");
+
+  function closeGuestWarning() {
+    guestWarningModal.classList.remove("open");
+  }
+
+  if (closeGuestWarningBtn) {
+    closeGuestWarningBtn.addEventListener("click", closeGuestWarning);
+  }
+
+  if (warningLoginBtn) {
+    warningLoginBtn.addEventListener("click", () => {
+      closeGuestWarning();
+      loginModal.classList.add("open");
+    });
+  }
+
   // ==================== VIDEO BACKGROUND LOGIC ====================
   const videoBtn = document.getElementById("js-video-bg-btn");
   const videoModal = document.getElementById("js-video-modal");
@@ -391,6 +413,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Open Modal
   videoBtn.addEventListener("click", () => {
+    const user = getCurrentUser();
+    if (user && user.isGuest) {
+      guestWarningModal.classList.add("open");
+      return;
+    }
     videoModal.classList.add("open");
   });
 
@@ -485,6 +512,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (e.target === accountModalElem) {
       closeAccountModal();
+    }
+    if (e.target === guestWarningModal) {
+      closeGuestWarning();
     }
   });
 
