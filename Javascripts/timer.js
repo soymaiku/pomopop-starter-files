@@ -23,12 +23,6 @@ export function getRemainingTime(endTime) {
 }
 
 export function startTimer() {
-  // Prevent starting pomodoro if no task is selected
-  if (timer.mode === "pomodoro" && getCurrentTask() === null) {
-    showNotification("Please select a task to start a Pomodoro session.");
-    return;
-  }
-
   let { total } = timer.remainingTime;
   const endTime = Date.parse(new Date()) + total * 1000;
 
@@ -75,9 +69,7 @@ export function startTimer() {
           } else {
             // Stop the timer fully and reset button if no task is selected for the new pomodoro
             stopTimer(true);
-            showNotification(
-              "Break over. Select a task to start the next Pomodoro."
-            );
+            showNotification("Break over. Time to focus!");
           }
       }
 
@@ -118,6 +110,9 @@ export function updateClock() {
   min.textContent = minutes;
   sec.textContent = seconds;
 
+  // Update interval display for pomodoro mode
+  updateIntervalDisplay();
+
   // Title update for better context
   let text;
   if (timer.mode === "pomodoro") {
@@ -131,6 +126,26 @@ export function updateClock() {
 
   const progress = document.getElementById("js-progress");
   progress.value = timer[timer.mode] * 60 - timer.remainingTime.total;
+}
+
+export function updateIntervalDisplay() {
+  const intervalDisplay = document.getElementById("js-interval-display");
+  if (!intervalDisplay) return;
+
+  if (timer.mode === "pomodoro") {
+    const currentTask = getCurrentTask();
+    if (currentTask) {
+      const completed = currentTask.completedPomodoros || 0;
+      const estimated = currentTask.pomodoros || 1;
+      intervalDisplay.textContent = `Work ${completed} / ${estimated}`;
+    } else {
+      intervalDisplay.textContent = "";
+    }
+  } else if (timer.mode === "shortBreak") {
+    intervalDisplay.textContent = "Short Break";
+  } else {
+    intervalDisplay.textContent = "Long Break";
+  }
 }
 
 export function switchMode(mode) {

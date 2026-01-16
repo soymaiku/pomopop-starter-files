@@ -15,7 +15,7 @@ import {
   interval,
   timer,
 } from "./config.js";
-import { switchMode, stopTimer } from "./timer.js";
+import { switchMode, stopTimer, updateIntervalDisplay } from "./timer.js";
 import { escapeHtml, showNotification } from "./utils.js";
 import { getCurrentUser } from "./stats.js";
 
@@ -159,6 +159,7 @@ export function updateTaskProgress() {
   if (!task) return;
 
   task.completedPomodoros++;
+  updateIntervalDisplay();
   saveTasks();
   renderTasks();
 }
@@ -169,6 +170,7 @@ export function setCurrentTask(id) {
   stopTimer();
   setCurrentTaskId(id);
   switchMode("pomodoro");
+  updateIntervalDisplay();
   saveTasks();
   renderTasks();
 }
