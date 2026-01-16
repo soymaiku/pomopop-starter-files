@@ -402,14 +402,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       option.classList.add("active");
 
       if (videoSrc === "off") {
+        bgVideo.onloadeddata = null; // Cancel any pending load callbacks
         bgVideo.style.display = "none";
         bgVideo.pause();
         document.body.classList.remove("video-active");
       } else {
+        // Temporarily show theme color to prevent white flash while loading
+        document.body.classList.remove("video-active");
+
         bgVideo.src = videoSrc;
         bgVideo.style.display = "block";
-        document.body.classList.add("video-active");
-        bgVideo.play().catch((e) => console.log("Video play failed:", e));
+
+        // Only make body transparent and play when video is actually ready
+        bgVideo.onloadeddata = () => {
+          document.body.classList.add("video-active");
+          bgVideo.play().catch((e) => console.log("Video play failed:", e));
+        };
       }
 
       // Close modal after selection
