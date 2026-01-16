@@ -1,6 +1,10 @@
 // app.js
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import { auth, waitForFirebase } from "./firebase-config-loader.js";
+import {
+  doc,
+  updateDoc,
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { auth, db, waitForFirebase } from "./firebase-config-loader.js";
 import {
   loadSettings,
   openSettingsModal,
@@ -41,6 +45,22 @@ import {
   loginAsGuest,
   logout,
 } from "./stats.js";
+
+// ==================== FONT LOGIC ====================
+function applyCustomFont() {
+  const link = document.createElement("link");
+  link.href = "https://fonts.googleapis.com/css2?family=Jersey+25&display=swap";
+  link.rel = "stylesheet";
+  document.head.appendChild(link);
+
+  const style = document.createElement("style");
+  style.textContent = `
+    body, button, input, textarea, select {
+      font-family: 'Jersey 25', sans-serif !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 // ==================== BURGER MENU LOGIC ====================
 
@@ -127,6 +147,7 @@ async function handleLogin(type) {
 
 // ==================== EVENT LISTENERS ====================
 document.addEventListener("DOMContentLoaded", async () => {
+  applyCustomFont();
   // Wait for Firebase to initialize before proceeding
   await waitForFirebase();
   // Load settings and tasks
@@ -259,8 +280,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const saveAccountBtn = document.getElementById("js-save-account");
   const cancelAccountBtn = document.getElementById("js-cancel-account");
   const accountEditPic = document.getElementById("js-account-edit-pic");
-  const picUploadInput = document.getElementById("js-pic-upload");
   const accountEditName = document.getElementById("js-account-edit-name");
+
+  // Hide the photo upload button/input since functionality is removed
+  const picUploadInput = document.getElementById("js-pic-upload");
+  if (picUploadInput) picUploadInput.style.display = "none";
+
+  const picUploadLabel = document.querySelector('label[for="js-pic-upload"]');
+  if (picUploadLabel) picUploadLabel.style.display = "none";
 
   function openAccountModal() {
     const user = getCurrentUser();
@@ -275,18 +302,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function closeAccountModal() {
     accountModal.classList.remove("open");
   }
-
-  // Handle profile picture upload
-  picUploadInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        accountEditPic.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
 
   // Save account changes
   saveAccountBtn.addEventListener("click", async () => {
@@ -309,18 +324,21 @@ document.addEventListener("DOMContentLoaded", async () => {
           displayName: newName,
         };
 
-        // If a new photo was selected, use it
-        if (accountEditPic.src && accountEditPic.src.startsWith("data:")) {
-          updates.photoURL = accountEditPic.src;
-        }
-
         await updateProfile(auth.currentUser, updates);
+
+        // Update Firestore to sync name across database (Leaderboard, etc.)
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, {
+          displayName: newName,
+        });
+
+        // Update local storage to reflect changes immediately
+        user.displayName = newName;
+        localStorage.setItem("pomopop-user", JSON.stringify(user));
 
         // Update UI
         updateProfileUI(user);
-        profilePic.src = updates.photoURL || user.photoURL;
         profileName.textContent = newName;
-        accountAvatarDisplay.src = updates.photoURL || user.photoURL;
 
         closeAccountModal();
         alert("Profile updated successfully!");
@@ -343,6 +361,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==================== ABOUT MODAL LOGIC ====================
   const infoBtn = document.getElementById("js-info-btn");
   const aboutModal = document.getElementById("js-about-modal");
+  const closeAboutBtn = document.getElementById("js-close-about");
 
   function openAboutModal() {
     aboutModal.classList.add("open");
@@ -354,6 +373,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Open About Modal
   infoBtn.addEventListener("click", openAboutModal);
+  closeAboutBtn.addEventListener("click", closeAboutModal);
 
   // ==================== VIDEO BACKGROUND LOGIC ====================
   const videoBtn = document.getElementById("js-video-bg-btn");
