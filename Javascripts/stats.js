@@ -257,36 +257,19 @@ async function updateStatsDisplay(user) {
     return;
   }
 
-  // Update stat cards with pomodoro totals
+  // Update only Total stat card (hide Today and This Week)
   const totalEl = document.getElementById("js-stat-sessions");
   const todayEl = document.getElementById("js-stat-today");
   const weekEl = document.getElementById("js-stat-week");
 
   if (totalEl) totalEl.textContent = stats.totalPomodoros || 0;
-  if (todayEl) todayEl.textContent = stats.todayPomodoros || 0;
-  if (weekEl) weekEl.textContent = stats.weeklyPomodoros || 0;
 
-  // Make all stats visible (they show different pomodoro counts now)
-  if (totalEl && totalEl.parentElement) {
-    totalEl.parentElement.style.display = "flex";
-    totalEl.parentElement.innerHTML = `
-      <h3 id="js-stat-sessions">${stats.totalPomodoros || 0}</h3>
-      <p>Total</p>
-    `;
-  }
+  // Show only Total, hide Today and This Week
   if (todayEl && todayEl.parentElement) {
-    todayEl.parentElement.style.display = "flex";
-    todayEl.parentElement.innerHTML = `
-      <h3 id="js-stat-today">${stats.todayPomodoros || 0}</h3>
-      <p>Today</p>
-    `;
+    todayEl.parentElement.style.display = "none";
   }
   if (weekEl && weekEl.parentElement) {
-    weekEl.parentElement.style.display = "flex";
-    weekEl.parentElement.innerHTML = `
-      <h3 id="js-stat-week">${stats.weeklyPomodoros || 0}</h3>
-      <p>This Week</p>
-    `;
+    weekEl.parentElement.style.display = "none";
   }
 }
 

@@ -1,0 +1,94 @@
+FIX: Failed to Load Leaderboard
+═════════════════════════════════════════════════════════════════════════════
+
+ISSUE: "⚠️ Failed to load leaderboard. Please refresh."
+
+ROOT CAUSE: Firestore security rules not allowing read access
+
+SOLUTION:
+
+1. Go to Firebase Console
+   → Select your project
+   → Firestore Database → Rules tab
+
+2. Replace with this security rule:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth.uid == uid;
+    }
+  }
+}
+
+3. Click "Publish"
+
+4. Check browser console (F12 → Console tab) for error details
+
+5. Refresh your app
+
+✓ Leaderboard should now load!
+
+
+COMMON ERROR CODES:
+
+permission-denied:
+  → Fix: Update security rules (see above)
+
+failed-precondition:
+  → Fix: Firestore needs an index for multi-field queries
+  → Firebase should suggest auto-creating it
+
+collection-group-query-not-set-up:
+  → Fix: Make sure "users" collection exists in Firestore
+
+
+RUNNING ON NETLIFY:
+═════════════════════════════════════════════════════════════════════════════
+
+The leaderboard works automatically on Netlify with no extra config:
+
+1. Commit your changes
+2. Push to your Git repo
+3. Netlify auto-deploys
+4. Firestore still works (cloud-to-cloud, no backend needed)
+5. Real-time updates work immediately
+
+No special setup required!
+
+
+HOW IT WORKS:
+
+Local (npm start):
+  Your browser → Firestore Cloud → Browser
+
+Netlify (deployed):
+  Browser → Firestore Cloud → Browser
+
+Same result - the leaderboard uses client-side Firestore SDK.
+No backend code needed.
+
+
+VERIFY IT'S WORKING:
+
+Check browser console (F12 → Console):
+
+✅ See: "✅ Leaderboard listener started"
+✅ See: Users appear in leaderboard
+✅ Complete a pomodoro → leaderboard updates instantly
+
+❌ See: "❌ Leaderboard listener error" 
+  → Check Firestore security rules
+
+
+CHANGES MADE TO FIX:
+
+1. Removed "Weekly" from leaderboard header (now "Total 🍅")
+2. Changed leaderboard to sort by totalPomodoros DESC (not weeklyPomodoros)
+3. Removed Today/This Week stat cards (only Total shows)
+4. Better error messages to diagnose issues
+5. Handle empty collections gracefully
+
+═════════════════════════════════════════════════════════════════════════════

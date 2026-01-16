@@ -25,40 +25,47 @@ export function initializeLeaderboard() {
   const leaderboardContainer = document.getElementById("js-leaderboard");
 
   if (!leaderboardContainer) {
-    console.warn("Leaderboard container not found in DOM");
+    console.warn("⚠️ Leaderboard container not found in DOM");
     return;
   }
 
-  // Query top 10 users by weekly pomodoros (descending), with tie-breaking by total
+  // Query top 10 users by total pomodoros (descending)
   const leaderboardQuery = query(
     collection(db, "users"),
-    where("weeklyPomodoros", ">=", 0), // Ensure valid users
-    orderBy("weeklyPomodoros", "desc"),
     orderBy("totalPomodoros", "desc"),
-    orderBy("displayName", "asc"), // Alphabetical for tie-breaking
     limit(10)
   );
 
-  // Set up real-time listener - updates automatically on any user stat change
+  // Set up real-time listener
   unsubscribe = onSnapshot(
     leaderboardQuery,
     (snapshot) => {
+      if (snapshot.empty) {
+        console.log("ℹ️ No users in leaderboard yet");
+      }
       leaderboardData = snapshot.docs.map((doc, index) => ({
         rank: index + 1,
         uid: doc.id,
         ...doc.data(),
       }));
-
-      // Re-render the UI with updated data
       renderLeaderboard(leaderboardData);
     },
     (error) => {
       console.error("❌ Leaderboard listener error:", error);
+      console.error("Error code:", error.code);
+      console.error("Error message:", error.message);
+      if (error.code === "permission-denied") {
+        console.error(
+          "⚠️ Firestore 'Read' permission denied - update security rules"
+        );
+      } else if (error.code === "failed-precondition") {
+        console.error("⚠️ Firestore index missing or collection needs index");
+      }
       displayLeaderboardError();
     }
   );
 
-  console.log("✅ Leaderboard real-time listener initialized");
+  console.log("✅ Leaderboard listener started");
 }
 
 /**
@@ -85,7 +92,7 @@ function renderLeaderboard(users) {
       <div class="leaderboard-rank">Rank</div>
       <div class="leaderboard-photo"></div>
       <div class="leaderboard-name">Name</div>
-      <div class="leaderboard-pomodoros">Weekly 🍅</div>
+      <div class="leaderboard-pomodoros">Total 🍅</div>
     </div>
   `;
 
@@ -105,7 +112,7 @@ function renderLeaderboard(users) {
           />
         </div>
         <div class="leaderboard-name">${escapeHtml(user.displayName)}</div>
-        <div class="leaderboard-pomodoros">${user.weeklyPomodoros}</div>
+        <div class="leaderboard-pomodoros">${user.totalPomodoros}</div>
       </div>
     `;
   });
@@ -143,7 +150,8 @@ function displayLeaderboardError() {
   if (container) {
     container.innerHTML = `
       <div class="leaderboard-error">
-        <p>⚠️ Failed to load leaderboard. Please refresh.</p>
+        <p>⚠️ Failed to load leaderboard.</p>
+        <p style="font-size: 12px; margin-top: 5px;">Check console for details. Verify Firestore security rules allow 'read' for authenticated users.</p>
       </div>
     `;
   }
