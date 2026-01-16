@@ -10,14 +10,6 @@
   padding: 0;
 }
 
-/* Prevent scrolling on mobile */
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-  touch-action: manipulation;
-}
-
 :root {
   --pomodoro: #ba4949;
   --shortBreak: #38858a;
@@ -171,6 +163,10 @@ body {
    ========================================================================== */
 
 @media screen and (max-width: 480px) {
+  .clock {
+    font-size: 5rem;
+  }
+
   .modal-content {
     width: 95%;
     margin: 5% auto;
