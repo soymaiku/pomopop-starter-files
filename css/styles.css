@@ -914,17 +914,23 @@ body.video-active {
    ========================================================================== */
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
   text-align: center;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .stat-card {
-  background: #f5f5f5;
-  padding: 15px 5px;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 15px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  flex: 1;
+  min-width: 100px;
+  max-width: 140px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .stat-card h3 {
