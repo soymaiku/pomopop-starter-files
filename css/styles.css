@@ -729,8 +729,10 @@ progress::-webkit-progress-value {
   /* Hide video background and info buttons when any modal is open on mobile */
   body:has(.modal.open) .video-bg-btn,
   body:has(.modal.open) .info-btn,
+  body:has(.modal.open) .music-btn,
   body.modal-open .video-bg-btn,
-  body.modal-open .info-btn {
+  body.modal-open .info-btn,
+  body.modal-open .music-btn {
     display: none !important;
   }
 }
@@ -759,6 +761,30 @@ progress::-webkit-progress-value {
 }
 
 .video-bg-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.music-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 100px;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+}
+
+.music-btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
