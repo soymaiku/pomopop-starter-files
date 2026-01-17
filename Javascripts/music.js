@@ -13,12 +13,15 @@ let audioContext;
 let sourceNode;
 let gainNode;
 let useWebAudio = false;
+let webAudioInitAttempted = false;
 
 function tryInitAudioContext() {
   // Only try once per page load
-  if (useWebAudio || audioContext) {
+  if (webAudioInitAttempted) {
     return;
   }
+  
+  webAudioInitAttempted = true;
   
   try {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -34,26 +37,19 @@ function tryInitAudioContext() {
     const volume = volumeSlider ? volumeSlider.value / 100 : 0.5;
     gainNode.gain.value = volume;
     
-    // Also set native volume
-    try {
-      musicPlayer.volume = volume;
-    } catch (e) {
-      // Ignore on iOS
-    }
-    
     useWebAudio = true;
-    console.log("Web Audio API initialized successfully");
+    console.log("Web Audio API initialized - volume control enabled for iOS");
   } catch (error) {
-    console.log("Using standard audio controls:", error.message);
+    console.warn("Web Audio API failed:", error.message);
     useWebAudio = false;
     
-    // Ensure native volume is set
+    // Set native volume as fallback
     const volumeSlider = document.getElementById("js-volume");
     if (volumeSlider) {
       try {
         musicPlayer.volume = volumeSlider.value / 100;
       } catch (e) {
-        // Ignore
+        console.log("Native volume control not available (iOS)");
       }
     }
   }
@@ -70,43 +66,39 @@ export function playMusic() {
 
   const trackUrl = musicTracks[trackId];
   if (trackUrl) {
-    // Try to initialize Web Audio API on first play (for better volume control)
-    if (!audioContext && !useWebAudio) {
-      tryInitAudioContext();
-    }
-    
     // Check if it's a streaming URL
     const isStreaming = trackUrl.startsWith('http');
     
     // Set the audio source
     musicPlayer.src = trackUrl;
     
+    // Resume audio context if it exists and is suspended
+    if (audioContext && audioContext.state === 'suspended') {
+      audioContext.resume().catch(err => console.log("Resume failed:", err));
+    }
+    
     if (isStreaming) {
-      // For streaming sources, don't call load() - just play directly
-      // This prevents delays in streaming playback
-      if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume()
-          .then(() => musicPlayer.play())
-          .catch((error) => console.error("Play failed:", error));
-      } else {
-        // Play streaming audio immediately
-        musicPlayer.play().catch((error) => {
+      // For streaming sources, play immediately then init Web Audio
+      musicPlayer.play()
+        .then(() => {
+          // Initialize Web Audio API after playback starts (works better with CORS)
+          if (!webAudioInitAttempted) {
+            setTimeout(() => tryInitAudioContext(), 100);
+          }
+        })
+        .catch((error) => {
           console.error("Streaming play failed:", error);
         });
-      }
     } else {
-      // For local files, use load() for better reliability
-      musicPlayer.load();
-      
-      if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume()
-          .then(() => musicPlayer.play())
-          .catch((error) => console.error("Play failed:", error));
-      } else {
-        musicPlayer.play().catch((error) => {
-          console.error("Autoplay failed:", error);
-        });
+      // For local files, initialize Web Audio first
+      if (!webAudioInitAttempted) {
+        tryInitAudioContext();
       }
+      
+      musicPlayer.load();
+      musicPlayer.play().catch((error) => {
+        console.error("Autoplay failed:", error);
+      });
     }
   }
 }
