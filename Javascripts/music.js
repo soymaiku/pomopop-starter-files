@@ -31,8 +31,14 @@ function tryInitAudioContext() {
     
     // Set initial volume from slider
     const volumeSlider = document.getElementById("js-volume");
-    if (volumeSlider) {
-      gainNode.gain.value = volumeSlider.value / 100;
+    const volume = volumeSlider ? volumeSlider.value / 100 : 0.5;
+    gainNode.gain.value = volume;
+    
+    // Also set native volume
+    try {
+      musicPlayer.volume = volume;
+    } catch (e) {
+      // Ignore on iOS
     }
     
     useWebAudio = true;
@@ -40,6 +46,16 @@ function tryInitAudioContext() {
   } catch (error) {
     console.log("Using standard audio controls:", error.message);
     useWebAudio = false;
+    
+    // Ensure native volume is set
+    const volumeSlider = document.getElementById("js-volume");
+    if (volumeSlider) {
+      try {
+        musicPlayer.volume = volumeSlider.value / 100;
+      } catch (e) {
+        // Ignore
+      }
+    }
   }
 }
 
@@ -59,17 +75,39 @@ export function playMusic() {
       tryInitAudioContext();
     }
     
-    // Resume audio context if it exists and is suspended
-    if (audioContext && audioContext.state === 'suspended') {
-      audioContext.resume().catch(err => console.log("Resume failed:", err));
-    }
+    // Check if it's a streaming URL
+    const isStreaming = trackUrl.startsWith('http');
     
+    // Set the audio source
     musicPlayer.src = trackUrl;
     
-    // Attempt to play and catch any potential autoplay errors
-    musicPlayer.play().catch((error) => {
-      console.error("Autoplay failed:", error);
-    });
+    if (isStreaming) {
+      // For streaming sources, don't call load() - just play directly
+      // This prevents delays in streaming playback
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume()
+          .then(() => musicPlayer.play())
+          .catch((error) => console.error("Play failed:", error));
+      } else {
+        // Play streaming audio immediately
+        musicPlayer.play().catch((error) => {
+          console.error("Streaming play failed:", error);
+        });
+      }
+    } else {
+      // For local files, use load() for better reliability
+      musicPlayer.load();
+      
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume()
+          .then(() => musicPlayer.play())
+          .catch((error) => console.error("Play failed:", error));
+      } else {
+        musicPlayer.play().catch((error) => {
+          console.error("Autoplay failed:", error);
+        });
+      }
+    }
   }
 }
 
