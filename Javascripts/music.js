@@ -69,6 +69,8 @@ function extractYouTubeVideoId(url) {
     /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/,
     // Embed URL: youtube.com/embed/VIDEO_ID
     /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/,
+    // Live URL: youtube.com/live/VIDEO_ID
+    /(?:youtube\.com\/live\/)([a-zA-Z0-9_-]{11})(?:[&?]|$)/,
     // Playlist URL: extract first video if present
     /(?:youtube\.com\/watch\?.*[&?]v=)([a-zA-Z0-9_-]{11})/,
     // Mobile URL: m.youtube.com
@@ -152,8 +154,9 @@ export function playYouTubeVideo() {
   // Stop preset audio if playing
   musicPlayer.pause();
   
-  // Update iframe source with autoplay
-  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+  // Update iframe source with autoplay and live stream support
+  // Add mute=0 to allow unmuted autoplay, loop for non-live videos
+  iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&mute=0&playsinline=1`;
   
   // Show player, hide placeholder
   playerWrapper.classList.remove("hidden");
