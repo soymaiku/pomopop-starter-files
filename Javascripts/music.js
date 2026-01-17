@@ -8,6 +8,26 @@ const musicTracks = {
   nature: "",
 };
 
+// Web Audio API setup for iOS volume control
+let audioContext;
+let sourceNode;
+let gainNode;
+let currentTrackUrl = null;
+
+function initAudioContext() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = audioContext.createGain();
+    gainNode.connect(audioContext.destination);
+    
+    // Connect the audio element to Web Audio API
+    if (!sourceNode) {
+      sourceNode = audioContext.createMediaElementSource(musicPlayer);
+      sourceNode.connect(gainNode);
+    }
+  }
+}
+
 export function playMusic() {
   const select = document.getElementById("js-music-select");
   const trackId = select.value;
@@ -19,7 +39,17 @@ export function playMusic() {
 
   const trackUrl = musicTracks[trackId];
   if (trackUrl) {
+    // Initialize audio context on user interaction (required for iOS)
+    initAudioContext();
+    
+    // Resume audio context if suspended (iOS requirement)
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+    
     musicPlayer.src = trackUrl;
+    currentTrackUrl = trackUrl;
+    
     // Attempt to play and catch any potential autoplay errors
     musicPlayer.play().catch((error) => {
       console.error("Autoplay failed:", error);
@@ -47,5 +77,13 @@ export function closeMusicModal() {
 }
 
 export function handleVolumeChange(e) {
-  musicPlayer.volume = e.target.value / 100;
+  const volume = e.target.value / 100;
+  
+  // Use Web Audio API gain node for iOS compatibility
+  if (gainNode) {
+    gainNode.gain.value = volume;
+  }
+  
+  // Also set native volume for non-iOS devices
+  musicPlayer.volume = volume;
 }
