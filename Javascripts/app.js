@@ -393,6 +393,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     "js-close-guest-warning"
   );
   const warningLoginBtn = document.getElementById("js-warning-login-btn");
+  const statsLoginBtn = document.getElementById("js-stats-login-btn");
 
   function closeGuestWarning() {
     guestWarningModal.classList.remove("open");
@@ -405,6 +406,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (warningLoginBtn) {
     warningLoginBtn.addEventListener("click", () => {
       closeGuestWarning();
+      loginModal.classList.add("open");
+    });
+  }
+
+  // Handle login button in stats modal
+  if (statsLoginBtn) {
+    statsLoginBtn.addEventListener("click", () => {
+      closeStatsModal();
       loginModal.classList.add("open");
     });
   }

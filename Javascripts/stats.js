@@ -236,19 +236,19 @@ async function getUserStats(uid) {
 // ==================== UI LOGIC ====================
 
 async function updateStatsDisplay(user) {
-  const statsGrid = document.querySelector(".stats-grid");
-  const guestMsg = document.getElementById("js-guest-message");
+  const statsContent = document.getElementById("js-stats-content");
+  const guestOverlay = document.getElementById("js-stats-guest-overlay");
 
   if (user.isGuest) {
-    // Hide stats, show message for guests
-    if (statsGrid) statsGrid.classList.add("hidden");
-    if (guestMsg) guestMsg.classList.remove("hidden");
+    // Show restricted access overlay for guests
+    if (statsContent) statsContent.classList.add("hidden");
+    if (guestOverlay) guestOverlay.classList.remove("hidden");
     return;
   }
 
-  // Show stats grid, hide guest message
-  if (statsGrid) statsGrid.classList.remove("hidden");
-  if (guestMsg) guestMsg.classList.add("hidden");
+  // Show stats content, hide guest overlay
+  if (statsContent) statsContent.classList.remove("hidden");
+  if (guestOverlay) guestOverlay.classList.add("hidden");
 
   // Fetch latest stats from Firestore
   const stats = await getUserStats(user.uid);

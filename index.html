@@ -550,7 +550,7 @@
       id="js-about-modal"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
+        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-2xl p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
       >
         <span
           class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
@@ -645,12 +645,39 @@
           id="js-close-stats"
           >&times;</span
         >
-        <h2
-          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
-        >
-          Your Progress
-        </h2>
-        <div class="overflow-y-auto custom-scrollbar pr-1">
+        
+        <!-- Restricted Access Overlay for Guests -->
+        <div id="js-stats-guest-overlay" class="hidden">
+          <h2
+            class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+          >
+            Restricted Access
+          </h2>
+          <div style="text-align: center; margin: 20px 0">
+            <p
+              style="font-size: 22px; color: #555; margin-bottom: 20px"
+              class="font-medium"
+            >
+              🔒 Stats are only available for logged-in users.
+            </p>
+            <button
+              class="w-full py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transform active:scale-[0.98] transition-all mt-2 uppercase tracking-wide"
+              id="js-stats-login-btn"
+              style="width: 100%"
+            >
+              Log In to Unlock
+            </button>
+          </div>
+        </div>
+
+        <!-- Normal Stats Content -->
+        <div id="js-stats-content">
+          <h2
+            class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+          >
+            Your Progress
+          </h2>
+          <div class="overflow-y-auto custom-scrollbar pr-1">
           <div
             class="stats-grid flex justify-center gap-4 text-center mt-4 flex-wrap"
           >
@@ -716,14 +743,6 @@
             </div>
           </div>
 
-          <!-- Message for Guests -->
-          <div
-            id="js-guest-message"
-            class="mt-6 p-4 bg-yellow-50 text-yellow-700 rounded-xl border border-yellow-100 text-center hidden"
-          >
-            <p class="font-medium">
-              🔒 Stats are only available for logged-in users.
-            </p>
           </div>
         </div>
       </div>
