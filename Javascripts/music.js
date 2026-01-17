@@ -16,8 +16,8 @@ let useWebAudio = false;
 let webAudioInitAttempted = false;
 
 // YouTube player state
-let currentYouTubeVideoId = null;
-let isYouTubePlaying = false;
+let currentYouTubeVideoId = "uTuuz__8gUM";
+let isYouTubePlaying = true;
 
 function tryInitAudioContext() {
   // Only try once per page load
