@@ -35,6 +35,7 @@ import {
   playMusic,
   stopMusic,
   handleVolumeChange,
+  playYouTubeVideo,
 } from "./music.js";
 import { timer } from "./config.js";
 import {
@@ -257,7 +258,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("js-close-music")
     .addEventListener("click", closeMusicModal);
-  document.getElementById("js-music-play").addEventListener("click", playMusic);
   document.getElementById("js-music-stop").addEventListener("click", stopMusic);
   document
     .getElementById("js-music-select")
@@ -265,6 +265,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("js-volume")
     .addEventListener("input", handleVolumeChange);
+  
+  // YouTube Player Handlers
+  document
+    .getElementById("js-youtube-play-btn")
+    .addEventListener("click", playYouTubeVideo);
+  
+  // Allow Enter key to play YouTube video
+  document
+    .getElementById("js-youtube-url")
+    .addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        playYouTubeVideo();
+      }
+    });
 
   // Tasks Modal Handlers
   // Task open is now handled by the dropdown button above
