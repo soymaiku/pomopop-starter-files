@@ -56,6 +56,11 @@ function resetSettingsToDefaults() {
 let unsubscribeSettings = null;
 
 export function fetchUserSettings(userId) {
+  if (!db) {
+    console.warn("⚠️ Firebase not initialized, skipping settings sync");
+    return;
+  }
+  
   if (unsubscribeSettings) unsubscribeSettings();
 
   // First, clear any guest settings from memory to prevent sync
@@ -125,6 +130,8 @@ export function fetchUserSettings(userId) {
     },
     (error) => {
       console.error("Error listening to user settings:", error);
+      // Continue with defaults if Firebase fails
+      resetSettingsToDefaults();
     }
   );
 }
@@ -161,9 +168,17 @@ export function stopSettingsListener() {
 
 export async function saveUserSettings(userId, data) {
   try {
+    if (!db) {
+      console.warn("⚠️ Firebase not initialized, saving to localStorage instead");
+      localStorage.setItem("pomopop-guest-settings", JSON.stringify(data));
+      return;
+    }
+    
     await setDoc(doc(db, "users", userId), data, { merge: true });
   } catch (error) {
     console.error("Error saving user settings:", error);
+    // Fallback to localStorage
+    localStorage.setItem("pomopop-guest-settings", JSON.stringify(data));
   }
 }
 

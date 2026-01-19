@@ -95,6 +95,11 @@ export async function logout() {
  */
 async function initializeUserStats(appUser) {
   try {
+    if (!db) {
+      console.warn("⚠️ Firebase not initialized, skipping user stats initialization");
+      return;
+    }
+    
     const userRef = doc(db, "users", appUser.uid);
     const userSnap = await getDoc(userRef);
 
@@ -131,6 +136,7 @@ async function initializeUserStats(appUser) {
     }
   } catch (error) {
     console.error("❌ Error initializing user stats:", error);
+    // Continue anyway - guest mode will still work
   }
 }
 

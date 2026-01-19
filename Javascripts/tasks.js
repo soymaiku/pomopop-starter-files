@@ -36,6 +36,11 @@ export function loadTasks() {
 let unsubscribeTasks = null;
 
 export function fetchUserTasks(userId) {
+  if (!db) {
+    console.warn("⚠️ Firebase not initialized, skipping task sync");
+    return;
+  }
+  
   if (unsubscribeTasks) unsubscribeTasks(); // Stop any previous listener
 
   const docRef = doc(db, "users", userId);
@@ -56,6 +61,7 @@ export function fetchUserTasks(userId) {
     },
     (error) => {
       console.error("Error listening to user tasks:", error);
+      // Continue with local tasks if Firebase fails
     }
   );
 }
@@ -69,9 +75,23 @@ export function stopTasksListener() {
 
 export async function saveUserTasks(userId, data) {
   try {
+    if (!db) {
+      console.warn("⚠️ Firebase not initialized, saving to localStorage instead");
+      localStorage.setItem(
+        "pomodoroTasks",
+        JSON.stringify(data)
+      );
+      return;
+    }
+    
     await setDoc(doc(db, "users", userId), data, { merge: true });
   } catch (error) {
     console.error("Error saving user tasks:", error);
+    // Fallback to localStorage
+    localStorage.setItem(
+      "pomodoroTasks",
+      JSON.stringify(data)
+    );
   }
 }
 
