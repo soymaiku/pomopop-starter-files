@@ -19,6 +19,15 @@
             },
             fontFamily: {
               sans: ['"Jersey 25"', "sans-serif"],
+              digital: ['"Orbitron"', '"Courier New"', "monospace"],
+            },
+            boxShadow: {
+              "neu-raised":
+                "8px 8px 16px rgba(0,0,0,0.2), -8px -8px 16px rgba(255,255,255,0.15)",
+              "neu-inset":
+                "inset 4px 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(255,255,255,0.1)",
+              "neu-btn":
+                "6px 6px 12px rgba(0,0,0,0.2), -6px -6px 12px rgba(255,255,255,0.15)",
             },
           },
         },
@@ -29,10 +38,25 @@
   <body
     class="bg-pomodoro text-white h-dvh w-screen transition-colors duration-700 overflow-hidden font-sans selection:bg-black/20 fixed inset-0"
   >
-    <header class="fixed top-0 right-0 p-4 z-[200]">
+    <!-- Header with centered logo and right-side icons -->
+    <header
+      class="fixed top-0 left-0 right-0 p-4 z-[200] flex items-center justify-between"
+    >
+      <!-- Spacer for balance -->
+      <div class="w-24"></div>
+
+      <!-- Centered Logo -->
+      <h1
+        class="text-white/95 text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.25em] uppercase drop-shadow-lg"
+        style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2)"
+      >
+        POMOPOP
+      </h1>
+
+      <!-- Right side icons -->
       <div class="flex items-center gap-3" id="js-burger-menu">
         <button
-          class="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95 border border-white/20 shadow-lg"
+          class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 neu-icon-btn"
           id="js-account-icon-btn"
           title="Account"
         >
@@ -40,11 +64,11 @@
             id="js-account-avatar"
             src=""
             alt="Account"
-            class="w-8 h-8 rounded-full object-cover border-2 border-white/80"
+            class="w-8 h-8 rounded-xl object-cover border-2 border-white/60"
           />
         </button>
         <button
-          class="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all hover:scale-105 active:scale-95 border border-white/20 shadow-lg group"
+          class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 group neu-icon-btn"
           id="js-menu-toggle-btn"
         >
           <div class="w-6 h-5 flex flex-col justify-between">
@@ -121,81 +145,85 @@
     </header>
 
     <main
-      class="relative w-full h-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden pt-16"
+      class="relative w-full h-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden pt-20 pb-32"
     >
-      <h1
-        class="fixed top-4 left-1/2 -translate-x-1/2 text-white/90 text-lg sm:text-2xl md:text-3xl font-bold tracking-[0.2em] uppercase drop-shadow-sm z-[101] px-2"
-      >
-        Pomopop
-      </h1>
-
       <progress
         id="js-progress"
         value="0"
         class="fixed top-0 left-0 w-full h-1 sm:h-1.5 bg-black/10 [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:bg-white/80 z-[150]"
       ></progress>
 
-      <div class="flex flex-col items-center justify-center w-full max-w-xl z-10 flex-1">
+      <div
+        class="flex flex-col items-center justify-center w-full max-w-xl z-10 flex-1 gap-4 sm:gap-6"
+      >
+        <!-- Neumorphic Mode Switcher -->
         <div
-          class="flex gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-12 p-1 sm:p-1.5 bg-black/20 backdrop-blur-md rounded-full"
+          class="flex gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-full neu-pill"
           id="js-mode-buttons"
         >
           <button
             data-mode="pomodoro"
-            class="px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-pomodoro [&.active]:shadow-lg"
+            class="px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-all [&.active]:bg-white [&.active]:text-pomodoro [&.active]:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.1)]"
             id="js-pomodoro"
           >
             Pomodoro
           </button>
           <button
             data-mode="shortBreak"
-            class="px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-shortBreak [&.active]:shadow-lg"
+            class="px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-all [&.active]:bg-white [&.active]:text-shortBreak [&.active]:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.1)]"
             id="js-short-break"
           >
             Short break
           </button>
           <button
             data-mode="longBreak"
-            class="px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-longBreak [&.active]:shadow-lg"
+            class="px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-all [&.active]:bg-white [&.active]:text-longBreak [&.active]:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.1)]"
             id="js-long-break"
           >
             Long break
           </button>
         </div>
 
+        <!-- Digital Timer Display -->
         <div
-          class="text-7xl sm:text-8xl md:text-[12rem] lg:text-[15rem] leading-none font-bold text-white drop-shadow-2xl mb-3 sm:mb-6 md:mb-12 tracking-widest select-none transition-all"
+          class="text-7xl sm:text-8xl md:text-[10rem] lg:text-[12rem] leading-none font-bold text-white select-none transition-all digital-timer"
           id="js-clock"
         >
           <span id="js-minutes" class="tabular-nums">25</span
-          ><span class="opacity-50 relative -top-1 sm:-top-2 md:-top-3">:</span
+          ><span class="opacity-40 relative -top-0.5 sm:-top-1 md:-top-2 mx-1"
+            >:</span
           ><span id="js-seconds" class="tabular-nums">00</span>
         </div>
 
+        <!-- Centered Work Counter -->
         <div
-          class="text-base sm:text-lg md:text-2xl text-white/80 font-medium tracking-widest uppercase mb-2 sm:mb-3"
+          class="text-sm sm:text-base md:text-lg text-white/80 font-semibold tracking-[0.2em] uppercase text-center"
           id="js-interval-display"
         >
-          Work 1/1
+          WORK 0 / 1
         </div>
 
+        <!-- Centered Task Name -->
         <div
-          class="text-sm sm:text-base md:text-lg text-white/90 font-light mb-4 sm:mb-6 md:mb-10 min-h-7 text-center max-w-xs sm:max-w-sm md:max-w-md px-2 truncate"
+          class="text-sm sm:text-base text-white/70 font-medium text-center max-w-xs sm:max-w-sm px-4"
           id="js-task-name-display"
         >
-          No task selected
+          Current: No task selected
         </div>
 
-        <div class="flex items-center gap-4 sm:gap-5 md:gap-6">
+        <!-- Neumorphic Buttons Row -->
+        <div
+          class="flex items-center justify-center gap-4 sm:gap-5 mt-4 sm:mt-6"
+        >
           <button
-            class="bg-white text-pomodoro text-lg sm:text-2xl md:text-3xl font-bold uppercase px-6 sm:px-8 md:px-12 py-3 md:py-5 rounded-3xl shadow-[0_8px_0_rgb(230,230,230)] active:shadow-none active:translate-y-2 transition-all hover:bg-gray-50 min-h-12 sm:min-h-14 min-w-max touch-manipulation"
+            class="bg-white text-pomodoro text-lg sm:text-xl md:text-2xl font-bold uppercase px-8 sm:px-10 md:px-14 py-3.5 sm:py-4 md:py-5 rounded-2xl transition-all min-w-[140px] sm:min-w-[160px] touch-manipulation shadow-[6px_6px_12px_rgba(0,0,0,0.2),-6px_-6px_12px_rgba(255,255,255,0.15)] hover:shadow-[8px_8px_16px_rgba(0,0,0,0.22),-8px_-8px_16px_rgba(255,255,255,0.18)] active:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.1),inset_-3px_-3px_6px_rgba(255,255,255,0.5)] active:translate-y-0.5"
             data-action="start"
             id="js-btn"
           >
-            Start
+            START
           </button>
           <button
-            class="bg-white/20 backdrop-blur-md text-white text-2xl sm:text-3xl font-bold p-3 md:p-5 rounded-3xl shadow-[0_8px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-2 transition-all hover:bg-white/30 flex items-center justify-center min-h-12 sm:min-h-14 w-14 sm:w-16 md:w-20 touch-manipulation"
+            class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl text-white/90 transition-all touch-manipulation neu-icon-btn hover:scale-105 active:scale-95"
             id="js-reset-btn"
             title="Reset timer"
           >
@@ -362,7 +390,9 @@
           🎵 Background Music
         </h2>
 
-        <div class="flex flex-col gap-6 overflow-y-auto pr-2">
+        <div
+          class="flex flex-col gap-5 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5 custom-scrollbar"
+        >
           <!-- YouTube URL Input Section -->
           <div class="bg-gray-100/80 rounded-2xl p-5 border border-gray-200">
             <label
@@ -446,15 +476,17 @@
           </div>
 
           <!-- Preset Music Section -->
-          <div class="bg-gray-100/80 rounded-2xl p-5 border border-gray-200">
+          <div
+            class="bg-gray-100/80 rounded-2xl p-4 sm:p-5 border border-gray-200"
+          >
             <label
               for="js-music-select"
-              class="text-gray-700 font-bold text-lg mb-3 block"
+              class="text-gray-700 font-bold text-base sm:text-lg mb-3 block"
               >Choose a preset:</label
             >
             <select
               id="js-music-select"
-              class="w-full p-3 rounded-xl bg-white border border-gray-300 focus:border-pomodoro focus:ring-2 focus:ring-pomodoro/50 outline-none transition-all text-gray-800 cursor-pointer"
+              class="w-full p-3 rounded-xl bg-white border border-gray-300 focus:border-pomodoro focus:ring-2 focus:ring-pomodoro/50 outline-none transition-all text-gray-800 cursor-pointer text-sm sm:text-base"
             >
               <option value="">No Music</option>
               <option value="lofi">White Noise</option>
@@ -476,10 +508,12 @@
           </div>
 
           <!-- Volume Control -->
-          <div class="bg-gray-100/80 rounded-2xl p-5 border border-gray-200">
+          <div
+            class="bg-gray-100/80 rounded-2xl p-4 sm:p-5 border border-gray-200"
+          >
             <label
               for="js-volume"
-              class="text-gray-700 font-semibold mb-3 block flex items-center gap-2"
+              class="text-gray-700 font-semibold mb-3 block flex items-center gap-2 text-sm sm:text-base"
               ><span>🔊</span> Volume:</label
             >
             <div class="flex items-center gap-4">
@@ -561,27 +595,20 @@
       <audio id="js-music-player" loop preload="auto"></audio>
     </div>
 
-    <!-- Video Background Elements -->
-    <button
-      id="js-video-bg-btn"
-      class="fixed bottom-6 left-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
-    >
-      🎥
-    </button>
-    <button
-      id="js-music-btn"
-      class="fixed bottom-6 left-24 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
-    >
-      🎵
-    </button>
-
-    <!-- Info/About Button -->
-    <button
-      id="js-info-btn"
-      class="fixed bottom-6 right-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
-    >
-      ℹ️
-    </button>
+    <!-- Neumorphic Footer Buttons -->
+    <footer class="footer-buttons-container">
+      <button
+        id="js-video-bg-btn"
+        class="video-bg-btn"
+        title="Video Background"
+      >
+        🎥
+      </button>
+      <button id="js-music-btn" class="music-btn" title="Background Music">
+        🎵
+      </button>
+      <button id="js-info-btn" class="info-btn" title="About">ℹ️</button>
+    </footer>
 
     <video id="bg-video" loop muted playsinline>
       <source src="" type="video/mp4" />

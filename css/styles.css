@@ -21,14 +21,101 @@ body {
 }
 
 :root {
-  --pomodoro: #ba4949;
-  --shortBreak: #38858a;
-  --longBreak: #397097;
+  --pomodoro: #5cb85c;
+  --shortBreak: #4db8a5;
+  --longBreak: #5a9fd4;
   --color-text-light: rgba(255, 255, 255, 0.9);
   --color-text-medium: rgba(255, 255, 255, 0.6);
   --color-bg-light: #fff;
   --color-progress-bar: rgba(0, 0, 0, 0.1);
   --burger-icon-color: #fff;
+
+  /* Neumorphic Variables */
+  --neu-bg: #5cb85c;
+  --neu-shadow-light: rgba(255, 255, 255, 0.25);
+  --neu-shadow-dark: rgba(0, 0, 0, 0.2);
+  --neu-inset-light: rgba(255, 255, 255, 0.1);
+  --neu-inset-dark: rgba(0, 0, 0, 0.15);
+}
+
+/* Digital/Pixel Font Import */
+@import url("https://fonts.googleapis.com/css2?family=Jersey+25&family=Orbitron:wght@400;700;900&display=swap");
+
+/* ==========================================================================
+   NEUMORPHIC DESIGN SYSTEM
+   ========================================================================== */
+
+/* Neumorphic raised element (buttons, cards) */
+.neu-raised {
+  background: var(--neu-bg);
+  box-shadow:
+    8px 8px 16px var(--neu-shadow-dark),
+    -8px -8px 16px var(--neu-shadow-light);
+  border-radius: 20px;
+}
+
+/* Neumorphic pressed/inset element */
+.neu-inset {
+  background: var(--neu-bg);
+  box-shadow:
+    inset 4px 4px 8px var(--neu-inset-dark),
+    inset -4px -4px 8px var(--neu-inset-light);
+  border-radius: 20px;
+}
+
+/* Neumorphic button with 3D pop effect */
+.neu-button {
+  background: linear-gradient(145deg, #62c962, #52a852);
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.2),
+    -6px -6px 12px rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.neu-button:active {
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.2),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.1);
+}
+
+/* Neumorphic pill container */
+.neu-pill {
+  background: rgba(0, 0, 0, 0.15);
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.15),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+}
+
+/* Neumorphic icon button */
+.neu-icon-btn {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.15),
+    -4px -4px 8px rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.neu-icon-btn:active {
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.15),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.08);
+}
+
+/* Digital timer font */
+.digital-timer {
+  font-family: "Jersey 25", "Orbitron", "Courier New", monospace;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Custom Scrollbar for aesthetic feel */
@@ -242,76 +329,136 @@ html {
    8. Video Background Feature
    ========================================================================== */
 
-.video-bg-btn {
+/* ==========================================================================
+   NEUMORPHIC FOOTER BUTTONS
+   ========================================================================== */
+
+.footer-buttons-container {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 30px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  z-index: 1000;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-family: inherit;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px 32px 24px;
+  z-index: 50;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 
-.video-bg-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+/* Hide footer buttons when any modal is open */
+body:has(.modal.open) .footer-buttons-container,
+body.modal-open .footer-buttons-container {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.video-bg-btn,
+.music-btn,
+.info-btn {
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.08)
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    6px 6px 12px rgba(0, 0, 0, 0.15),
+    -6px -6px 12px rgba(255, 255, 255, 0.1);
+  font-family: inherit;
+  position: relative;
+}
+
+.video-bg-btn:hover,
+.music-btn:hover,
+.info-btn:hover {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.12)
+  );
   transform: translateY(-2px);
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.18),
+    -8px -8px 16px rgba(255, 255, 255, 0.12);
+}
+
+.video-bg-btn:active,
+.music-btn:active,
+.info-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 3px 3px 6px rgba(0, 0, 0, 0.15),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.08);
+}
+
+/* Remove old positioning - handled by container now */
+.video-bg-btn {
+  position: relative;
+  bottom: auto;
+  left: auto;
 }
 
 .music-btn {
-  position: fixed;
-  bottom: 20px;
-  left: 100px;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 30px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  z-index: 1000;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-family: inherit;
-}
-
-.music-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  position: relative;
+  bottom: auto;
+  left: auto;
 }
 
 .info-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 30px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  z-index: 1000;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-family: inherit;
+  position: relative;
+  bottom: auto;
+  right: auto;
 }
 
-.info-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+/* Mobile responsive footer buttons */
+@media (max-width: 480px) {
+  .footer-buttons-container {
+    gap: 16px;
+    padding: 16px 20px 28px 20px;
+  }
+
+  .video-bg-btn,
+  .music-btn,
+  .info-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .footer-buttons-container {
+    gap: 12px;
+    padding: 14px 16px 24px 16px;
+  }
+
+  .video-bg-btn,
+  .music-btn,
+  .info-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 16px;
+  }
 }
 
 /* Video Modal Grid - Hide scrollbar on all resolutions */
