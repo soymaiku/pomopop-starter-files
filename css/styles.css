@@ -14,10 +14,15 @@
 html,
 body {
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
   overflow: hidden;
   touch-action: manipulation;
   -webkit-font-smoothing: antialiased;
   -webkit-touch-callout: none;
+  /* Support for safe areas on notched devices */
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 :root {
@@ -174,15 +179,18 @@ html {
   border-radius: 20px;
   max-width: 95vw;
   max-height: 90vh;
+  max-height: 90dvh; /* Dynamic viewport height */
   overflow-y: auto;
 }
 
 @media (max-width: 475px) {
   .modal-content {
-    border-radius: 20px;
-    max-width: calc(100vw - 16px);
-    max-height: calc(100vh - 20px);
+    border-radius: 20px 20px 0 0;
+    max-width: 100vw;
+    max-height: calc(85dvh - env(safe-area-inset-bottom, 0px));
     padding: 20px 16px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    margin-bottom: 0;
   }
 }
 
@@ -358,7 +366,9 @@ html {
   justify-content: center;
   align-items: center;
   gap: 24px;
-  padding: 20px 24px 32px 24px;
+  padding: 20px 24px calc(24px + env(safe-area-inset-bottom, 8px)) 24px;
+  padding-left: max(24px, env(safe-area-inset-left));
+  padding-right: max(24px, env(safe-area-inset-right));
   z-index: 50;
   transition:
     opacity 0.3s ease,
@@ -1609,7 +1619,7 @@ html {
 /* Touch-friendly spacing */
 @media (max-width: 640px) {
   .modal-content {
-    border-radius: 20px;
+    border-radius: 28px 28px 0 0;
   }
 
   .close {
@@ -1638,10 +1648,71 @@ html {
   }
 }
 
-/* Safe area insets for notched phones */
+/* ==========================================================================
+   MOBILE BROWSER SAFE AREA & VIEWPORT FIX
+   ========================================================================== */
+
+/* Safe area insets for notched phones and browser chrome */
 @supports (padding: max(0px)) {
   body {
     padding-left: max(12px, env(safe-area-inset-left));
     padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  /* Fixed header accounts for browser top UI */
+  header {
+    padding-top: max(1rem, env(safe-area-inset-top)) !important;
+  }
+
+  /* Footer buttons stay above bottom browser UI */
+  .footer-buttons-container {
+    padding-bottom: max(
+      24px,
+      calc(16px + env(safe-area-inset-bottom))
+    ) !important;
+  }
+}
+
+/* Modal positioning for mobile browsers */
+@media (max-width: 640px) {
+  .modal {
+    /* Account for browser UI on mobile */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .modal-content {
+    /* Reduce max height to account for browser chrome */
+    max-height: calc(
+      85dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+    ) !important;
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Ensure scrollable content doesn't get cut off */
+  .modal-content .overflow-y-auto {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Fix for iOS Safari dynamic toolbar */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
+  }
+
+  .modal {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Chrome/Android browser fix */
+@supports (height: 100dvh) {
+  body {
+    height: 100dvh;
+  }
+
+  .modal {
+    height: 100dvh;
   }
 }

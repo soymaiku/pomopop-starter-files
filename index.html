@@ -2,8 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
+    />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <title>Freshman Pomodoro Clock Demo</title>
     <link rel="stylesheet" href="./css/styles.css" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,7 +49,7 @@
   >
     <!-- Header with centered logo and right-side icons -->
     <header
-      class="fixed top-0 left-0 right-0 p-4 z-[200] flex items-center justify-between"
+      class="fixed top-0 left-0 right-0 p-4 pt-[max(1rem,env(safe-area-inset-top))] z-[200] flex items-center justify-between"
     >
       <!-- Spacer for balance -->
       <div class="w-24"></div>
@@ -239,7 +248,7 @@
       id="js-settings-modal"
     >
       <div
-        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden"
+        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85dvh] sm:max-h-[85vh] flex flex-col overflow-hidden"
       >
         <!-- Header with Drag Handle & Close -->
         <div
@@ -436,7 +445,7 @@
       id="js-music-modal"
     >
       <div
-        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden"
+        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85dvh] sm:max-h-[85vh] flex flex-col overflow-hidden"
       >
         <!-- Header with Drag Handle & Close -->
         <div
@@ -604,7 +613,7 @@
       id="js-task-modal"
     >
       <div
-        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
+        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[80dvh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
         <!-- Header with Drag Handle & Close -->
         <div
@@ -724,7 +733,7 @@
       id="js-video-modal"
     >
       <div
-        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[70vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
+        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[65dvh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
         <!-- Header with Drag Handle & Close -->
         <div
@@ -803,7 +812,7 @@
       id="js-about-modal"
     >
       <div
-        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-2xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
+        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-2xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[80dvh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
         <!-- Header with Drag Handle & Close -->
         <div
@@ -918,7 +927,7 @@
       class="modal fixed inset-0 z-[1000] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-md opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
     >
       <div
-        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
+        class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[80dvh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
         <!-- Header with Drag Handle & Close -->
         <div
@@ -1107,7 +1116,7 @@
       class="modal fixed inset-0 z-[1000] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible min-h-screen p-3 sm:p-4"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[88vh] sm:max-h-[90vh]"
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[85dvh] sm:max-h-[90vh]"
       >
         <span
           class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
