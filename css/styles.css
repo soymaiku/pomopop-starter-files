@@ -396,7 +396,7 @@ body.video-active {
 
 .leaderboard-header {
   display: grid;
-  grid-template-columns: 60px 1fr 80px;
+  grid-template-columns: 60px 1fr 85px;
   gap: 12px;
   padding: 14px 16px;
   background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -443,7 +443,7 @@ body.video-active {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 60px 1fr 80px;
+  grid-template-columns: 60px 1fr 85px;
   gap: 12px;
   padding: 12px 16px;
   align-items: center;
@@ -595,6 +595,7 @@ body.video-active {
 
   .leaderboard-rank-cell {
     font-size: 18px;
+    text-align: center;
   }
 
   .rank-medal {
@@ -626,20 +627,21 @@ body.video-active {
   }
 
   .leaderboard-header {
-    grid-template-columns: 45px 1fr 55px;
+    grid-template-columns: 48px 1fr 60px;
     gap: 8px;
     padding: 10px 10px;
     font-size: 10px;
   }
 
   .leaderboard-row {
-    grid-template-columns: 45px 1fr 55px;
+    grid-template-columns: 48px 1fr 60px;
     gap: 8px;
     padding: 8px 10px;
   }
 
   .leaderboard-rank-cell {
     font-size: 16px;
+    text-align: center;
   }
 
   .rank-medal {
@@ -691,6 +693,7 @@ body.video-active {
 
   .leaderboard-rank-cell {
     font-size: 16px;
+    text-align: center;
   }
 
   .rank-medal {
@@ -728,20 +731,21 @@ body.video-active {
   }
 
   .leaderboard-header {
-    grid-template-columns: 40px 1fr 50px;
+    grid-template-columns: 42px 1fr 52px;
     gap: 6px;
     padding: 8px 8px;
     font-size: 9px;
   }
 
   .leaderboard-row {
-    grid-template-columns: 40px 1fr 50px;
+    grid-template-columns: 42px 1fr 52px;
     gap: 6px;
     padding: 6px 8px;
   }
 
   .leaderboard-rank-cell {
     font-size: 14px;
+    text-align: center;
   }
 
   .rank-medal {
@@ -860,6 +864,7 @@ body.video-active {
 
   .leaderboard-rank-cell {
     font-size: 20px;
+    text-align: center;
   }
 
   .rank-medal {
