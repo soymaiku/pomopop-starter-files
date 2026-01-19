@@ -1,7 +1,7 @@
 // timer.js
 import { timer, interval, setIntervalId } from "./config.js";
 import { updateTaskProgress, getCurrentTask } from "./tasks.js";
-import { showNotification } from "./utils.js";
+import { showNotification, showWarningAlert } from "./utils.js";
 import { incrementPomodoroCount } from "./stats.js";
 
 const buttonSound = new Audio("./Audio/button-sound.mp3");
@@ -78,11 +78,16 @@ export function startTimer() {
           }
       }
 
-      if (Notification.permission === "granted") {
-        const text =
-          timer.mode === "pomodoro" ? "Get back to work!" : "Take a break!";
-        new Notification(text);
-      }
+      // Show warning alert notification instead of browser notification
+      const title =
+        timer.mode === "pomodoro"
+          ? "⏱️ Pomodoro Completed"
+          : "🎉 Break Time Over";
+      const message =
+        timer.mode === "pomodoro"
+          ? "Great work! Take a short break."
+          : "Time to get back to work!";
+      showWarningAlert(message, title);
 
       document.querySelector(`[data-sound="${timer.mode}"]`).play();
     }

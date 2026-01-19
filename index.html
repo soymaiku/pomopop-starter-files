@@ -339,6 +339,60 @@
       </div>
     </div>
 
+    <!-- Notification Demo Modal -->
+    <div
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      id="js-notification-demo-modal"
+    >
+      <div
+        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
+      >
+        <span
+          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          id="js-close-notification-demo"
+          >&times;</span
+        >
+        <h2
+          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+        >
+          🔔 Notifications
+        </h2>
+        <div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-2">
+          <p class="text-sm text-gray-600 mb-2">
+            Try different notification types:
+          </p>
+
+          <button
+            class="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-colors"
+            onclick="showToast('✓ Profile updated successfully!', 'success')"
+          >
+            Success Notification
+          </button>
+
+          <button
+            class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg transition-colors"
+            onclick="showToast('✗ Error occurred!', 'error')"
+          >
+            Error Notification
+          </button>
+
+          <button
+            class="w-full py-3 px-4 bg-yellow-600 hover:bg-yellow-700 text-white font-bold rounded-xl shadow-lg transition-colors"
+            onclick="showToast('⚠ Warning: Check your settings', 'warning')"
+          >
+            Warning Notification
+          </button>
+
+          <button
+            class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition-colors"
+            onclick="showToast('ℹ New message received', 'info')"
+          >
+            Info Notification
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Music Modal -->
     <div
       class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
@@ -602,35 +656,35 @@
           Select Background
         </h2>
         <div
-          class="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto custom-scrollbar pr-1"
+          class="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto custom-scrollbar pr-2"
         >
           <!-- Using reliable placeholder video links -->
           <div
-            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 transition-colors [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
             data-video="./Video/forest.mp4"
           >
             Forest
           </div>
           <div
-            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 transition-colors [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
             data-video="./Video/studygirl.mp4"
           >
             Study Girl
           </div>
           <div
-            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 transition-colors [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
             data-video="./Video/livingroom.mp4"
           >
             Living Room
           </div>
           <div
-            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 hover:scale-105 transition-all [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
+            class="video-option p-4 bg-gray-100 rounded-xl text-center font-bold text-gray-600 cursor-pointer hover:bg-gray-200 transition-colors [&.active]:bg-gray-800 [&.active]:text-white shadow-sm"
             data-video="./Video/sakura.mp4"
           >
             Sakura
           </div>
           <div
-            class="video-option p-4 bg-red-50 text-red-500 rounded-xl text-center font-bold cursor-pointer hover:bg-red-100 hover:scale-105 transition-all col-span-2 md:col-span-1 border border-red-100"
+            class="video-option p-4 bg-red-50 text-red-500 rounded-xl text-center font-bold cursor-pointer hover:bg-red-100 transition-colors col-span-2 md:col-span-1 border border-red-100"
             data-video="off"
           >
             Turn Off
@@ -733,7 +787,7 @@
       class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
+        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[85%] lg:w-[80%] max-w-5xl p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
       >
         <span
           class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
@@ -830,7 +884,7 @@
               </h3>
               <div
                 id="js-leaderboard"
-                class="bg-gray-50 rounded-xl overflow-hidden shadow-inner max-h-[200px] overflow-y-auto custom-scrollbar"
+                class="bg-gray-50 rounded-xl overflow-hidden shadow-inner max-h-[400px] overflow-y-auto custom-scrollbar"
               >
                 <div class="p-6 text-center text-gray-400 text-sm">
                   Loading leaderboard...
@@ -984,6 +1038,42 @@
             Log In to Unlock
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container (Pop-out style) -->
+    <div
+      id="js-toast-container"
+      class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[3500] flex flex-col gap-3 items-center max-w-lg w-[90%]"
+    ></div>
+
+    <!-- Warning Alert Container -->
+    <div
+      id="js-warning-alert-container"
+      class="fixed top-20 left-1/2 -translate-x-1/2 z-[3600] flex flex-col gap-3 items-center max-w-2xl w-[95%]"
+    ></div>
+
+    <!-- Modal Notification -->
+    <div
+      id="js-notification-modal"
+      class="fixed inset-0 z-[3000] flex items-center justify-center pointer-events-none"
+    >
+      <div
+        id="js-notification-content"
+        class="bg-gray-800/95 backdrop-blur-md text-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-[90%] md:w-auto transform scale-95 opacity-0 transition-all duration-300 pointer-events-auto"
+      >
+        <p
+          id="js-notification-message"
+          class="text-lg font-medium text-center mb-6"
+        >
+          Notification message here
+        </p>
+        <button
+          id="js-notification-btn"
+          class="w-full py-3 px-6 bg-white text-gray-800 font-bold rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          OK
+        </button>
       </div>
     </div>
 

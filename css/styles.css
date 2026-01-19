@@ -488,3 +488,100 @@ body.video-active {
 #js-clock {
   perspective: 1000px;
 }
+/* ==========================================================================
+   15. Video Background Modal Styling
+   ========================================================================== */
+
+/* Video option buttons - smooth hover without layout shift */
+.video-option {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  transform: none;
+}
+
+.video-option:hover {
+  transform: none;
+}
+
+.video-option:active {
+  transform: none;
+}
+
+/* Ensure scrollbar is consistent */
+.modal-content.bg-white\/90 {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+/* ==========================================================================
+   16. Toast Notification Animations (Pop-out style)
+   ========================================================================== */
+
+@keyframes toast-pop-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-pop-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-toast-in {
+  animation: toast-pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events-auto;
+}
+
+.animate-toast-out {
+  animation: toast-pop-out 0.3s ease-out;
+}
+
+/* ==========================================================================
+   17. Warning Alert Animations
+   ========================================================================== */
+
+@keyframes alert-slide-down {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes alert-slide-up {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+
+.animate-alert-slide-down {
+  animation: alert-slide-down 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-alert-slide-up {
+  animation: alert-slide-up 0.3s ease-out;
+}
