@@ -3,9 +3,9 @@ const musicPlayer = document.getElementById("js-music-player");
 const musicTracks = {
   lofi: "./Audio/whitenoise.mp3",
   rain: "./Audio/rain.wav",
-  classical: "/Audio/pinknoise.mp3",
-  jazz: "/Audio/fire.mp3",
-  nature: "/Audio/greennoise.mp3",
+  classical: "./Audio/citysound.mp3",
+  jazz: "./Audio/fire.mp3",
+  nature: "./Audio/greennoise.mp3",
 };
 
 // Web Audio API setup for enhanced volume control (optional)
