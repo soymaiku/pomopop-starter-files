@@ -7,7 +7,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { db, auth } from "./firebase-config-loader.js";
 import { timer } from "./config.js";
-import { switchMode } from "./timer.js";
+import { switchMode, updateClock } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
 
 // Clear old shared storage key to prevent sync conflicts between Google and Guest
@@ -51,6 +51,7 @@ function resetSettingsToDefaults() {
 
   applyTheme(defaultColors);
   switchMode(timer.mode);
+  updateClock();
 }
 
 let unsubscribeSettings = null;
@@ -116,16 +117,18 @@ export function fetchUserSettings(userId) {
 
           applyTheme(colors);
           switchMode(timer.mode); // Refresh UI with new settings
+          updateClock();
           return;
         }
       }
 
       // If no settings found in cloud, reset to defaults (don't use guest settings)
       resetSettingsToDefaults();
+      updateClock();
     },
     (error) => {
       console.error("Error listening to user settings:", error);
-    }
+    },
   );
 }
 
@@ -181,6 +184,7 @@ export function loadSettings() {
       longBreak: "#397097",
     });
     switchMode(timer.mode);
+    updateClock();
     return;
   }
 
@@ -242,20 +246,21 @@ export function loadSettings() {
     });
   }
   switchMode(timer.mode);
+  updateClock();
 }
 
 export function saveSettings() {
   const pomodoro = Number(
-    document.getElementById("js-pomodoro-duration").value
+    document.getElementById("js-pomodoro-duration").value,
   );
   const shortBreak = Number(
-    document.getElementById("js-short-break-duration").value
+    document.getElementById("js-short-break-duration").value,
   );
   const longBreak = Number(
-    document.getElementById("js-long-break-duration").value
+    document.getElementById("js-long-break-duration").value,
   );
   const longBreakInterval = Number(
-    document.getElementById("js-long-break-interval").value
+    document.getElementById("js-long-break-interval").value,
   );
 
   // Get Colors from Pickers
@@ -301,7 +306,7 @@ export function saveSettings() {
   else if (localUser && localUser.isGuest) {
     localStorage.setItem(
       "pomopop-guest-settings",
-      JSON.stringify(settingsData)
+      JSON.stringify(settingsData),
     );
   }
 
@@ -310,6 +315,7 @@ export function saveSettings() {
 
   // Instantly update the current background and clock display
   switchMode(timer.mode);
+  updateClock();
 }
 
 export function openSettingsModal() {

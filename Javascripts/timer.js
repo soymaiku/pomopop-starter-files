@@ -32,12 +32,17 @@ export function startTimer() {
   mainButton.textContent = "pause";
   mainButton.classList.add("active");
 
+  // Add counting effect to clock
+  document.getElementById("js-clock").classList.add("counting");
+
   const newInterval = setInterval(function () {
     timer.remainingTime = getRemainingTime(endTime);
     updateClock();
 
     total = timer.remainingTime.total;
     if (total <= 0) {
+      // Remove counting effect when timer ends
+      document.getElementById("js-clock").classList.remove("counting");
       stopTimer(false); // Stop the current interval, but don't reset button state yet
 
       // Update task progress when pomodoro completes
@@ -93,6 +98,9 @@ export function stopTimer(resetButton = true) {
     setIntervalId(null);
   }
 
+  // Remove counting effect when timer stops
+  document.getElementById("js-clock").classList.remove("counting");
+
   if (resetButton) {
     mainButton.dataset.action = "start";
     mainButton.textContent = "start";
@@ -107,6 +115,23 @@ export function updateClock() {
 
   const min = document.getElementById("js-minutes");
   const sec = document.getElementById("js-seconds");
+
+  // Add tick animation when seconds change
+  if (sec.textContent !== seconds) {
+    sec.classList.add("tick-animation");
+    setTimeout(() => {
+      sec.classList.remove("tick-animation");
+    }, 300);
+  }
+
+  // Update minutes with animation if they change
+  if (min.textContent !== minutes) {
+    min.classList.add("tick-animation");
+    setTimeout(() => {
+      min.classList.remove("tick-animation");
+    }, 300);
+  }
+
   min.textContent = minutes;
   sec.textContent = seconds;
 

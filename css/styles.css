@@ -354,3 +354,137 @@ body.video-active {
   font-weight: 700;
   color: var(--pomodoro);
 }
+/* ==========================================================================
+   13. Modal Buttons & Hover Effects
+   ========================================================================== */
+
+/* Modal content scrollbar styling - keep it always visible but subtle */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Modal content scrollbar styling */
+.modal-content {
+  overflow-y: auto;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Remove any layout shift from button hover - smooth color transitions */
+.modal-content button {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease !important;
+  transform: none !important;
+}
+
+.modal-content button:hover {
+  transform: none !important;
+}
+
+.modal-content button:active {
+  transform: none !important;
+}
+
+/* Select dropdown hover styling */
+.modal-content select {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.modal-content select:hover {
+  background-color: inherit;
+}
+/* ==========================================================================
+   14. Timer Countdown Animations
+   ========================================================================== */
+
+/* Keyframes for smooth tick animation */
+@keyframes tick-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes tick-flip {
+  0% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: rotateX(10deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+/* Apply animation to timer digits when they change */
+.tick-animation {
+  animation: tick-pulse 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Smooth transitions for timer display */
+#js-minutes,
+#js-seconds {
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+
+/* Optional: Add a subtle glow effect during countdown */
+#js-clock.counting {
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(255, 255, 255, 0.1);
+}
+
+/* Ensure timer digits maintain proper spacing */
+#js-clock {
+  perspective: 1000px;
+}
