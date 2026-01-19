@@ -23,6 +23,7 @@ import {
   openTaskModal,
   closeTaskModal,
   stopTasksListener,
+  setupTaskInputValidation,
 } from "./tasks.js";
 import {
   switchMode,
@@ -168,6 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadSettings();
   updateTaskNameDisplay();
   setupDurationValidation(); // Setup Pomodoro duration validation
+  setupTaskInputValidation(); // Setup task pomodoro input validation
 
   checkAuth(); // Check if user is logged in
 

@@ -298,3 +298,27 @@ export function openTaskModal() {
 export function closeTaskModal() {
   document.getElementById("js-task-modal").classList.remove("open");
 }
+
+/**
+ * Setup task pomodoro input validation to only allow numbers
+ */
+export function setupTaskInputValidation() {
+  const pomosInput = document.getElementById("js-task-pomodoros");
+
+  if (!pomosInput) return;
+
+  // Block non-numeric characters (e, E, ., +, -) from number input
+  pomosInput.addEventListener("keydown", (e) => {
+    if (["e", "E", ".", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    }
+  });
+
+  // Prevent paste of invalid characters
+  pomosInput.addEventListener("paste", (e) => {
+    const pastedData = e.clipboardData.getData("text");
+    if (!/^\d+$/.test(pastedData)) {
+      e.preventDefault();
+    }
+  });
+}

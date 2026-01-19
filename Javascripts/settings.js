@@ -368,8 +368,33 @@ export function setupDurationValidation() {
   const pomodoroInput = document.getElementById("js-pomodoro-duration");
   const shortBreakInput = document.getElementById("js-short-break-duration");
   const longBreakInput = document.getElementById("js-long-break-duration");
+  const intervalInput = document.getElementById("js-long-break-interval");
 
   if (!pomodoroInput || !shortBreakInput || !longBreakInput) return;
+
+  // Block non-numeric characters (e, E, ., +, -) from all number inputs
+  const blockInvalidChars = (e) => {
+    if (["e", "E", ".", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  // Also prevent paste of invalid characters
+  const blockInvalidPaste = (e) => {
+    const pastedData = e.clipboardData.getData("text");
+    if (!/^\d+$/.test(pastedData)) {
+      e.preventDefault();
+    }
+  };
+
+  [pomodoroInput, shortBreakInput, longBreakInput, intervalInput].forEach(
+    (input) => {
+      if (input) {
+        input.addEventListener("keydown", blockInvalidChars);
+        input.addEventListener("paste", blockInvalidPaste);
+      }
+    },
+  );
 
   // ========== POMODORO DURATION ==========
   pomodoroInput.addEventListener("change", (e) => {
