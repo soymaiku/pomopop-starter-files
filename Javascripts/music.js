@@ -1,11 +1,11 @@
 // music.js
 const musicPlayer = document.getElementById("js-music-player");
 const musicTracks = {
-  lofi: "https://usa9.fastcast4u.com/proxy/jamz?mp=/1",
+  lofi: "./Audio/whitenoise.mp3",
   rain: "./Audio/rain.wav",
-  classical: "https://c32.radioboss.fm:8332/autodj",
-  jazz: "https://listen.radioking.com/radio/637990/stream/700915",
-  nature: "",
+  classical: "/Audio/pinknoise.mp3",
+  jazz: "/Audio/fire.mp3",
+  nature: "/Audio/greennoise.mp3",
 };
 
 // Web Audio API setup for enhanced volume control (optional)
@@ -243,14 +243,17 @@ export function pauseMusic() {
 }
 
 export function stopMusic() {
-  // Only stop the preset music player, not YouTube
   musicPlayer.pause();
   musicPlayer.currentTime = 0;
-  // Reset select to "No Music"
+
+  // Reset music select dropdown to "No Music"
   const musicSelect = document.getElementById("js-music-select");
   if (musicSelect) {
     musicSelect.value = "";
   }
+
+  // NOTE: YouTube player is NOT stopped - it remains visible
+  // User can still interact with the embedded YouTube player
 }
 
 export function openMusicModal() {

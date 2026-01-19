@@ -9,6 +9,7 @@ import { db, auth } from "./firebase-config-loader.js";
 import { timer } from "./config.js";
 import { switchMode } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
+import { showNotification } from "./utils.js";
 
 // Clear old shared storage key to prevent sync conflicts between Google and Guest
 // This ensures complete separation between logged-in and guest modes
@@ -292,6 +293,34 @@ export function saveSettings() {
     return;
   }
 
+  // Enforce max limits
+  if (pomodoro > 60) {
+    showNotification(
+      "⚠️ Pomodoro duration cannot exceed 60 minutes",
+      "warning",
+    );
+    document.getElementById("js-pomodoro-duration").value = 60;
+    return;
+  }
+
+  if (shortBreak > 30) {
+    showNotification(
+      "⚠️ Short break duration cannot exceed 30 minutes",
+      "warning",
+    );
+    document.getElementById("js-short-break-duration").value = 30;
+    return;
+  }
+
+  if (longBreak > 60) {
+    showNotification(
+      "⚠️ Long break duration cannot exceed 60 minutes",
+      "warning",
+    );
+    document.getElementById("js-long-break-duration").value = 60;
+    return;
+  }
+
   // Update State
   timer.pomodoro = pomodoro;
   timer.shortBreak = shortBreak;
@@ -327,6 +356,77 @@ export function saveSettings() {
 
   // Instantly update the current background and clock display
   switchMode(timer.mode);
+}
+
+/**
+ * Setup duration input validation
+ */
+/**
+ * Setup duration input validation for all duration fields
+ */
+export function setupDurationValidation() {
+  const pomodoroInput = document.getElementById("js-pomodoro-duration");
+  const shortBreakInput = document.getElementById("js-short-break-duration");
+  const longBreakInput = document.getElementById("js-long-break-duration");
+
+  if (!pomodoroInput || !shortBreakInput || !longBreakInput) return;
+
+  // ========== POMODORO DURATION ==========
+  pomodoroInput.addEventListener("change", (e) => {
+    const value = Number(e.target.value);
+    if (value > 60) {
+      e.target.value = 60;
+      showNotification(
+        "⚠️ 60 minutes is the maximum for Pomodoro Duration",
+        "warning",
+      );
+    }
+  });
+
+  pomodoroInput.addEventListener("input", (e) => {
+    const value = Number(e.target.value);
+    if (value > 60) {
+      e.target.value = 60;
+    }
+  });
+
+  // ========== SHORT BREAK DURATION ==========
+  shortBreakInput.addEventListener("change", (e) => {
+    const value = Number(e.target.value);
+    if (value > 30) {
+      e.target.value = 30;
+      showNotification(
+        "⚠️ 30 minutes is the maximum for Short Break Duration",
+        "warning",
+      );
+    }
+  });
+
+  shortBreakInput.addEventListener("input", (e) => {
+    const value = Number(e.target.value);
+    if (value > 30) {
+      e.target.value = 30;
+    }
+  });
+
+  // ========== LONG BREAK DURATION ==========
+  longBreakInput.addEventListener("change", (e) => {
+    const value = Number(e.target.value);
+    if (value > 60) {
+      e.target.value = 60;
+      showNotification(
+        "⚠️ 60 minutes is the maximum for Long Break Duration",
+        "warning",
+      );
+    }
+  });
+
+  longBreakInput.addEventListener("input", (e) => {
+    const value = Number(e.target.value);
+    if (value > 60) {
+      e.target.value = 60;
+    }
+  });
 }
 
 export function openSettingsModal() {

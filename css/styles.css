@@ -429,7 +429,8 @@ body.video-active {
 }
 
 @keyframes softGlowPulse {
-  0%, 100% {
+  0%,
+  100% {
     text-shadow: 0 0 0px rgba(255, 255, 255, 0);
   }
   50% {
@@ -449,5 +450,4 @@ body.video-active {
 
 #js-clock.tick-glow {
   animation: softGlowPulse 0.4s ease-in-out forwards;
-}
 }

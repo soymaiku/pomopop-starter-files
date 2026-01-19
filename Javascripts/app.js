@@ -12,6 +12,7 @@ import {
   saveSettings,
   fetchUserSettings,
   stopSettingsListener,
+  setupDurationValidation,
 } from "./settings.js";
 import {
   loadTasks,
@@ -93,7 +94,7 @@ function closeBurgerMenu() {
 function updateModalState() {
   const modals = document.querySelectorAll(".modal");
   const hasOpenModal = Array.from(modals).some((modal) =>
-    modal.classList.contains("open")
+    modal.classList.contains("open"),
   );
   if (hasOpenModal) {
     document.body.classList.add("modal-open");
@@ -166,6 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Load settings and tasks
   loadSettings();
   updateTaskNameDisplay();
+  setupDurationValidation(); // Setup Pomodoro duration validation
 
   checkAuth(); // Check if user is logged in
 
@@ -265,12 +267,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("js-volume")
     .addEventListener("input", handleVolumeChange);
-  
+
   // YouTube Player Handlers
   document
     .getElementById("js-youtube-play-btn")
     .addEventListener("click", playYouTubeVideo);
-  
+
   // Allow Enter key to play YouTube video
   document
     .getElementById("js-youtube-url")
@@ -342,9 +344,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       try {
         // Update user profile in Firebase
-        const { updateProfile } = await import(
-          "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js"
-        );
+        const { updateProfile } =
+          await import("https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js");
 
         const updates = {
           displayName: newName,
@@ -404,7 +405,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==================== GUEST WARNING MODAL LOGIC ====================
   const guestWarningModal = document.getElementById("js-guest-warning-modal");
   const closeGuestWarningBtn = document.getElementById(
-    "js-close-guest-warning"
+    "js-close-guest-warning",
   );
   const warningLoginBtn = document.getElementById("js-warning-login-btn");
   const statsLoginBtn = document.getElementById("js-stats-login-btn");
@@ -555,7 +556,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       Notification.requestPermission().then(function (permission) {
         if (permission === "granted") {
           new Notification(
-            "Awesome! You will be notified at the start of each session"
+            "Awesome! You will be notified at the start of each session",
           );
         }
       });
