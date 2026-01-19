@@ -107,8 +107,32 @@ export function updateClock() {
 
   const min = document.getElementById("js-minutes");
   const sec = document.getElementById("js-seconds");
-  min.textContent = minutes;
-  sec.textContent = seconds;
+  const clock = document.getElementById("js-clock");
+
+  // Add elegant flip animation when time changes
+  if (min.textContent !== minutes) {
+    min.classList.add("tick");
+    setTimeout(() => min.classList.remove("tick"), 500);
+    min.textContent = minutes;
+
+    // Add glow effect to entire clock
+    if (clock) {
+      clock.classList.add("tick-glow");
+      setTimeout(() => clock.classList.remove("tick-glow"), 500);
+    }
+  }
+
+  if (sec.textContent !== seconds) {
+    sec.classList.add("tick");
+    setTimeout(() => sec.classList.remove("tick"), 500);
+    sec.textContent = seconds;
+
+    // Add glow effect to entire clock
+    if (clock) {
+      clock.classList.add("tick-glow");
+      setTimeout(() => clock.classList.remove("tick-glow"), 500);
+    }
+  }
 
   // Update interval display for pomodoro mode
   updateIntervalDisplay();

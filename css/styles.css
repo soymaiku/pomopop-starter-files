@@ -408,3 +408,46 @@ body.video-active {
     font-size: 14px;
   }
 }
+
+/* ==========================================================================
+   Timer Simple Aesthetic Animation
+   ========================================================================== */
+
+@keyframes simpleAestheticTick {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes softGlowPulse {
+  0%, 100% {
+    text-shadow: 0 0 0px rgba(255, 255, 255, 0);
+  }
+  50% {
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  }
+}
+
+#js-clock {
+  perspective: 1000px;
+}
+
+#js-minutes.tick,
+#js-seconds.tick {
+  display: inline-block;
+  animation: simpleAestheticTick 0.4s ease-in-out forwards;
+}
+
+#js-clock.tick-glow {
+  animation: softGlowPulse 0.4s ease-in-out forwards;
+}
+}
