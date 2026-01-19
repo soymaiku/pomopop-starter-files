@@ -120,7 +120,7 @@ function renderLeaderboard(users) {
             class="leaderboard-avatar"
             onerror="this.src='https://via.placeholder.com/48'"
           />
-          <span class="user-name">${escapeHtml(user.displayName)}</span>
+          <span class="user-name" title="${escapeHtml(user.displayName)}" aria-label="${escapeHtml(user.displayName)}">${escapeHtml(user.displayName)}</span>
         </div>
         <div class="leaderboard-total-cell">
           <span class="total-count">${user.totalPomodoros}</span>

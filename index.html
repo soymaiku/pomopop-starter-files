@@ -207,11 +207,11 @@
 
     <!-- Settings Modal -->
     <div
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible p-4"
+      class="modal fixed inset-0 z-[1000] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible min-h-screen p-3 sm:p-4"
       id="js-settings-modal"
     >
       <div
-        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90vh] flex flex-col overflow-hidden"
+        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[88vh] sm:max-h-[90vh] flex flex-col overflow-hidden"
       >
         <span
           class="close absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-2xl font-bold hover:rotate-90 duration-200 z-10"
@@ -345,11 +345,11 @@
 
     <!-- Music Modal -->
     <div
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible p-4"
+      class="modal fixed inset-0 z-[1000] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible min-h-screen p-3 sm:p-4"
       id="js-music-modal"
     >
       <div
-        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90vh] flex flex-col overflow-hidden"
+        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[88vh] sm:max-h-[90vh] flex flex-col overflow-hidden"
       >
         <span
           class="close absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-2xl font-bold hover:rotate-90 duration-200 z-10"
@@ -740,10 +740,10 @@
     <!-- Stats Modal -->
     <div
       id="js-stats-modal"
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible p-4"
+      class="modal fixed inset-0 z-[1000] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible min-h-screen p-3 sm:p-4"
     >
       <div
-        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90vh] flex flex-col overflow-hidden"
+        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[88vh] sm:max-h-[90vh] flex flex-col overflow-hidden"
       >
         <span
           class="close absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-2xl font-bold hover:rotate-90 duration-200"
@@ -848,7 +848,9 @@
                 id="js-leaderboard"
                 class="leaderboard-container bg-white rounded-lg shadow-md overflow-hidden"
               >
-                <div class="p-6 text-center text-gray-400 text-base">
+                <div
+                  class="p-4 sm:p-6 text-center text-gray-400 text-sm sm:text-base"
+                >
                   Loading leaderboard...
                 </div>
               </div>
@@ -861,10 +863,10 @@
     <!-- Login Modal (Blocking) -->
     <div
       id="js-login-modal"
-      class="modal fixed inset-0 z-[2000] flex items-center justify-center bg-pomodoro transition-all duration-500 opacity-0 invisible [&.open]:opacity-100 [&.open]:visible"
+      class="modal fixed inset-0 z-[2000] flex items-start sm:items-center justify-center bg-pomodoro transition-all duration-500 opacity-0 invisible [&.open]:opacity-100 [&.open]:visible min-h-screen p-3 sm:p-4"
     >
       <div
-        class="modal-content bg-white p-6 md:p-10 rounded-3xl shadow-2xl text-center max-w-sm w-[90%] transform scale-95 transition-all duration-300 [&.open]:scale-100 max-h-[90dvh] overflow-y-auto custom-scrollbar"
+        class="modal-content bg-white p-6 md:p-10 rounded-3xl shadow-2xl text-center max-w-sm w-[90%] transform scale-95 transition-all duration-300 [&.open]:scale-100 max-h-[88dvh] sm:max-h-[90dvh] overflow-y-auto custom-scrollbar"
       >
         <h2 class="text-3xl font-bold text-gray-800 mb-2">
           Welcome to Pomopop
@@ -895,10 +897,10 @@
     <!-- Account Edit Modal -->
     <div
       id="js-account-modal"
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      class="modal fixed inset-0 z-[1000] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible min-h-screen p-3 sm:p-4"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative"
+        class="modal-content bg-white/90 backdrop-blur-xl w-[90%] max-w-md p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[88vh] sm:max-h-[90vh]"
       >
         <span
           class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
