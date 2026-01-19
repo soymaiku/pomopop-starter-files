@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const newName = accountEditName.value.trim();
 
       if (!newName) {
-        alert("Please enter a name");
+        showToast("Please enter a name", "warning");
         return;
       }
 
@@ -381,10 +381,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         profileName.textContent = newName;
 
         closeAccountModal();
-        alert("Profile updated successfully!");
+        showToast("✓ Profile updated successfully!", "success");
       } catch (error) {
         console.error("Error updating profile:", error);
-        alert("Failed to update profile. Please try again.");
+        showToast("Failed to update profile. Please try again.", "error");
       }
     }
   });
@@ -560,21 +560,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Notification permission
-  if ("Notification" in window) {
-    if (
-      Notification.permission !== "granted" &&
-      Notification.permission !== "denied"
-    ) {
-      Notification.requestPermission().then(function (permission) {
-        if (permission === "granted") {
-          new Notification(
-            "Awesome! You will be notified at the start of each session",
-          );
-        }
-      });
-    }
-  }
+  // Replace browser notifications with toast notifications
+  // Remove notification permission request
+  // Just show a toast when the app loads
+  showToast("Welcome! Notifications are enabled.", "info");
 
   // Initial setup: switch to pomodoro mode and update clock
   switchMode(timer.mode);

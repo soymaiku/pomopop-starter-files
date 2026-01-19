@@ -14,6 +14,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { db } from "./firebase-config-loader.js";
 import { initializeLeaderboard, destroyLeaderboard } from "./leaderboard.js";
+import { showToast } from "./utils.js";
 
 // Track whether we've already incremented today/week's pomodoro counter this session
 let lastPomodoroIncrement = null;
@@ -34,7 +35,7 @@ export async function loginWithGoogle() {
     // Only use displayName and photoURL from Google
     if (!user.displayName || !user.photoURL) {
       throw new Error(
-        "Google account must have a display name and profile photo"
+        "Google account must have a display name and profile photo",
       );
     }
 
@@ -52,7 +53,7 @@ export async function loginWithGoogle() {
     return appUser;
   } catch (error) {
     console.error("❌ Google login failed:", error);
-    alert("Google Login Error: " + error.message);
+    showToast("Google Login Error: " + error.message, "error");
     return null;
   }
 }

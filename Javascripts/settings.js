@@ -9,6 +9,7 @@ import { db, auth } from "./firebase-config-loader.js";
 import { timer } from "./config.js";
 import { switchMode, updateClock } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
+import { showToast } from "./utils.js";
 
 // Clear old shared storage key to prevent sync conflicts between Google and Guest
 // This ensures complete separation between logged-in and guest modes
@@ -276,7 +277,7 @@ export function saveSettings() {
     isNaN(longBreak) ||
     isNaN(longBreakInterval)
   ) {
-    alert("Please enter valid numbers.");
+    showToast("Please enter valid numbers.", "warning");
     return;
   }
 

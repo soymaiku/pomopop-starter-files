@@ -515,73 +515,70 @@ body.video-active {
 }
 
 /* ==========================================================================
-   16. Toast Notification Animations (Pop-out style)
+   16. Toast Notification Animations (Slide-down from top-right)
    ========================================================================== */
 
-@keyframes toast-pop-in {
+@keyframes toast-slide-in {
   0% {
-    transform: scale(0);
+    transform: translateX(400px) translateY(-100px);
     opacity: 0;
   }
-  50% {
-    transform: scale(1.1);
-  }
   100% {
-    transform: scale(1);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
 }
 
-@keyframes toast-pop-out {
+@keyframes toast-slide-out {
   0% {
-    transform: scale(1);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
   100% {
-    transform: scale(0);
+    transform: translateX(400px) translateY(-100px);
     opacity: 0;
   }
 }
 
 .animate-toast-in {
-  animation: toast-pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: toast-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events-auto;
 }
 
 .animate-toast-out {
-  animation: toast-pop-out 0.3s ease-out;
+  animation: toast-slide-out 0.25s ease-in;
 }
 
 /* ==========================================================================
-   17. Warning Alert Animations
+   17. Warning Alert Animations (Slide-down from top-right)
    ========================================================================== */
 
-@keyframes alert-slide-down {
+@keyframes alert-slide-in {
   from {
-    transform: translateY(-30px);
+    transform: translateX(400px) translateY(-100px);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
 }
 
-@keyframes alert-slide-up {
+@keyframes alert-slide-out {
   from {
-    transform: translateY(0);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
   to {
-    transform: translateY(-30px);
+    transform: translateX(400px) translateY(-100px);
     opacity: 0;
   }
 }
 
 .animate-alert-slide-down {
-  animation: alert-slide-down 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: alert-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-alert-slide-up {
-  animation: alert-slide-up 0.3s ease-out;
+  animation: alert-slide-out 0.25s ease-in;
 }

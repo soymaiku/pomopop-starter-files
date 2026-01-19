@@ -16,7 +16,7 @@ import {
   timer,
 } from "./config.js";
 import { switchMode, stopTimer, updateIntervalDisplay } from "./timer.js";
-import { escapeHtml, showNotification } from "./utils.js";
+import { escapeHtml, showNotification, showToast } from "./utils.js";
 import { getCurrentUser } from "./stats.js";
 
 /* ==================== LOAD & SAVE ==================== */
@@ -56,7 +56,7 @@ export function fetchUserTasks(userId) {
     },
     (error) => {
       console.error("Error listening to user tasks:", error);
-    }
+    },
   );
 }
 
@@ -95,7 +95,7 @@ export function saveTasks() {
   } else {
     localStorage.setItem(
       "pomodoroTasks",
-      JSON.stringify({ tasks, nextTaskId, currentTaskId })
+      JSON.stringify({ tasks, nextTaskId, currentTaskId }),
     );
   }
 }
@@ -110,7 +110,7 @@ export function addTask() {
   const pomodoros = Math.max(1, Number(pomosInput.value) || 1);
 
   if (!name) {
-    alert("Please enter a task name");
+    showToast("Please enter a task name", "warning");
     return;
   }
 
@@ -190,8 +190,8 @@ export function updateTaskNameDisplay() {
 function getTaskHtml(task) {
   return `
     <div class="task-item ${currentTaskId === task.id ? "selected" : ""} ${
-    task.completed ? "completed" : ""
-  }">
+      task.completed ? "completed" : ""
+    }">
       <div class="task-info">
         ${
           task.editing
@@ -204,8 +204,8 @@ function getTaskHtml(task) {
             : `
           <div class="task-name">${escapeHtml(task.name)}</div>
           <div class="task-progress">${task.completedPomodoros} / ${
-                task.pomodoros
-              } Pomodoros</div>
+            task.pomodoros
+          } Pomodoros</div>
         `
         }
       </div>
@@ -249,7 +249,7 @@ export function renderTasks() {
       task.name = el.querySelector(".task-edit-name").value.trim() || task.name;
       task.pomodoros = Math.max(
         1,
-        Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros
+        Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros,
       );
       task.editing = false;
       saveTasks();
