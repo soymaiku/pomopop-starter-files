@@ -690,50 +690,55 @@ body.video-active {
   }
 
   .leaderboard-header {
-    grid-template-columns: 50px 1fr 65px;
-    gap: 10px;
-    padding: 12px 12px;
+    grid-template-columns: 45px 1fr 60px;
+    gap: 8px;
+    padding: 12px 10px;
     font-size: 11px;
   }
 
   .leaderboard-row {
-    grid-template-columns: 50px 1fr 65px;
-    gap: 10px;
-    padding: 10px 12px;
+    grid-template-columns: 45px 1fr 60px;
+    gap: 8px;
+    padding: 10px 10px;
   }
 
   .leaderboard-rank-cell {
-    font-size: 18px;
+    font-size: 16px;
     text-align: center;
   }
 
   .rank-medal {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
   }
 
   .leaderboard-user-cell {
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .leaderboard-avatar {
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-  }
-
-  .user-name {
-    font-size: 13px;
+    gap: 8px;
     min-width: 0;
     flex: 1;
   }
 
+  .leaderboard-avatar {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .total-count {
-    min-width: 44px;
-    height: 44px;
-    font-size: 16px;
+    min-width: 40px;
+    height: 40px;
+    font-size: 14px;
     flex-shrink: 0;
   }
 }
@@ -796,50 +801,63 @@ body.video-active {
   }
 
   .leaderboard-header {
-    grid-template-columns: 42px 1fr 55px;
+    grid-template-columns: 40px 1fr 50px;
     gap: 6px;
     padding: 10px 8px;
     font-size: 10px;
   }
 
   .leaderboard-row {
-    grid-template-columns: 42px 1fr 55px;
+    grid-template-columns: 40px 1fr 50px;
     gap: 6px;
-    padding: 8px 8px;
+    padding: 9px 8px;
   }
 
   .leaderboard-rank-cell {
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .rank-medal {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
   }
 
   .leaderboard-user-cell {
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
+    flex: 1;
+    align-items: center;
   }
 
   .leaderboard-avatar {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
+    border: 1.5px solid #e0e0e0;
   }
 
   .user-name {
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2c3e50;
     min-width: 0;
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
   }
 
   .total-count {
-    min-width: 40px;
-    height: 40px;
-    font-size: 14px;
+    min-width: 36px;
+    height: 36px;
+    font-size: 12px;
     flex-shrink: 0;
   }
 
@@ -907,50 +925,63 @@ body.video-active {
   }
 
   .leaderboard-header {
-    grid-template-columns: 40px 1fr 52px;
-    gap: 6px;
-    padding: 10px 8px;
+    grid-template-columns: 38px 1fr 48px;
+    gap: 5px;
+    padding: 9px 8px;
     font-size: 10px;
   }
 
   .leaderboard-row {
-    grid-template-columns: 40px 1fr 52px;
-    gap: 6px;
+    grid-template-columns: 38px 1fr 48px;
+    gap: 5px;
     padding: 8px 8px;
   }
 
   .leaderboard-rank-cell {
-    font-size: 16px;
+    font-size: 13px;
     text-align: center;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .rank-medal {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
   }
 
   .leaderboard-user-cell {
-    gap: 8px;
+    gap: 5px;
     min-width: 0;
+    flex: 1;
+    align-items: center;
   }
 
   .leaderboard-avatar {
-    width: 36px;
-    height: 36px;
+    width: 26px;
+    height: 26px;
     flex-shrink: 0;
+    border: 1.5px solid #e0e0e0;
   }
 
   .user-name {
     font-size: 12px;
+    font-weight: 600;
+    color: #2c3e50;
     min-width: 0;
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
   }
 
   .total-count {
-    min-width: 40px;
-    height: 40px;
-    font-size: 14px;
+    min-width: 34px;
+    height: 34px;
+    font-size: 11px;
     flex-shrink: 0;
   }
 
@@ -1018,50 +1049,63 @@ body.video-active {
   }
 
   .leaderboard-header {
-    grid-template-columns: 38px 1fr 50px;
+    grid-template-columns: 36px 1fr 46px;
     gap: 4px;
     padding: 8px 6px;
     font-size: 8px;
   }
 
   .leaderboard-row {
-    grid-template-columns: 38px 1fr 50px;
+    grid-template-columns: 36px 1fr 46px;
     gap: 4px;
-    padding: 6px 6px;
+    padding: 7px 6px;
   }
 
   .leaderboard-rank-cell {
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .rank-medal {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 
   .leaderboard-user-cell {
-    gap: 6px;
+    gap: 4px;
     min-width: 0;
+    flex: 1;
+    align-items: center;
   }
 
   .leaderboard-avatar {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
+    border: 1px solid #e0e0e0;
   }
 
   .user-name {
     font-size: 11px;
+    font-weight: 600;
+    color: #2c3e50;
     min-width: 0;
     flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.1;
   }
 
   .total-count {
-    min-width: 36px;
-    height: 36px;
-    font-size: 12px;
+    min-width: 32px;
+    height: 32px;
+    font-size: 10px;
     flex-shrink: 0;
   }
 }
