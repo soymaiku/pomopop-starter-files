@@ -303,12 +303,15 @@ body.video-active {
   grid-template-columns: 50px 50px 1fr 80px;
   gap: 10px;
   padding: 12px 15px;
-  background: #e8e8e8;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   font-weight: 700;
-  font-size: 16px;
-  color: #555;
+  font-size: 14px;
+  color: white;
   text-transform: uppercase;
   border-bottom: 2px solid #ccc;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .leaderboard-row {
@@ -318,11 +321,12 @@ body.video-active {
   padding: 12px 15px;
   align-items: center;
   border-bottom: 1px solid #e0e0e0;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .leaderboard-row:hover {
-  background-color: #f0f0f0;
+  background-color: #f8f9ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .leaderboard-row:last-child {
@@ -347,10 +351,15 @@ body.video-active {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #ddd;
+  transition: transform 0.2s ease;
+}
+
+.leaderboard-row:hover .user-avatar {
+  transform: scale(1.1);
 }
 
 .leaderboard-name {
-  font-size: 18px;
+  font-size: 16px;
   color: #333;
   font-weight: 500;
   white-space: nowrap;
@@ -363,4 +372,39 @@ body.video-active {
   font-size: 20px;
   font-weight: 700;
   color: var(--pomodoro);
+}
+
+.leaderboard-empty,
+.leaderboard-error {
+  padding: 24px 15px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .leaderboard-header,
+  .leaderboard-row {
+    grid-template-columns: 40px 40px 1fr 60px;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .leaderboard-rank {
+    font-size: 14px;
+  }
+
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .leaderboard-name {
+    font-size: 12px;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 14px;
+  }
 }
