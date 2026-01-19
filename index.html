@@ -169,26 +169,31 @@
       >
         <!-- Neumorphic Mode Switcher -->
         <div
-          class="flex gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-full neu-pill"
+          class="flex gap-1 sm:gap-2 p-1.5 sm:p-2 rounded-full neu-pill relative"
           id="js-mode-buttons"
         >
+          <!-- Sliding Indicator -->
+          <div
+            class="mode-slider absolute bg-white rounded-full shadow-lg transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] pointer-events-none"
+            id="js-mode-slider"
+          ></div>
           <button
             data-mode="pomodoro"
-            class="px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-all [&.active]:bg-white [&.active]:text-pomodoro [&.active]:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.1)]"
+            class="mode-btn relative z-10 px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-colors duration-300 [&.active]:text-pomodoro"
             id="js-pomodoro"
           >
             Pomodoro
           </button>
           <button
             data-mode="shortBreak"
-            class="px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-all [&.active]:bg-white [&.active]:text-shortBreak [&.active]:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.1)]"
+            class="mode-btn relative z-10 px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-colors duration-300 [&.active]:text-shortBreak"
             id="js-short-break"
           >
             Short break
           </button>
           <button
             data-mode="longBreak"
-            class="px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-all [&.active]:bg-white [&.active]:text-longBreak [&.active]:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-4px_-4px_8px_rgba(255,255,255,0.1)]"
+            class="mode-btn relative z-10 px-4 sm:px-5 md:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/60 transition-colors duration-300 [&.active]:text-longBreak"
             id="js-long-break"
           >
             Long break

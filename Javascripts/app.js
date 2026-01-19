@@ -30,6 +30,7 @@ import {
   handleMode,
   handleMainButtonClick,
   resetTimer,
+  initModeSlider,
 } from "./timer.js";
 import {
   openMusicModal,
@@ -170,6 +171,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateTaskNameDisplay();
   setupDurationValidation(); // Setup Pomodoro duration validation
   setupTaskInputValidation(); // Setup task pomodoro input validation
+
+  // Initialize mode slider position
+  setTimeout(() => initModeSlider(), 100);
+  window.addEventListener("resize", () => initModeSlider());
 
   checkAuth(); // Check if user is logged in
 
