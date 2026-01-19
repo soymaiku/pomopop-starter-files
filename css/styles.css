@@ -267,6 +267,16 @@ body {
   transform: translateY(-2px);
 }
 
+/* Video Modal Grid - Hide scrollbar on all resolutions */
+#js-video-modal .grid {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+#js-video-modal .grid::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 #bg-video {
   position: fixed;
   top: 0;
