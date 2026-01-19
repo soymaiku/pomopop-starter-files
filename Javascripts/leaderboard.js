@@ -33,7 +33,7 @@ export function initializeLeaderboard() {
   const leaderboardQuery = query(
     collection(db, "users"),
     orderBy("totalPomodoros", "desc"),
-    limit(10)
+    limit(10),
   );
 
   // Set up real-time listener
@@ -56,13 +56,13 @@ export function initializeLeaderboard() {
       console.error("Error message:", error.message);
       if (error.code === "permission-denied") {
         console.error(
-          "⚠️ Firestore 'Read' permission denied - update security rules"
+          "⚠️ Firestore 'Read' permission denied - update security rules",
         );
       } else if (error.code === "failed-precondition") {
         console.error("⚠️ Firestore index missing or collection needs index");
       }
       displayLeaderboardError();
-    }
+    },
   );
 
   console.log("✅ Leaderboard listener started");
@@ -86,6 +86,11 @@ function renderLeaderboard(users) {
     return;
   }
 
+  // Limit to 5 on mobile, 10 on desktop
+  const isMobile = window.innerWidth < 768;
+  const displayLimit = isMobile ? 5 : 10;
+  const displayUsers = users.slice(0, displayLimit);
+
   // Build leaderboard rows
   let html = `
     <div class="leaderboard-header">
@@ -96,7 +101,7 @@ function renderLeaderboard(users) {
     </div>
   `;
 
-  users.forEach((user) => {
+  displayUsers.forEach((user) => {
     const rankBadge = getRankBadge(user.rank);
     const photoUrl = user.photoURL || "https://via.placeholder.com/40";
 

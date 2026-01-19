@@ -386,26 +386,179 @@ body.video-active {
 @media (max-width: 640px) {
   .leaderboard-header,
   .leaderboard-row {
-    grid-template-columns: 40px 40px 1fr 60px;
-    gap: 8px;
+    grid-template-columns: 36px 40px 1fr 52px;
+    gap: 10px;
     padding: 10px 12px;
   }
 
   .leaderboard-rank {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 700;
   }
 
   .user-avatar {
-    width: 35px;
-    height: 35px;
+    width: 36px;
+    height: 36px;
+    border-width: 2px;
   }
 
   .leaderboard-name {
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
   }
 
   .leaderboard-pomodoros {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .leaderboard-header {
+    font-size: 13px;
+    padding: 10px 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Extra small phones (< 480px) */
+@media (max-width: 480px) {
+  .leaderboard-header,
+  .leaderboard-row {
+    grid-template-columns: 28px 28px 1fr 40px;
+    gap: 4px;
+    padding: 5px 6px;
+  }
+
+  .leaderboard-rank {
+    font-size: 10px;
+  }
+
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+    border-width: 1px;
+  }
+
+  .leaderboard-name {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 11px;
+  }
+
+  .leaderboard-header {
+    font-size: 8px;
+    padding: 5px 6px;
+  }
+
+  .leaderboard-empty,
+  .leaderboard-error {
+    padding: 15px 10px;
+    font-size: 12px;
+  }
+}
+
+/* iPhone SE / Small phones (< 390px) */
+@media (max-width: 389px) {
+  .leaderboard-header,
+  .leaderboard-row {
+    grid-template-columns: 32px 34px 1fr 48px;
+    gap: 8px;
+    padding: 10px 10px;
+    align-items: center;
+  }
+
+  .leaderboard-rank {
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .leaderboard-photo {
+    display: flex;
+    justify-content: center;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-width: 1.5px;
+    flex-shrink: 0;
+  }
+
+  .leaderboard-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .leaderboard-header {
+    font-size: 12px;
+    padding: 10px 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    gap: 8px;
+  }
+
+  .leaderboard-empty,
+  .leaderboard-error {
+    padding: 16px 10px;
+    font-size: 13px;
+  }
+}
+
+/* Very small phones (< 360px) */
+@media (max-width: 359px) {
+  .leaderboard-header,
+  .leaderboard-row {
+    grid-template-columns: 26px 28px 1fr 40px;
+    gap: 5px;
+    padding: 5px 7px;
+    align-items: center;
+  }
+
+  .leaderboard-rank {
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .user-avatar {
+    width: 26px;
+    height: 26px;
+    border-width: 1px;
+  }
+
+  .leaderboard-name {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .leaderboard-header {
+    font-size: 8px;
+    padding: 5px 7px;
+    font-weight: 800;
   }
 }
 
@@ -450,4 +603,157 @@ body.video-active {
 
 #js-clock.tick-glow {
   animation: softGlowPulse 0.4s ease-in-out forwards;
+}
+
+/* ==========================================================================
+   Large Mobile Screens (iPhone X, 11, 12, 13, 14, 15, 16, 17 Pro)
+   ========================================================================== */
+
+@media (min-width: 390px) and (max-width: 768px) {
+  /* Stats Modal */
+  #js-stats-modal .modal-content {
+    max-width: 600px;
+    padding: 8px;
+  }
+
+  #js-stats-modal h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  #js-stat-sessions,
+  #js-stat-today,
+  #js-stat-week {
+    font-size: 42px;
+    margin-bottom: 8px;
+  }
+
+  .stats-grid div {
+    padding: 16px;
+    min-width: 120px;
+  }
+
+  .stats-grid p {
+    font-size: 14px;
+  }
+
+  #js-leaderboard {
+    max-height: 500px;
+  }
+
+  /* Leaderboard Header */
+  .leaderboard-header {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  .leaderboard-header,
+  .leaderboard-row {
+    grid-template-columns: 38px 42px 1fr 54px;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .leaderboard-rank {
+    font-size: 17px;
+  }
+
+  .user-avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .leaderboard-name {
+    font-size: 15px;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 17px;
+  }
+}
+
+/* ==========================================================================
+   Extra Small Phones (iPhone SE and smaller)
+   ========================================================================== */
+
+@media (max-width: 375px) {
+  #js-stats-modal .modal-content {
+    p: 4;
+    max-h-[85dvh];
+    gap: 1;
+  }
+
+  #js-stats-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #js-stats-content h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .stats-grid {
+    gap: 8px !important;
+    margin-top: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    padding-bottom: 8px;
+  }
+
+  .stats-grid div {
+    padding: 12px !important;
+    min-w-[90px] !important;
+    flex-shrink: 0 !important;
+  }
+
+  #js-stat-sessions,
+  #js-stat-today,
+  #js-stat-week {
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+
+  .stats-grid p {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .overflow-y-auto {
+    overflow-x: hidden !important;
+  }
+
+  #js-leaderboard {
+    max-height: 280px;
+  }
+
+  .leaderboard-header,
+  .leaderboard-row {
+    grid-template-columns: 28px 30px 1fr 40px;
+    gap: 6px;
+    padding: 8px 8px;
+  }
+
+  .leaderboard-rank {
+    font-size: 13px;
+  }
+
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .leaderboard-name {
+    font-size: 11px;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 13px;
+  }
+
+  .leaderboard-header {
+    font-size: 10px;
+    padding: 8px 8px;
+  }
 }
