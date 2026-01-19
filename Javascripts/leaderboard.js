@@ -86,10 +86,8 @@ function renderLeaderboard(users) {
     return;
   }
 
-  // Limit to 5 on mobile, 10 on desktop
-  const isMobile = window.innerWidth < 768;
-  const displayLimit = isMobile ? 5 : 10;
-  const displayUsers = users.slice(0, displayLimit);
+  // Show all 10 users - leaderboard is scrollable on mobile
+  const displayUsers = users.slice(0, 10);
 
   // Build leaderboard rows
   let html = `

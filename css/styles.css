@@ -384,40 +384,71 @@ body.video-active {
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {
-  .leaderboard-header,
-  .leaderboard-row {
+  #js-leaderboard {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .leaderboard-header {
+    display: grid;
     grid-template-columns: 36px 40px 1fr 52px;
     gap: 10px;
     padding: 10px 12px;
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+  }
+
+  .leaderboard-row {
+    display: grid;
+    grid-template-columns: 36px 40px 1fr 52px;
+    gap: 10px;
+    padding: 10px 12px;
+    align-items: center;
   }
 
   .leaderboard-rank {
     font-size: 16px;
     font-weight: 700;
+    text-align: center;
+  }
+
+  .leaderboard-photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
   .user-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     border-width: 2px;
+    object-fit: cover;
   }
 
   .leaderboard-name {
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .leaderboard-pomodoros {
     font-size: 16px;
     font-weight: 700;
-  }
-
-  .leaderboard-header {
-    font-size: 13px;
-    padding: 10px 12px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
+    text-align: right;
   }
 }
 
@@ -686,12 +717,15 @@ body.video-active {
   #js-stats-content {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
   }
 
   #js-stats-content h2 {
     font-size: 24px;
     margin-bottom: 12px;
     padding-bottom: 12px;
+    flex-shrink: 0;
   }
 
   .stats-grid {
@@ -700,6 +734,7 @@ body.video-active {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     padding-bottom: 8px;
+    flex-shrink: 0;
   }
 
   .stats-grid div {
@@ -722,38 +757,105 @@ body.video-active {
 
   .overflow-y-auto {
     overflow-x: hidden !important;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Leaderboard Container */
+  .mt-8 {
+    margin-top: 12px !important;
+    padding-top: 12px !important;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .mt-8 h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
   }
 
   #js-leaderboard {
-    max-height: 280px;
-  }
-
-  .leaderboard-header,
-  .leaderboard-row {
-    grid-template-columns: 28px 30px 1fr 40px;
-    gap: 6px;
-    padding: 8px 8px;
-  }
-
-  .leaderboard-rank {
-    font-size: 13px;
-  }
-
-  .user-avatar {
-    width: 28px;
-    height: 28px;
-  }
-
-  .leaderboard-name {
-    font-size: 11px;
-  }
-
-  .leaderboard-pomodoros {
-    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    gap: 2px;
+    padding: 8px 4px;
+    flex: 1;
   }
 
   .leaderboard-header {
-    font-size: 10px;
-    padding: 8px 8px;
+    display: grid;
+    grid-template-columns: 32px 32px 1fr 45px;
+    gap: 8px;
+    padding: 10px 6px;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    font-size: 12px;
+    color: #666;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+  }
+
+  .leaderboard-row {
+    display: grid;
+    grid-template-columns: 32px 32px 1fr 45px;
+    gap: 8px;
+    padding: 10px 6px;
+    align-items: center;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .leaderboard-row:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .leaderboard-rank {
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .leaderboard-photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .leaderboard-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333;
+  }
+
+  .leaderboard-pomodoros {
+    font-size: 14px;
+    font-weight: 600;
+    text-align: right;
+    color: #d32f2f;
   }
 }
