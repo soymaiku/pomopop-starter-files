@@ -204,20 +204,16 @@
           ><span id="js-seconds" class="tabular-nums">00</span>
         </div>
 
-        <!-- Centered Work Counter -->
+        <!-- Centered Task Name with Work Counter -->
         <div
-          class="text-sm sm:text-base md:text-lg text-white/80 font-semibold tracking-[0.2em] uppercase text-center"
-          id="js-interval-display"
+          class="flex items-center justify-center gap-3 text-sm sm:text-base text-white/70 font-medium text-center max-w-md px-4"
         >
-          WORK 0 / 1
-        </div>
-
-        <!-- Centered Task Name -->
-        <div
-          class="text-sm sm:text-base text-white/70 font-medium text-center max-w-xs sm:max-w-sm px-4"
-          id="js-task-name-display"
-        >
-          Current: No task selected
+          <span id="js-task-name-display">Current: No task selected</span>
+          <span
+            id="js-interval-display"
+            class="text-white/80 font-semibold tracking-[0.15em] uppercase"
+            >WORK 0 / 1</span
+          >
         </div>
 
         <!-- Neumorphic Buttons Row -->
@@ -1005,13 +1001,13 @@
               class="stats-tab flex-1 py-2.5 px-4 text-sm font-medium text-gray-500 rounded-lg transition-all flex items-center justify-center gap-2 [&.active]:bg-white [&.active]:text-gray-800 [&.active]:shadow-sm active"
               data-tab="summary"
             >
-            Totals
+              Totals
             </button>
             <button
               class="stats-tab flex-1 py-2.5 px-4 text-sm font-medium text-gray-500 rounded-lg transition-all flex items-center justify-center gap-2 [&.active]:bg-white [&.active]:text-gray-800 [&.active]:shadow-sm"
               data-tab="ranking"
             >
-            Ranking
+              Ranking
             </button>
           </div>
 
