@@ -784,66 +784,81 @@
           >
             Your Progress
           </h2>
+
+          <!-- Tab Navigation -->
+          <div class="stats-tabs flex border-b border-gray-200">
+            <button
+              class="stats-tab flex-1 py-3 px-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors flex items-center justify-center gap-2 active"
+              data-tab="summary"
+            >
+              <span class="text-base">📊</span> Summary
+            </button>
+            <button
+              class="stats-tab flex-1 py-3 px-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent transition-colors flex items-center justify-center gap-2"
+              data-tab="ranking"
+            >
+              <span class="text-base">🏆</span> Ranking
+            </button>
+          </div>
+
           <div
             class="overflow-y-auto custom-scrollbar px-4 sm:px-6 py-4 sm:py-6"
           >
-            <div
-              class="stats-grid flex justify-center gap-4 text-center flex-wrap"
-            >
+            <!-- Summary Tab Content -->
+            <div id="js-tab-summary" class="stats-tab-content">
               <div
-                class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
+                class="stats-grid flex justify-center gap-4 text-center flex-wrap"
               >
-                <h3
-                  id="js-stat-sessions"
-                  class="text-4xl md:text-5xl font-bold text-pomodoro mb-2"
+                <div
+                  class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
                 >
-                  0
-                </h3>
-                <p
-                  class="text-sm md:text-base font-bold text-gray-500 uppercase tracking-wider"
+                  <h3
+                    id="js-stat-sessions"
+                    class="text-4xl md:text-5xl font-bold text-pomodoro mb-2"
+                  >
+                    0
+                  </h3>
+                  <p
+                    class="text-sm md:text-base font-bold text-gray-500 uppercase tracking-wider"
+                  >
+                    Total
+                  </p>
+                </div>
+                <div
+                  class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
                 >
-                  Total
-                </p>
-              </div>
-              <div
-                class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
-              >
-                <h3
-                  id="js-stat-today"
-                  class="text-4xl md:text-5xl font-bold text-pomodoro mb-2"
+                  <h3
+                    id="js-stat-today"
+                    class="text-4xl md:text-5xl font-bold text-pomodoro mb-2"
+                  >
+                    0
+                  </h3>
+                  <p
+                    class="text-sm md:text-base font-bold text-gray-500 uppercase tracking-wider"
+                  >
+                    Today
+                  </p>
+                </div>
+                <div
+                  class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
                 >
-                  0
-                </h3>
-                <p
-                  class="text-sm md:text-base font-bold text-gray-500 uppercase tracking-wider"
-                >
-                  Today
-                </p>
-              </div>
-              <div
-                class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
-              >
-                <h3
-                  id="js-stat-week"
-                  class="text-4xl md:text-5xl font-bold text-pomodoro mb-2"
-                >
-                  0
-                </h3>
-                <p
-                  class="text-sm md:text-base font-bold text-gray-500 uppercase tracking-wider"
-                >
-                  This Week
-                </p>
+                  <h3
+                    id="js-stat-week"
+                    class="text-4xl md:text-5xl font-bold text-pomodoro mb-2"
+                  >
+                    0
+                  </h3>
+                  <p
+                    class="text-sm md:text-base font-bold text-gray-500 uppercase tracking-wider"
+                  >
+                    This Week
+                  </p>
+                </div>
               </div>
             </div>
 
-            <!-- Leaderboard Section -->
-            <div class="mt-8 pt-6 border-t border-gray-200">
-              <h3
-                class="text-lg md:text-xl font-bold text-gray-800 mb-4 text-center flex items-center justify-center gap-2"
-              >
-                <span class="text-2xl">🏆</span> Top 10 Leaderboard
-              </h3>
+            <!-- Ranking Tab Content -->
+            <div id="js-tab-ranking" class="stats-tab-content hidden">
               <div
                 id="js-leaderboard"
                 class="leaderboard-container bg-white rounded-lg shadow-md overflow-hidden"

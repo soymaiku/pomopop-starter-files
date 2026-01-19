@@ -296,6 +296,9 @@ export async function openStatsModal() {
 
   // Initialize real-time leaderboard when stats modal opens
   initializeLeaderboard();
+
+  // Initialize tab switching
+  initializeStatsTabs();
 }
 
 export function closeStatsModal() {
@@ -304,4 +307,36 @@ export function closeStatsModal() {
 
   // Stop real-time listener to save resources
   destroyLeaderboard();
+}
+
+/**
+ * Initialize stats modal tab switching
+ */
+function initializeStatsTabs() {
+  const tabs = document.querySelectorAll(".stats-tab");
+  const tabContents = {
+    summary: document.getElementById("js-tab-summary"),
+    ranking: document.getElementById("js-tab-ranking"),
+  };
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const targetTab = tab.dataset.tab;
+
+      // Update active tab styling
+      tabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      // Show/hide tab content
+      Object.keys(tabContents).forEach((key) => {
+        if (tabContents[key]) {
+          if (key === targetTab) {
+            tabContents[key].classList.remove("hidden");
+          } else {
+            tabContents[key].classList.add("hidden");
+          }
+        }
+      });
+    });
+  });
 }
