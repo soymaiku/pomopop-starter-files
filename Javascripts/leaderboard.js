@@ -89,36 +89,47 @@ function renderLeaderboard(users) {
   // Show all 10 users - leaderboard is scrollable on mobile
   const displayUsers = users.slice(0, 10);
 
-  // Build leaderboard rows
+  // Build leaderboard rows with medal badges for top 3
   let html = `
     <div class="leaderboard-header">
-      <div class="leaderboard-rank">Rank</div>
-      <div class="leaderboard-photo"></div>
-      <div class="leaderboard-name">Name</div>
-      <div class="leaderboard-pomodoros">Total 🍅</div>
+      <div class="leaderboard-header-rank">Rank</div>
+      <div class="leaderboard-header-user">User</div>
+      <div class="leaderboard-header-total">🍅 Total</div>
     </div>
+    <div class="leaderboard-body">
   `;
 
   displayUsers.forEach((user) => {
     const rankBadge = getRankBadge(user.rank);
-    const photoUrl = user.photoURL || "https://via.placeholder.com/40";
+    const photoUrl = user.photoURL || "https://via.placeholder.com/48";
+    const isMedalRank = user.rank <= 3;
+    const medalEmoji = user.rank === 1 ? "🥇" : user.rank === 2 ? "🥈" : "🥉";
+    const rowClass = isMedalRank
+      ? `leaderboard-row medal-rank-${user.rank}`
+      : "leaderboard-row";
 
     html += `
-      <div class="leaderboard-row" data-uid="${user.uid}">
-        <div class="leaderboard-rank">${rankBadge}</div>
-        <div class="leaderboard-photo">
+      <div class="${rowClass}" data-uid="${user.uid}">
+        <div class="leaderboard-rank-cell">
+          <span class="rank-medal">${isMedalRank ? medalEmoji : "#" + user.rank}</span>
+        </div>
+        <div class="leaderboard-user-cell">
           <img 
             src="${photoUrl}" 
             alt="${user.displayName}" 
-            class="user-avatar"
-            onerror="this.src='https://via.placeholder.com/40'"
+            class="leaderboard-avatar"
+            onerror="this.src='https://via.placeholder.com/48'"
           />
+          <span class="user-name">${escapeHtml(user.displayName)}</span>
         </div>
-        <div class="leaderboard-name">${escapeHtml(user.displayName)}</div>
-        <div class="leaderboard-pomodoros">${user.totalPomodoros}</div>
+        <div class="leaderboard-total-cell">
+          <span class="total-count">${user.totalPomodoros}</span>
+        </div>
       </div>
     `;
   });
+
+  html += `</div>`;
 
   container.innerHTML = html;
 }
