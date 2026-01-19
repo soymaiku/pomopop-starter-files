@@ -121,10 +121,10 @@
     </header>
 
     <main
-      class="relative h-full w-full flex flex-col items-center justify-center p-4"
+      class="relative w-full h-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden"
     >
       <h1
-        class="fixed top-6 left-1/2 -translate-x-1/2 text-white/90 text-2xl md:text-3xl font-bold tracking-[0.2em] uppercase drop-shadow-sm z-[101]"
+        class="fixed top-4 left-1/2 -translate-x-1/2 text-white/90 text-lg sm:text-2xl md:text-3xl font-bold tracking-[0.2em] uppercase drop-shadow-sm z-[101] px-2"
       >
         Pomopop
       </h1>
@@ -132,31 +132,31 @@
       <progress
         id="js-progress"
         value="0"
-        class="fixed top-0 left-0 w-full h-1.5 bg-black/10 [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:bg-white/80 z-[150]"
+        class="fixed top-0 left-0 w-full h-1 sm:h-1.5 bg-black/10 [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:bg-white/80 z-[150]"
       ></progress>
 
-      <div class="flex flex-col items-center w-full max-w-2xl z-10">
+      <div class="flex flex-col items-center w-full max-w-xl z-10">
         <div
-          class="flex gap-2 md:gap-4 mb-6 md:mb-12 p-1.5 bg-black/20 backdrop-blur-md rounded-full"
+          class="flex gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-12 p-1 sm:p-1.5 bg-black/20 backdrop-blur-md rounded-full"
           id="js-mode-buttons"
         >
           <button
             data-mode="pomodoro"
-            class="px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-pomodoro [&.active]:shadow-lg"
+            class="px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-pomodoro [&.active]:shadow-lg"
             id="js-pomodoro"
           >
             Pomodoro
           </button>
           <button
             data-mode="shortBreak"
-            class="px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-shortBreak [&.active]:shadow-lg"
+            class="px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-shortBreak [&.active]:shadow-lg"
             id="js-short-break"
           >
             Short break
           </button>
           <button
             data-mode="longBreak"
-            class="px-4 md:px-6 py-2 rounded-full text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-longBreak [&.active]:shadow-lg"
+            class="px-3 sm:px-4 md:px-6 py-2 rounded-full text-xs sm:text-sm md:text-base font-bold text-white/70 transition-all hover:bg-white/10 [&.active]:bg-white [&.active]:text-longBreak [&.active]:shadow-lg"
             id="js-long-break"
           >
             Long break
@@ -164,38 +164,38 @@
         </div>
 
         <div
-          class="text-[25vw] md:text-[12rem] lg:text-[15rem] leading-none font-bold text-white drop-shadow-2xl mb-6 md:mb-12 tracking-widest select-none transition-all"
+          class="text-7xl sm:text-8xl md:text-[12rem] lg:text-[15rem] leading-none font-bold text-white drop-shadow-2xl mb-3 sm:mb-6 md:mb-12 tracking-widest select-none transition-all"
           id="js-clock"
         >
           <span id="js-minutes" class="tabular-nums">25</span
-          ><span class="opacity-50 relative -top-1 md:-top-3">:</span
+          ><span class="opacity-50 relative -top-1 sm:-top-2 md:-top-3">:</span
           ><span id="js-seconds" class="tabular-nums">00</span>
         </div>
 
         <div
-          class="text-xl md:text-2xl text-white/80 font-medium tracking-widest uppercase mb-4"
+          class="text-base sm:text-lg md:text-2xl text-white/80 font-medium tracking-widest uppercase mb-2 sm:mb-3"
           id="js-interval-display"
         >
           Work 1/1
         </div>
 
         <div
-          class="text-lg text-white/90 font-light mb-8 md:mb-10 min-h-[30px] text-center max-w-md px-4 truncate"
+          class="text-sm sm:text-base md:text-lg text-white/90 font-light mb-4 sm:mb-6 md:mb-10 min-h-7 text-center max-w-xs sm:max-w-sm md:max-w-md px-2 truncate"
           id="js-task-name-display"
         >
           No task selected
         </div>
 
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-4 sm:gap-5 md:gap-6">
           <button
-            class="bg-white text-pomodoro text-2xl md:text-3xl font-bold uppercase px-8 py-3 md:px-12 md:py-5 rounded-3xl shadow-[0_8px_0_rgb(230,230,230)] active:shadow-none active:translate-y-[8px] transition-all hover:bg-gray-50 min-w-[160px] md:min-w-[180px]"
+            class="bg-white text-pomodoro text-lg sm:text-2xl md:text-3xl font-bold uppercase px-6 sm:px-8 md:px-12 py-3 md:py-5 rounded-3xl shadow-[0_8px_0_rgb(230,230,230)] active:shadow-none active:translate-y-2 transition-all hover:bg-gray-50 min-h-12 sm:min-h-14 min-w-max touch-manipulation"
             data-action="start"
             id="js-btn"
           >
             Start
           </button>
           <button
-            class="bg-white/20 backdrop-blur-md text-white text-3xl font-bold p-3 md:p-5 rounded-3xl shadow-[0_8px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-[8px] transition-all hover:bg-white/30 flex items-center justify-center w-[70px] md:w-[90px]"
+            class="bg-white/20 backdrop-blur-md text-white text-2xl sm:text-3xl font-bold p-3 md:p-5 rounded-3xl shadow-[0_8px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-2 transition-all hover:bg-white/30 flex items-center justify-center min-h-12 sm:min-h-14 w-14 sm:w-16 md:w-20 touch-manipulation"
             id="js-reset-btn"
             title="Reset timer"
           >
@@ -207,28 +207,30 @@
 
     <!-- Settings Modal -->
     <div
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible p-4"
       id="js-settings-modal"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
+        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90vh] flex flex-col overflow-hidden"
       >
         <span
-          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          class="close absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-2xl font-bold hover:rotate-90 duration-200 z-10"
           id="js-close-settings"
           >&times;</span
         >
         <h2
-          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+          class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 text-center border-b border-gray-200"
         >
           Settings
         </h2>
 
-        <div class="flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-2">
+        <div
+          class="flex flex-col gap-4 overflow-y-auto custom-scrollbar px-4 sm:px-6 py-4 sm:py-6"
+        >
           <div class="flex flex-col gap-2">
             <label
               for="js-pomodoro-duration"
-              class="text-gray-600 font-bold text-lg"
+              class="text-gray-600 font-bold text-base sm:text-lg"
               >Pomodoro Duration (minutes):</label
             >
             <input
@@ -237,13 +239,13 @@
               min="1"
               max="60"
               value="25"
-              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-pomodoro outline-none transition-all text-lg text-gray-800"
+              class="w-full p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-pomodoro outline-none transition-all text-base sm:text-lg text-gray-800 min-h-12"
             />
           </div>
           <div class="flex flex-col gap-2">
             <label
               for="js-short-break-duration"
-              class="text-gray-600 font-bold text-lg"
+              class="text-gray-600 font-bold text-base sm:text-lg"
               >Short Break Duration (minutes):</label
             >
             <input
@@ -252,13 +254,13 @@
               min="1"
               max="30"
               value="5"
-              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-shortBreak outline-none transition-all text-lg text-gray-800"
+              class="w-full p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-shortBreak outline-none transition-all text-base sm:text-lg text-gray-800 min-h-12"
             />
           </div>
           <div class="flex flex-col gap-2">
             <label
               for="js-long-break-duration"
-              class="text-gray-600 font-bold text-lg"
+              class="text-gray-600 font-bold text-base sm:text-lg"
               >Long Break Duration (minutes):</label
             >
             <input
@@ -267,13 +269,13 @@
               min="1"
               max="60"
               value="15"
-              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-longBreak outline-none transition-all text-lg text-gray-800"
+              class="w-full p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-longBreak outline-none transition-all text-base sm:text-lg text-gray-800 min-h-12"
             />
           </div>
           <div class="flex flex-col gap-2">
             <label
               for="js-long-break-interval"
-              class="text-gray-600 font-bold text-lg"
+              class="text-gray-600 font-bold text-base sm:text-lg"
               >Long Break Interval (pomodoros):</label
             >
             <input
@@ -282,11 +284,11 @@
               min="1"
               max="10"
               value="4"
-              class="w-full p-3 rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-gray-400 outline-none transition-all text-lg text-gray-800"
+              class="w-full p-3 sm:p-4 rounded-lg sm:rounded-xl bg-gray-100/80 border border-gray-200 focus:bg-white focus:ring-2 focus:ring-gray-400 outline-none transition-all text-base sm:text-lg text-gray-800 min-h-12"
             />
           </div>
 
-          <div class="border-t border-gray-200 pt-5 mt-2">
+          <div class="border-t border-gray-200 pt-4 sm:pt-5 mt-2">
             <p
               class="text-xs font-bold text-gray-400 tracking-widest mb-4 uppercase"
             >
@@ -294,9 +296,11 @@
             </p>
             <div class="flex flex-col gap-3">
               <div
-                class="flex justify-between items-center p-3 bg-gray-50 rounded-xl"
+                class="flex justify-between items-center p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl"
               >
-                <span class="text-gray-600 font-semibold">Pomodoro</span>
+                <span class="text-gray-600 font-semibold text-sm sm:text-base"
+                  >Pomodoro</span
+                >
                 <input
                   type="color"
                   id="js-color-pomodoro"
@@ -341,19 +345,19 @@
 
     <!-- Music Modal -->
     <div
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible p-4"
       id="js-music-modal"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-2xl p-6 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
+        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90vh] flex flex-col overflow-hidden"
       >
         <span
-          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200 z-10"
+          class="close absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-2xl font-bold hover:rotate-90 duration-200 z-10"
           id="js-close-music"
           >&times;</span
         >
         <h2
-          class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center pb-4 border-b border-gray-200"
+          class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 text-center border-b border-gray-200"
         >
           🎵 Background Music
         </h2>
@@ -736,35 +740,37 @@
     <!-- Stats Modal -->
     <div
       id="js-stats-modal"
-      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+      class="modal fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible p-4"
     >
       <div
-        class="modal-content bg-white/90 backdrop-blur-xl w-[95%] md:w-[90%] max-w-md p-5 md:p-8 rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90dvh] flex flex-col"
+        class="modal-content bg-white/95 backdrop-blur-xl w-full max-w-md rounded-2xl sm:rounded-3xl shadow-2xl transform translate-y-4 transition-all duration-300 relative max-h-[90vh] flex flex-col overflow-hidden"
       >
         <span
-          class="close absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-xl font-bold hover:rotate-90 duration-200"
+          class="close absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 hover:text-black cursor-pointer transition-all text-2xl font-bold hover:rotate-90 duration-200"
           id="js-close-stats"
           >&times;</span
         >
 
         <!-- Restricted Access Overlay for Guests -->
-        <div id="js-stats-guest-overlay" class="hidden">
+        <div
+          id="js-stats-guest-overlay"
+          class="hidden px-4 sm:px-6 py-4 sm:py-6"
+        >
           <h2
-            class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+            class="text-lg sm:text-2xl md:text-3xl font-bold text-gray-800 mb-4 text-center border-b border-gray-200 pb-4"
           >
             Restricted Access
           </h2>
           <div style="text-align: center; margin: 20px 0">
             <p
-              style="font-size: 22px; color: #555; margin-bottom: 20px"
-              class="font-medium"
+              style="font-size: 16px; color: #555; margin-bottom: 20px"
+              class="font-medium text-sm sm:text-base"
             >
               🔒 Stats are only available for logged-in users.
             </p>
             <button
-              class="w-full py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transform active:scale-[0.98] transition-all mt-2 uppercase tracking-wide"
+              class="w-full py-3 sm:py-4 bg-gray-800 text-white font-bold rounded-lg sm:rounded-xl shadow-lg hover:bg-gray-900 transform active:scale-[0.98] transition-all uppercase tracking-wide text-sm sm:text-base min-h-12"
               id="js-stats-login-btn"
-              style="width: 100%"
             >
               Log In to Unlock
             </button>
@@ -774,13 +780,15 @@
         <!-- Normal Stats Content -->
         <div id="js-stats-content">
           <h2
-            class="text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center border-b border-gray-200 pb-4"
+            class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 text-center border-b border-gray-200"
           >
             Your Progress
           </h2>
-          <div class="overflow-y-auto custom-scrollbar pr-1">
+          <div
+            class="overflow-y-auto custom-scrollbar px-4 sm:px-6 py-4 sm:py-6"
+          >
             <div
-              class="stats-grid flex justify-center gap-4 text-center mt-4 flex-wrap"
+              class="stats-grid flex justify-center gap-4 text-center flex-wrap"
             >
               <div
                 class="bg-white/60 p-5 md:p-6 rounded-2xl border border-white shadow-sm flex-1 min-w-[110px]"
