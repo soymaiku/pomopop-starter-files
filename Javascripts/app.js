@@ -304,6 +304,384 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (e.key === "Enter") addTask();
     });
 
+  // ==================== PICTURE-IN-PICTURE (MINI PLAYER) MODE ====================
+  const pipBtn = document.getElementById("js-pip-btn");
+  const pipExitBtn = document.getElementById("js-pip-exit-btn");
+  let pipWindow = null;
+
+  async function enterPipMode() {
+    // Check if Document Picture-in-Picture API is supported
+    if ("documentPictureInPicture" in window) {
+      try {
+        // Open PiP window
+        pipWindow = await window.documentPictureInPicture.requestWindow({
+          width: 320,
+          height: 240,
+        });
+
+        // Get current theme color from CSS variable based on current mode
+        const rootStyles = getComputedStyle(document.documentElement);
+        const currentMode =
+          document.querySelector("[data-mode].active")?.dataset.mode ||
+          "pomodoro";
+        let bgColor;
+
+        if (currentMode === "pomodoro") {
+          bgColor =
+            rootStyles.getPropertyValue("--pomodoro").trim() || "#ba4949";
+        } else if (currentMode === "shortBreak") {
+          bgColor =
+            rootStyles.getPropertyValue("--shortBreak").trim() || "#38858a";
+        } else {
+          bgColor =
+            rootStyles.getPropertyValue("--longBreak").trim() || "#397097";
+        }
+
+        // Copy stylesheets to PiP window
+        [...document.styleSheets].forEach((styleSheet) => {
+          try {
+            const cssRules = [...styleSheet.cssRules]
+              .map((rule) => rule.cssText)
+              .join("");
+            const style = pipWindow.document.createElement("style");
+            style.textContent = cssRules;
+            pipWindow.document.head.appendChild(style);
+          } catch (e) {
+            // External stylesheets may fail due to CORS
+            const link = pipWindow.document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = styleSheet.href;
+            pipWindow.document.head.appendChild(link);
+          }
+        });
+
+        // Add Tailwind to PiP window
+        const tailwindScript = pipWindow.document.createElement("script");
+        tailwindScript.src = "https://cdn.tailwindcss.com";
+        pipWindow.document.head.appendChild(tailwindScript);
+
+        // Copy CSS variables to PiP window
+        pipWindow.document.documentElement.style.setProperty(
+          "--pomodoro",
+          rootStyles.getPropertyValue("--pomodoro"),
+        );
+        pipWindow.document.documentElement.style.setProperty(
+          "--shortBreak",
+          rootStyles.getPropertyValue("--shortBreak"),
+        );
+        pipWindow.document.documentElement.style.setProperty(
+          "--longBreak",
+          rootStyles.getPropertyValue("--longBreak"),
+        );
+
+        // Reset body styles to remove white edges
+        pipWindow.document.body.style.cssText =
+          "margin:0;padding:0;overflow:hidden;background:" + bgColor;
+        pipWindow.document.documentElement.style.cssText =
+          "margin:0;padding:0;background:" + bgColor;
+
+        // Create PiP content (just color background, no video)
+        pipWindow.document.body.innerHTML = `
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            html, body { background: ${bgColor}; width: 100%; height: 100%; overflow: hidden; }
+          </style>
+          <div id="pip-container" style="
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: ${bgColor};
+            font-family: 'Jersey 25', sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+          ">
+            <div style="
+              position: relative;
+              z-index: 1;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 12px;
+            ">
+              <div id="pip-clock" style="
+                font-size: 3.5rem;
+                font-weight: bold;
+                color: white;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+                font-family: 'Jersey 25', sans-serif;
+              ">${document.getElementById("js-minutes").textContent}:${document.getElementById("js-seconds").textContent}</div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <button id="pip-start-btn" style="
+                  background: white;
+                  color: ${bgColor};
+                  font-size: 1rem;
+                  font-weight: bold;
+                  padding: 8px 24px;
+                  border-radius: 12px;
+                  border: none;
+                  cursor: pointer;
+                  font-family: 'Jersey 25', sans-serif;
+                  text-transform: uppercase;
+                  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+                ">${document.getElementById("js-btn").textContent}</button>
+                <button id="pip-reset-btn" style="
+                  background: rgba(255,255,255,0.2);
+                  color: white;
+                  font-size: 1.25rem;
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 10px;
+                  border: none;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                ">↺</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Add Google Font
+        const fontLink = pipWindow.document.createElement("link");
+        fontLink.href =
+          "https://fonts.googleapis.com/css2?family=Jersey+25&display=swap";
+        fontLink.rel = "stylesheet";
+        pipWindow.document.head.appendChild(fontLink);
+
+        // Sync timer updates to PiP window
+        const pipClock = pipWindow.document.getElementById("pip-clock");
+        const pipStartBtn = pipWindow.document.getElementById("pip-start-btn");
+        const pipResetBtn = pipWindow.document.getElementById("pip-reset-btn");
+
+        // Create an observer to watch for timer changes
+        const timerObserver = new MutationObserver(() => {
+          if (pipClock) {
+            pipClock.textContent = `${document.getElementById("js-minutes").textContent}:${document.getElementById("js-seconds").textContent}`;
+          }
+          if (pipStartBtn) {
+            pipStartBtn.textContent =
+              document.getElementById("js-btn").textContent;
+          }
+        });
+
+        // Observe both minutes and seconds for changes
+        timerObserver.observe(document.getElementById("js-minutes"), {
+          childList: true,
+          characterData: true,
+          subtree: true,
+        });
+        timerObserver.observe(document.getElementById("js-seconds"), {
+          childList: true,
+          characterData: true,
+          subtree: true,
+        });
+        timerObserver.observe(document.getElementById("js-btn"), {
+          childList: true,
+          characterData: true,
+          subtree: true,
+        });
+
+        // Handle PiP button clicks
+        pipStartBtn.addEventListener("click", () => {
+          document.getElementById("js-btn").click();
+          pipStartBtn.textContent =
+            document.getElementById("js-btn").textContent;
+        });
+
+        pipResetBtn.addEventListener("click", () => {
+          document.getElementById("js-reset-btn").click();
+          pipClock.textContent = `${document.getElementById("js-minutes").textContent}:${document.getElementById("js-seconds").textContent}`;
+        });
+
+        // Watch for background color changes in main window (when mode changes)
+        const bgObserver = new MutationObserver(() => {
+          const rootStyles = getComputedStyle(document.documentElement);
+          const currentMode =
+            document.querySelector("[data-mode].active")?.dataset.mode ||
+            "pomodoro";
+          let newBgColor;
+
+          if (currentMode === "pomodoro") {
+            newBgColor =
+              rootStyles.getPropertyValue("--pomodoro").trim() || "#ba4949";
+          } else if (currentMode === "shortBreak") {
+            newBgColor =
+              rootStyles.getPropertyValue("--shortBreak").trim() || "#38858a";
+          } else {
+            newBgColor =
+              rootStyles.getPropertyValue("--longBreak").trim() || "#397097";
+          }
+
+          const pipContainer =
+            pipWindow.document.getElementById("pip-container");
+          if (pipContainer) {
+            pipContainer.style.background = newBgColor;
+          }
+          // Also update html and body
+          if (pipWindow.document.body) {
+            pipWindow.document.body.style.background = newBgColor;
+          }
+          if (pipWindow.document.documentElement) {
+            pipWindow.document.documentElement.style.background = newBgColor;
+          }
+          if (pipStartBtn) {
+            pipStartBtn.style.color = newBgColor;
+          }
+        });
+
+        bgObserver.observe(document.body, {
+          attributes: true,
+          attributeFilter: ["class", "style"],
+        });
+
+        // Clean up when PiP window closes
+        pipWindow.addEventListener("pagehide", () => {
+          timerObserver.disconnect();
+          bgObserver.disconnect();
+          pipWindow = null;
+        });
+      } catch (error) {
+        console.error("Error opening Picture-in-Picture:", error);
+        // Fallback to popup window
+        openPipPopup();
+      }
+    } else {
+      // Fallback for browsers without Document PiP API
+      openPipPopup();
+    }
+  }
+
+  function openPipPopup() {
+    const bgColor = getComputedStyle(document.body).backgroundColor;
+    const minutes = document.getElementById("js-minutes").textContent;
+    const seconds = document.getElementById("js-seconds").textContent;
+    const btnText = document.getElementById("js-btn").textContent;
+
+    const popup = window.open(
+      "",
+      "PomopoPiP",
+      "width=320,height=240,resizable=yes,scrollbars=no,status=no,menubar=no,toolbar=no",
+    );
+
+    if (popup) {
+      popup.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Pomopop Timer</title>
+          <link href="https://fonts.googleapis.com/css2?family=Jersey+25&display=swap" rel="stylesheet">
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+              width: 100%;
+              height: 100vh;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              background: ${bgColor};
+              font-family: 'Jersey 25', sans-serif;
+            }
+            #clock {
+              font-size: 3.5rem;
+              font-weight: bold;
+              color: white;
+              text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            }
+            .controls { display: flex; gap: 10px; margin-top: 12px; }
+            #start-btn {
+              background: white;
+              color: ${bgColor};
+              font-size: 1rem;
+              font-weight: bold;
+              padding: 8px 24px;
+              border-radius: 12px;
+              border: none;
+              cursor: pointer;
+              font-family: 'Jersey 25', sans-serif;
+              text-transform: uppercase;
+            }
+            #reset-btn {
+              background: rgba(255,255,255,0.2);
+              color: white;
+              font-size: 1.25rem;
+              width: 40px;
+              height: 40px;
+              border-radius: 10px;
+              border: none;
+              cursor: pointer;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="clock">${minutes}:${seconds}</div>
+          <div class="controls">
+            <button id="start-btn">${btnText}</button>
+            <button id="reset-btn">↺</button>
+          </div>
+          <script>
+            const clock = document.getElementById('clock');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            // Sync with parent window
+            setInterval(() => {
+              if (window.opener && !window.opener.closed) {
+                const mins = window.opener.document.getElementById('js-minutes');
+                const secs = window.opener.document.getElementById('js-seconds');
+                const btn = window.opener.document.getElementById('js-btn');
+                if (mins && secs) clock.textContent = mins.textContent + ':' + secs.textContent;
+                if (btn) startBtn.textContent = btn.textContent;
+                
+                const bgColor = getComputedStyle(window.opener.document.body).backgroundColor;
+                document.body.style.background = bgColor;
+                startBtn.style.color = bgColor;
+              }
+            }, 100);
+            
+            startBtn.addEventListener('click', () => {
+              if (window.opener && !window.opener.closed) {
+                window.opener.document.getElementById('js-btn').click();
+              }
+            });
+            
+            resetBtn.addEventListener('click', () => {
+              if (window.opener && !window.opener.closed) {
+                window.opener.document.getElementById('js-reset-btn').click();
+              }
+            });
+          <\/script>
+        </body>
+        </html>
+      `);
+      popup.document.close();
+    }
+  }
+
+  function exitPipMode() {
+    if (pipWindow) {
+      pipWindow.close();
+      pipWindow = null;
+    }
+    document.body.classList.remove("pip-mode");
+  }
+
+  if (pipBtn) {
+    pipBtn.addEventListener("click", enterPipMode);
+  }
+
+  if (pipExitBtn) {
+    pipExitBtn.addEventListener("click", exitPipMode);
+  }
+
   // ==================== ACCOUNT MODAL LOGIC ====================
   const accountModal = document.getElementById("js-account-modal");
   const closeAccountBtn = document.getElementById("js-close-account");
