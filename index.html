@@ -241,29 +241,34 @@
       <div
         class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden"
       >
-        <!-- Drag Handle for Mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center">
-          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        <!-- Close Button -->
-        <button
-          class="close absolute top-3 sm:top-5 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light z-10"
-          id="js-close-settings"
+        <!-- Header with Drag Handle & Close -->
+        <div
+          class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          &times;
-        </button>
+          <!-- Drag Handle for Mobile -->
+          <div class="sm:hidden w-full pb-2 flex justify-center">
+            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
 
-        <!-- Header -->
-        <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
-            ⚙️ Settings
-          </h2>
+          <div class="flex items-center justify-between">
+            <div class="w-9 sm:w-10"></div>
+            <h2
+              class="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-1"
+            >
+              ⚙️ Settings
+            </h2>
+            <button
+              class="close w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light"
+              id="js-close-settings"
+            >
+              &times;
+            </button>
+          </div>
         </div>
 
         <!-- Scrollable Content -->
         <div
-          class="flex-1 overflow-y-auto custom-scrollbar px-5 sm:px-8 pb-6 sm:pb-8 space-y-4 sm:space-y-5"
+          class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8 space-y-4 sm:space-y-5"
         >
           <!-- Timer Settings Card -->
           <div
@@ -433,29 +438,34 @@
       <div
         class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden"
       >
-        <!-- Drag Handle for Mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center">
-          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        <!-- Close Button -->
-        <button
-          class="close absolute top-3 sm:top-5 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light z-10"
-          id="js-close-music"
+        <!-- Header with Drag Handle & Close -->
+        <div
+          class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          &times;
-        </button>
+          <!-- Drag Handle for Mobile -->
+          <div class="sm:hidden w-full pb-2 flex justify-center">
+            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
 
-        <!-- Header -->
-        <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
-            🎵 Background Music
-          </h2>
+          <div class="flex items-center justify-between">
+            <div class="w-9 sm:w-10"></div>
+            <h2
+              class="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-1"
+            >
+              🎵 Background Music
+            </h2>
+            <button
+              class="close w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light"
+              id="js-close-music"
+            >
+              &times;
+            </button>
+          </div>
         </div>
 
         <!-- Scrollable Content -->
         <div
-          class="flex-1 overflow-y-auto custom-scrollbar px-5 sm:px-8 pb-6 sm:pb-8 space-y-4 sm:space-y-5"
+          class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8 space-y-4 sm:space-y-5"
         >
           <!-- YouTube URL Input Card -->
           <div
@@ -596,29 +606,34 @@
       <div
         class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
-        <!-- Drag Handle for Mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center">
-          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        <!-- Close Button -->
-        <button
-          class="close absolute top-3 sm:top-5 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light z-10"
-          id="js-close-tasks"
+        <!-- Header with Drag Handle & Close -->
+        <div
+          class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          &times;
-        </button>
+          <!-- Drag Handle for Mobile -->
+          <div class="sm:hidden w-full pb-2 flex justify-center">
+            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
 
-        <!-- Header -->
-        <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
-            📋 Tasks
-          </h2>
+          <div class="flex items-center justify-between">
+            <div class="w-9 sm:w-10"></div>
+            <h2
+              class="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-1"
+            >
+              📋 Tasks
+            </h2>
+            <button
+              class="close w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light"
+              id="js-close-tasks"
+            >
+              &times;
+            </button>
+          </div>
         </div>
 
         <!-- Scrollable Content -->
         <div
-          class="flex-1 overflow-y-auto custom-scrollbar px-5 sm:px-8 pb-6 sm:pb-8"
+          class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8"
         >
           <!-- Add Task Card -->
           <div
@@ -711,29 +726,34 @@
       <div
         class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[70vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
-        <!-- Drag Handle for Mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center">
-          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        <!-- Close Button -->
-        <button
-          class="close absolute top-3 sm:top-5 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light z-10"
-          id="js-close-video"
+        <!-- Header with Drag Handle & Close -->
+        <div
+          class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          &times;
-        </button>
+          <!-- Drag Handle for Mobile -->
+          <div class="sm:hidden w-full pb-2 flex justify-center">
+            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
 
-        <!-- Header -->
-        <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
-            🎬 Video Background
-          </h2>
+          <div class="flex items-center justify-between">
+            <div class="w-9 sm:w-10"></div>
+            <h2
+              class="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-1"
+            >
+              🎬 Video Background
+            </h2>
+            <button
+              class="close w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light"
+              id="js-close-video"
+            >
+              &times;
+            </button>
+          </div>
         </div>
 
         <!-- Scrollable Content -->
         <div
-          class="flex-1 overflow-y-auto custom-scrollbar px-5 sm:px-8 pb-6 sm:pb-8"
+          class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8"
         >
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div
@@ -785,29 +805,34 @@
       <div
         class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-lg sm:max-w-2xl rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
-        <!-- Drag Handle for Mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center">
-          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        <!-- Close Button -->
-        <button
-          class="close absolute top-3 sm:top-5 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light z-10"
-          id="js-close-about"
+        <!-- Header with Drag Handle & Close -->
+        <div
+          class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          &times;
-        </button>
+          <!-- Drag Handle for Mobile -->
+          <div class="sm:hidden w-full pb-2 flex justify-center">
+            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
 
-        <!-- Header -->
-        <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
-            ℹ️ About Pomopop
-          </h2>
+          <div class="flex items-center justify-between">
+            <div class="w-9 sm:w-10"></div>
+            <h2
+              class="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-1"
+            >
+              ℹ️ About Pomopop
+            </h2>
+            <button
+              class="close w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light"
+              id="js-close-about"
+            >
+              &times;
+            </button>
+          </div>
         </div>
 
         <!-- Scrollable Content -->
         <div
-          class="flex-1 overflow-y-auto custom-scrollbar px-5 sm:px-8 pb-6 sm:pb-8 space-y-5"
+          class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8 space-y-5"
         >
           <!-- What is Pomodoro Card -->
           <div
@@ -895,25 +920,37 @@
       <div
         class="modal-content bg-gradient-to-b from-white to-gray-50 w-full sm:w-[95%] max-w-md rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_-15px_rgba(0,0,0,0.3)] sm:shadow-2xl transform translate-y-full sm:translate-y-4 transition-all duration-500 ease-out [.open_&]:translate-y-0 relative max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden"
       >
-        <!-- Drag Handle for Mobile -->
-        <div class="sm:hidden w-full pt-3 pb-1 flex justify-center">
-          <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        <!-- Close Button -->
-        <button
-          class="close absolute top-3 sm:top-5 right-3 sm:right-5 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light z-10"
-          id="js-close-stats"
+        <!-- Header with Drag Handle & Close -->
+        <div
+          class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          &times;
-        </button>
+          <!-- Drag Handle for Mobile -->
+          <div class="sm:hidden w-full pb-2 flex justify-center">
+            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="w-9 sm:w-10"></div>
+            <h2
+              class="text-xl sm:text-2xl font-bold text-gray-800 text-center flex-1"
+            >
+              📊 Stats
+            </h2>
+            <button
+              class="close w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-400 hover:text-gray-600 cursor-pointer transition-all text-xl sm:text-2xl font-light"
+              id="js-close-stats"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
 
         <!-- Restricted Access Overlay for Guests -->
         <div id="js-stats-guest-overlay" class="hidden flex-1 flex flex-col">
-          <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
+          <div class="px-4 sm:px-8 pt-2 pb-4">
+            <p class="text-base text-gray-500 text-center">
               🔒 Restricted Access
-            </h2>
+            </p>
           </div>
           <div
             class="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 pb-8"
@@ -939,16 +976,9 @@
 
         <!-- Normal Stats Content -->
         <div id="js-stats-content" class="flex-1 flex flex-col">
-          <!-- Header -->
-          <div class="px-5 sm:px-8 pt-2 sm:pt-6 pb-4 sm:pb-5">
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 text-center">
-              📊 Your Progress
-            </h2>
-          </div>
-
           <!-- Tab Navigation -->
           <div
-            class="stats-tabs flex mx-5 sm:mx-8 bg-gray-100 rounded-xl p-1 mb-4"
+            class="stats-tabs flex mx-4 sm:mx-8 bg-gray-100 rounded-xl p-1 mb-4"
           >
             <button
               class="stats-tab flex-1 py-2.5 px-4 text-sm font-medium text-gray-500 rounded-lg transition-all flex items-center justify-center gap-2 [&.active]:bg-white [&.active]:text-gray-800 [&.active]:shadow-sm active"
@@ -966,7 +996,7 @@
 
           <!-- Scrollable Content -->
           <div
-            class="flex-1 overflow-y-auto custom-scrollbar px-5 sm:px-8 pb-6 sm:pb-8"
+            class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8"
           >
             <!-- Summary Tab Content -->
             <div id="js-tab-summary" class="stats-tab-content">
