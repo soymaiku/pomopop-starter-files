@@ -34,7 +34,7 @@ export async function loginWithGoogle() {
     // Only use displayName and photoURL from Google
     if (!user.displayName || !user.photoURL) {
       throw new Error(
-        "Google account must have a display name and profile photo"
+        "Google account must have a display name and profile photo",
       );
     }
 
@@ -96,10 +96,12 @@ export async function logout() {
 async function initializeUserStats(appUser) {
   try {
     if (!db) {
-      console.warn("⚠️ Firebase not initialized, skipping user stats initialization");
+      console.warn(
+        "⚠️ Firebase not initialized, skipping user stats initialization",
+      );
       return;
     }
-    
+
     const userRef = doc(db, "users", appUser.uid);
     const userSnap = await getDoc(userRef);
 

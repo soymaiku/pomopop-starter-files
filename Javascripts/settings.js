@@ -60,7 +60,7 @@ export function fetchUserSettings(userId) {
     console.warn("⚠️ Firebase not initialized, skipping settings sync");
     return;
   }
-  
+
   if (unsubscribeSettings) unsubscribeSettings();
 
   // First, clear any guest settings from memory to prevent sync
@@ -132,7 +132,7 @@ export function fetchUserSettings(userId) {
       console.error("Error listening to user settings:", error);
       // Continue with defaults if Firebase fails
       resetSettingsToDefaults();
-    }
+    },
   );
 }
 
@@ -169,11 +169,13 @@ export function stopSettingsListener() {
 export async function saveUserSettings(userId, data) {
   try {
     if (!db) {
-      console.warn("⚠️ Firebase not initialized, saving to localStorage instead");
+      console.warn(
+        "⚠️ Firebase not initialized, saving to localStorage instead",
+      );
       localStorage.setItem("pomopop-guest-settings", JSON.stringify(data));
       return;
     }
-    
+
     await setDoc(doc(db, "users", userId), data, { merge: true });
   } catch (error) {
     console.error("Error saving user settings:", error);
@@ -261,16 +263,16 @@ export function loadSettings() {
 
 export function saveSettings() {
   const pomodoro = Number(
-    document.getElementById("js-pomodoro-duration").value
+    document.getElementById("js-pomodoro-duration").value,
   );
   const shortBreak = Number(
-    document.getElementById("js-short-break-duration").value
+    document.getElementById("js-short-break-duration").value,
   );
   const longBreak = Number(
-    document.getElementById("js-long-break-duration").value
+    document.getElementById("js-long-break-duration").value,
   );
   const longBreakInterval = Number(
-    document.getElementById("js-long-break-interval").value
+    document.getElementById("js-long-break-interval").value,
   );
 
   // Get Colors from Pickers
@@ -316,7 +318,7 @@ export function saveSettings() {
   else if (localUser && localUser.isGuest) {
     localStorage.setItem(
       "pomopop-guest-settings",
-      JSON.stringify(settingsData)
+      JSON.stringify(settingsData),
     );
   }
 

@@ -40,7 +40,7 @@ export function fetchUserTasks(userId) {
     console.warn("⚠️ Firebase not initialized, skipping task sync");
     return;
   }
-  
+
   if (unsubscribeTasks) unsubscribeTasks(); // Stop any previous listener
 
   const docRef = doc(db, "users", userId);
@@ -62,7 +62,7 @@ export function fetchUserTasks(userId) {
     (error) => {
       console.error("Error listening to user tasks:", error);
       // Continue with local tasks if Firebase fails
-    }
+    },
   );
 }
 
@@ -76,22 +76,18 @@ export function stopTasksListener() {
 export async function saveUserTasks(userId, data) {
   try {
     if (!db) {
-      console.warn("⚠️ Firebase not initialized, saving to localStorage instead");
-      localStorage.setItem(
-        "pomodoroTasks",
-        JSON.stringify(data)
+      console.warn(
+        "⚠️ Firebase not initialized, saving to localStorage instead",
       );
+      localStorage.setItem("pomodoroTasks", JSON.stringify(data));
       return;
     }
-    
+
     await setDoc(doc(db, "users", userId), data, { merge: true });
   } catch (error) {
     console.error("Error saving user tasks:", error);
     // Fallback to localStorage
-    localStorage.setItem(
-      "pomodoroTasks",
-      JSON.stringify(data)
-    );
+    localStorage.setItem("pomodoroTasks", JSON.stringify(data));
   }
 }
 
@@ -115,7 +111,7 @@ export function saveTasks() {
   } else {
     localStorage.setItem(
       "pomodoroTasks",
-      JSON.stringify({ tasks, nextTaskId, currentTaskId })
+      JSON.stringify({ tasks, nextTaskId, currentTaskId }),
     );
   }
 }
@@ -210,8 +206,8 @@ export function updateTaskNameDisplay() {
 function getTaskHtml(task) {
   return `
     <div class="task-item ${currentTaskId === task.id ? "selected" : ""} ${
-    task.completed ? "completed" : ""
-  }">
+      task.completed ? "completed" : ""
+    }">
       <div class="task-info">
         ${
           task.editing
@@ -224,8 +220,8 @@ function getTaskHtml(task) {
             : `
           <div class="task-name">${escapeHtml(task.name)}</div>
           <div class="task-progress">${task.completedPomodoros} / ${
-                task.pomodoros
-              } Pomodoros</div>
+            task.pomodoros
+          } Pomodoros</div>
         `
         }
       </div>
@@ -269,7 +265,7 @@ export function renderTasks() {
       task.name = el.querySelector(".task-edit-name").value.trim() || task.name;
       task.pomodoros = Math.max(
         1,
-        Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros
+        Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros,
       );
       task.editing = false;
       saveTasks();
