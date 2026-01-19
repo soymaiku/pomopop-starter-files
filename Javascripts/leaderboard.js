@@ -89,29 +89,23 @@ function renderLeaderboard(users) {
   // Show all 10 users - leaderboard is scrollable on mobile
   const displayUsers = users.slice(0, 10);
 
-  // Build leaderboard rows with medal badges for top 3
+  // Build leaderboard rows - Pomofocus style: simple, text-first
   let html = `
     <div class="leaderboard-header">
-      <div class="leaderboard-header-rank">Rank</div>
-      <div class="leaderboard-header-user">User</div>
-      <div class="leaderboard-header-total">🍅 Total</div>
+      <div class="leaderboard-header-rank"></div>
+      <div class="leaderboard-header-user">USER</div>
+      <div class="leaderboard-header-total">🍅 TOTAL</div>
     </div>
     <div class="leaderboard-body">
   `;
 
   displayUsers.forEach((user) => {
-    const rankBadge = getRankBadge(user.rank);
     const photoUrl = user.photoURL || "https://via.placeholder.com/48";
-    const isMedalRank = user.rank <= 3;
-    const medalEmoji = user.rank === 1 ? "🥇" : user.rank === 2 ? "🥈" : "🥉";
-    const rowClass = isMedalRank
-      ? `leaderboard-row medal-rank-${user.rank}`
-      : "leaderboard-row";
 
     html += `
-      <div class="${rowClass}" data-uid="${user.uid}">
+      <div class="leaderboard-row" data-uid="${user.uid}">
         <div class="leaderboard-rank-cell">
-          <span class="rank-medal">${isMedalRank ? medalEmoji : "#" + user.rank}</span>
+          <span class="rank-number">${user.rank}</span>
         </div>
         <div class="leaderboard-user-cell">
           <img 
