@@ -7,7 +7,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { db, auth } from "./firebase-config-loader.js";
 import { timer } from "./config.js";
-import { switchMode } from "./timer.js";
+import { switchMode, stopTimer } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
 import { showNotification } from "./utils.js";
 
@@ -354,8 +354,10 @@ export function saveSettings() {
   applyTheme(colors);
   closeSettingsModal();
 
-  // Instantly update the current background and clock display
+  // Stop the timer and reset to new duration
+  stopTimer();
   switchMode(timer.mode);
+  showNotification("Settings saved! Timer reset to new duration.");
 }
 
 /**
