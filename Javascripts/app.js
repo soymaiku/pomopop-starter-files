@@ -175,6 +175,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   checkAuth(); // Check if user is logged in
 
+  const safeAddListener = (element, event, handler) => {
+    if (!element) {
+      console.warn(`Missing element for ${event} listener.`);
+      return;
+    }
+    element.addEventListener(event, handler);
+  };
+
   // Observe all modals for class changes
   document.querySelectorAll(".modal").forEach((modal) => {
     modalObserver.observe(modal, {
@@ -201,41 +209,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // --- BURGER MENU HANDLERS ---
-  menuToggleBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent document click listener from immediately closing it
-    toggleBurgerMenu();
-  });
+  if (menuToggleBtn) {
+    menuToggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation(); // Prevent document click listener from immediately closing it
+      toggleBurgerMenu();
+    });
+  }
 
   // Header Buttons are now dropdown buttons
-  document.getElementById("js-settings-btn").addEventListener("click", () => {
+  safeAddListener(document.getElementById("js-settings-btn"), "click", () => {
     openSettingsModal();
     closeBurgerMenu();
   });
-  document.getElementById("js-music-btn").addEventListener("click", () => {
+  safeAddListener(document.getElementById("js-music-btn"), "click", () => {
     openMusicModal();
     closeBurgerMenu();
   });
-  document
-    .getElementById("js-tasks-toggle-btn")
-    .addEventListener("click", () => {
+  safeAddListener(
+    document.getElementById("js-tasks-toggle-btn"),
+    "click",
+    () => {
       openTaskModal();
       closeBurgerMenu();
-    });
-  document.getElementById("js-stats-btn").addEventListener("click", () => {
+    },
+  );
+  safeAddListener(document.getElementById("js-stats-btn"), "click", () => {
     openStatsModal();
     closeBurgerMenu();
   });
 
   // Auth Event Listeners
-  googleLoginBtn.addEventListener("click", () => handleLogin("google"));
-  guestLoginBtn.addEventListener("click", () => handleLogin("guest"));
+  safeAddListener(googleLoginBtn, "click", () => handleLogin("google"));
+  safeAddListener(guestLoginBtn, "click", () => handleLogin("guest"));
 
-  loginBtn.addEventListener("click", () => {
+  safeAddListener(loginBtn, "click", () => {
     loginModal.classList.add("open");
     closeBurgerMenu();
   });
 
-  logoutBtn.addEventListener("click", () => {
+  safeAddListener(logoutBtn, "click", () => {
     logout();
     closeBurgerMenu();
     checkAuth(); // Will reopen login modal
@@ -244,76 +256,104 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -----------------------------
 
   // Settings Modal Handlers
-  document
-    .getElementById("js-close-settings")
-    .addEventListener("click", closeSettingsModal);
-  document
-    .getElementById("js-save-settings")
-    .addEventListener("click", saveSettings);
+  safeAddListener(
+    document.getElementById("js-close-settings"),
+    "click",
+    closeSettingsModal,
+  );
+  safeAddListener(
+    document.getElementById("js-save-settings"),
+    "click",
+    saveSettings,
+  );
   // Also save settings on Enter keypress inside inputs
   document
     .getElementById("js-settings-modal")
     .querySelectorAll("input")
     .forEach((input) => {
-      input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") saveSettings();
+      safeAddListener(input, "keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          saveSettings();
+        }
       });
     });
 
   // Notification Demo Modal Handlers
-  document
-    .getElementById("js-close-notification-demo")
-    .addEventListener("click", () => {
+  safeAddListener(
+    document.getElementById("js-close-notification-demo"),
+    "click",
+    () => {
       document
         .getElementById("js-notification-demo-modal")
         .classList.remove("open");
-    });
+    },
+  );
 
   // Music Modal Handlers
-  document
-    .getElementById("js-close-music")
-    .addEventListener("click", closeMusicModal);
-  document.getElementById("js-music-stop").addEventListener("click", stopMusic);
-  document
-    .getElementById("js-music-select")
-    .addEventListener("change", playMusic); // Auto-play when a new track is selected
-  document
-    .getElementById("js-volume")
-    .addEventListener("input", handleVolumeChange);
+  safeAddListener(
+    document.getElementById("js-close-music"),
+    "click",
+    closeMusicModal,
+  );
+  safeAddListener(document.getElementById("js-music-stop"), "click", stopMusic);
+  safeAddListener(
+    document.getElementById("js-music-select"),
+    "change",
+    playMusic,
+  ); // Auto-play when a new track is selected
+  safeAddListener(
+    document.getElementById("js-volume"),
+    "input",
+    handleVolumeChange,
+  );
 
   // YouTube Player Handlers
-  document
-    .getElementById("js-youtube-play-btn")
-    .addEventListener("click", playYouTubeVideo);
+  safeAddListener(
+    document.getElementById("js-youtube-play-btn"),
+    "click",
+    playYouTubeVideo,
+  );
 
   // Allow Enter key to play YouTube video
-  document
-    .getElementById("js-youtube-url")
-    .addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        playYouTubeVideo();
-      }
-    });
+  safeAddListener(document.getElementById("js-youtube-url"), "keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      playYouTubeVideo();
+    }
+  });
 
   // Tasks Modal Handlers
   // Task open is now handled by the dropdown button above
-  document
-    .getElementById("js-close-tasks")
-    .addEventListener("click", closeTaskModal);
+  safeAddListener(
+    document.getElementById("js-close-tasks"),
+    "click",
+    closeTaskModal,
+  );
   // Stats Modal Handlers
-  document
-    .getElementById("js-close-stats")
-    .addEventListener("click", closeStatsModal);
-  document.getElementById("js-add-task").addEventListener("click", addTask);
+  safeAddListener(
+    document.getElementById("js-close-stats"),
+    "click",
+    closeStatsModal,
+  );
+  safeAddListener(document.getElementById("js-add-task"), "click", addTask);
   // Add task on Enter keypress
-  document.getElementById("js-task-name").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addTask();
+  safeAddListener(document.getElementById("js-task-name"), "keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTask();
+    }
   });
-  document
-    .getElementById("js-task-pomodoros")
-    .addEventListener("keypress", (e) => {
-      if (e.key === "Enter") addTask();
-    });
+  safeAddListener(
+    document.getElementById("js-task-pomodoros"),
+    "keydown",
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTask();
+      }
+    },
+  );
 
   // ==================== ACCOUNT MODAL LOGIC ====================
   const accountModal = document.getElementById("js-account-modal");
@@ -345,7 +385,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Save account changes
-  saveAccountBtn.addEventListener("click", async () => {
+  safeAddListener(saveAccountBtn, "click", async () => {
     const user = getCurrentUser();
     if (user && !user.isGuest) {
       const newName = accountEditName.value.trim();
@@ -390,13 +430,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Account Icon and Modal Event Listeners
-  accountIconBtn.addEventListener("click", (e) => {
+  safeAddListener(accountIconBtn, "click", (e) => {
     e.stopPropagation();
     openAccountModal();
   });
 
-  closeAccountBtn.addEventListener("click", closeAccountModal);
-  cancelAccountBtn.addEventListener("click", closeAccountModal);
+  safeAddListener(closeAccountBtn, "click", closeAccountModal);
+  safeAddListener(cancelAccountBtn, "click", closeAccountModal);
 
   // ==================== ABOUT MODAL LOGIC ====================
   const infoBtn = document.getElementById("js-info-btn");
@@ -412,8 +452,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Open About Modal
-  infoBtn.addEventListener("click", openAboutModal);
-  closeAboutBtn.addEventListener("click", closeAboutModal);
+  safeAddListener(infoBtn, "click", openAboutModal);
+  safeAddListener(closeAboutBtn, "click", closeAboutModal);
 
   // ==================== GUEST WARNING MODAL LOGIC ====================
   const guestWarningModal = document.getElementById("js-guest-warning-modal");
@@ -428,11 +468,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (closeGuestWarningBtn) {
-    closeGuestWarningBtn.addEventListener("click", closeGuestWarning);
+    safeAddListener(closeGuestWarningBtn, "click", closeGuestWarning);
   }
 
   if (warningLoginBtn) {
-    warningLoginBtn.addEventListener("click", () => {
+    safeAddListener(warningLoginBtn, "click", () => {
       closeGuestWarning();
       loginModal.classList.add("open");
     });
@@ -440,7 +480,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Handle login button in stats modal
   if (statsLoginBtn) {
-    statsLoginBtn.addEventListener("click", () => {
+    safeAddListener(statsLoginBtn, "click", () => {
       closeStatsModal();
       loginModal.classList.add("open");
     });
@@ -454,18 +494,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const videoOptions = document.querySelectorAll(".video-option");
 
   // Open Modal
-  videoBtn.addEventListener("click", () => {
+  safeAddListener(videoBtn, "click", () => {
     const user = getCurrentUser();
     if (user && user.isGuest) {
       guestWarningModal.classList.add("open");
       return;
     }
-    videoModal.classList.add("open");
+    videoModal?.classList.add("open");
   });
 
   // Close Modal
-  closeVideoBtn.addEventListener("click", () => {
-    videoModal.classList.remove("open");
+  safeAddListener(closeVideoBtn, "click", () => {
+    videoModal?.classList.remove("open");
   });
 
   // Handle Video Selection
@@ -479,20 +519,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (videoSrc === "off") {
         bgVideo.onloadeddata = null; // Cancel any pending load callbacks
+        bgVideo.onerror = null;
         bgVideo.style.display = "none";
         bgVideo.pause();
+        bgVideo.src = ""; // Clear the source
         document.body.classList.remove("video-active");
       } else {
         // Temporarily show theme color to prevent white flash while loading
         document.body.classList.remove("video-active");
 
+        // Reset error handler before loading new video
+        bgVideo.onerror = null;
+
+        // Set the video source and display
         bgVideo.src = videoSrc;
         bgVideo.style.display = "block";
+        bgVideo.load(); // Force reload
 
         // Only make body transparent and play when video is actually ready
         bgVideo.onloadeddata = () => {
           document.body.classList.add("video-active");
           bgVideo.play().catch((e) => console.log("Video play failed:", e));
+        };
+
+        // Handle video load errors
+        bgVideo.onerror = () => {
+          console.error("Failed to load video:", videoSrc);
+          showWarningAlert("Failed to load video. Please try another.");
+          // Remove active class from the failed option
+          option.classList.remove("active");
+          document.body.classList.remove("video-active");
+          bgVideo.style.display = "none";
         };
       }
 
@@ -502,15 +559,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Timer mode buttons
-  document
-    .querySelector("#js-mode-buttons")
-    .addEventListener("click", handleMode);
+  safeAddListener(
+    document.querySelector("#js-mode-buttons"),
+    "click",
+    handleMode,
+  );
 
   // Main timer button and reset
-  document
-    .getElementById("js-btn")
-    .addEventListener("click", handleMainButtonClick);
-  document.getElementById("js-reset-btn").addEventListener("click", resetTimer);
+  safeAddListener(
+    document.getElementById("js-btn"),
+    "click",
+    handleMainButtonClick,
+  );
+  safeAddListener(document.getElementById("js-reset-btn"), "click", resetTimer);
 
   // Close modals AND BURGER MENU on outside click
   window.addEventListener("click", (e) => {

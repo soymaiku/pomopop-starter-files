@@ -16,16 +16,41 @@ let firebaseInitialized = false;
 
 async function initializeFirebase() {
   try {
-    // Fetch config from secure Netlify function
-    const response = await fetch("/.netlify/functions/firebase-config");
+    let firebaseConfig;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    try {
+      // Try to fetch config from Netlify function first
+      const response = await fetch("/.netlify/functions/firebase-config", {
+        timeout: 5000,
+      });
+      if (response.ok) {
+        firebaseConfig = await response.json();
+        console.log("✅ Firebase config loaded from Netlify");
+      } else {
+        throw new Error("Netlify function not available");
+      }
+    } catch (netlifyError) {
+      // Fallback to environment variables
+      console.log("⚠️ Using environment variables for Firebase config");
+      firebaseConfig = {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+        measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+      };
+
+      // Check if we have valid config
+      if (!firebaseConfig.apiKey) {
+        throw new Error(
+          "Firebase credentials not found in environment variables",
+        );
+      }
     }
 
-    const firebaseConfig = await response.json();
-
-    // Initialize Firebase with secure config
+    // Initialize Firebase
     app = initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
     auth = getAuth(app);
@@ -34,10 +59,10 @@ async function initializeFirebase() {
     githubProvider = new GithubAuthProvider();
 
     firebaseInitialized = true;
-    console.log("✅ Firebase initialized with secure config from server");
+    console.log("✅ Firebase initialized successfully");
   } catch (error) {
-    console.error("❌ Failed to load Firebase config:", error.message);
-    throw error; // Prevent the app from running with invalid config
+    console.error("❌ Firebase initialization failed:", error.message);
+    throw error;
   }
 }
 

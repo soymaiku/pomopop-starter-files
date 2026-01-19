@@ -614,13 +614,13 @@
     <!-- Video Background Elements -->
     <button
       id="js-video-bg-btn"
-      class="fixed bottom-6 left-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
+      class="video-bg-btn fixed bottom-6 left-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
     >
       🎥
     </button>
     <button
       id="js-music-btn"
-      class="fixed bottom-6 left-24 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
+      class="music-btn fixed bottom-6 left-24 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
     >
       🎵
     </button>
@@ -628,14 +628,12 @@
     <!-- Info/About Button -->
     <button
       id="js-info-btn"
-      class="fixed bottom-6 right-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
+      class="info-btn fixed bottom-6 right-6 w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-2xl flex items-center justify-center shadow-lg hover:bg-white/20 hover:scale-110 transition-all z-50 text-white"
     >
       ℹ️
     </button>
 
-    <video id="bg-video" loop muted playsinline>
-      <source src="" type="video/mp4" />
-    </video>
+    <video id="bg-video" loop muted playsinline autoplay preload="auto"></video>
 
     <!-- Video Selection Modal -->
     <div
