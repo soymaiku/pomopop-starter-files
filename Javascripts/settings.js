@@ -220,6 +220,10 @@ export function loadSettings() {
       document.getElementById("js-short-break-duration").value =
         timer.shortBreak;
       document.getElementById("js-long-break-duration").value = timer.longBreak;
+      document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
+      document.getElementById("js-short-break-duration").value =
+        timer.shortBreak;
+      document.getElementById("js-long-break-duration").value = timer.longBreak;
       document.getElementById("js-long-break-interval").value =
         timer.longBreakInterval;
 
@@ -384,7 +388,7 @@ export function setupDurationValidation() {
   // Also prevent paste of invalid characters
   const blockInvalidPaste = (e) => {
     const pastedData = e.clipboardData.getData("text");
-    if (!/^\d+$/.test(pastedData)) {
+    if (!/^\\d+$/.test(pastedData)) {
       e.preventDefault();
     }
   };

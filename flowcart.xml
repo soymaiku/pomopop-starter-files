@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Pomopop Flow">
+    <mxGraphModel dx="1000" dy="700" grid="1" guides="1" tooltips="1" connect="1">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Start -->
+        <mxCell id="start" value="User Opens App" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="30" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Landing -->
+        <mxCell id="landing" value="Landing / Login / Guest" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="120" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Home -->
+        <mxCell id="home" value="Home Screen" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Select Task -->
+        <mxCell id="task" value="Select Task (Opt.)" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="80" y="330" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Start Pomodoro -->
+        <mxCell id="startPom" value="Start Pomodoro" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="330" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Work Timer -->
+        <mxCell id="work" value="Work Timer 25:00" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="430" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Timer Complete -->
+        <mxCell id="complete" value="Timer Complete?" style="rhombus;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="540" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Pause -->
+        <mxCell id="pause" value="Pause / Resume" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="500" y="450" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Notify -->
+        <mxCell id="notify" value="Notify / Alert" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="650" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Short Break -->
+        <mxCell id="short" value="Short Break 5:00" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="760" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- 4 Pomodoros? -->
+        <mxCell id="counter" value="4 Pomodoros Completed?" style="rhombus;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="870" width="180" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Long Break -->
+        <mxCell id="long" value="Long Break 15:00" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="980" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Reset Counter -->
+        <mxCell id="resetc" value="Reset Counter" style="rounded=1;fill=#ffffff;stroke=#000000" vertex="1" parent="1">
+          <mxGeometry x="300" y="1090" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Connections -->
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="start" target="landing"/>
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="landing" target="home"/>
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="home" target="task"/>
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="task" target="startPom"/>
+        <mxCell id="edge5" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="home" target="startPom"/>
+        <mxCell id="edge6" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="startPom" target="work"/>
+        <mxCell id="edge7" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="work" target="complete"/>
+        <mxCell id="edge8" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="complete" target="notify"/>
+        <mxCell id="edge9" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="notify" target="short"/>
+        <mxCell id="edge10" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="short" target="counter"/>
+        <mxCell id="edge11" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="counter" target="startPom" value="No"/>
+        <mxCell id="edge12" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="counter" target="long" value="Yes"/>
+        <mxCell id="edge13" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="long" target="resetc"/>
+        <mxCell id="edge14" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="resetc" target="startPom"/>
+        <mxCell id="edge15" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="complete" target="pause" value="No"/>
+        <mxCell id="edge16" style="edgeStyle=orthogonalEdgeStyle;endArrow=classic" edge="1" parent="1" source="pause" target="work"/>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

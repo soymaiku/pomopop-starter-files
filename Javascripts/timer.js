@@ -26,8 +26,6 @@ export function startTimer() {
   let { total } = timer.remainingTime;
   const endTime = Date.parse(new Date()) + total * 1000;
 
-  if (timer.mode === "pomodoro") timer.sessions++;
-
   mainButton.dataset.action = "pause";
   mainButton.textContent = "pause";
   mainButton.classList.add("active");
@@ -42,18 +40,15 @@ export function startTimer() {
 
       // Update task progress when pomodoro completes
       if (timer.mode === "pomodoro") {
+        timer.sessions++; // Increment after completion, not before starting
         updateTaskProgress();
         incrementPomodoroCount(timer.pomodoro);
       }
 
       switch (timer.mode) {
         case "pomodoro":
-          const currentTask = getCurrentTask();
-          if (currentTask && currentTask.completed) {
-            // Task completed, switch to pomodoro but don't auto-start
-            switchMode("pomodoro");
-            // Don't auto-start, wait for user action
-          } else if (timer.sessions % timer.longBreakInterval === 0) {
+          // Check if it's time for a long break (every 4 pomodoros)
+          if (timer.sessions % timer.longBreakInterval === 0) {
             switchMode("longBreak");
             startTimer();
           } else {
@@ -62,15 +57,9 @@ export function startTimer() {
           }
           break;
         default:
+          // After any break, return to pomodoro and auto-start
           switchMode("pomodoro");
-          // If switching back to pomodoro, check if a task is selected
-          if (getCurrentTask() !== null) {
-            startTimer();
-          } else {
-            // Stop the timer fully and reset button if no task is selected for the new pomodoro
-            stopTimer(true);
-            showNotification("Break over. Time to focus!");
-          }
+          startTimer();
       }
 
       if (Notification.permission === "granted") {
@@ -156,15 +145,11 @@ export function updateIntervalDisplay() {
   const intervalDisplay = document.getElementById("js-interval-display");
   if (!intervalDisplay) return;
 
-  if (timer.mode === "pomodoro") {
-    const currentTask = getCurrentTask();
-    if (currentTask) {
-      const completed = currentTask.completedPomodoros || 0;
-      const estimated = currentTask.pomodoros || 1;
-      intervalDisplay.textContent = `Work ${completed} / ${estimated}`;
-    } else {
-      intervalDisplay.textContent = "";
-    }
+  const currentTask = getCurrentTask();
+  if (currentTask) {
+    const completed = currentTask.completedPomodoros || 0;
+    const estimated = currentTask.pomodoros || 1;
+    intervalDisplay.textContent = `Work ${completed} / ${estimated}`;
   } else {
     intervalDisplay.textContent = "";
   }
