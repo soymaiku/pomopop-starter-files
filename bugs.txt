@@ -1,0 +1,5 @@
+Visibility breakdown:
+
+Mobile (< 768px): Hidden ✓
+Tablets (768px - 1023px): Hidden ✓
+Desktop (≥ 1024px): Visible ✓
