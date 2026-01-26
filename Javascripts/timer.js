@@ -41,26 +41,27 @@ export function startTimer() {
       // Update task progress when pomodoro completes
       if (timer.mode === "pomodoro") {
         timer.sessions++; // Increment after completion, not before starting
+        timer.pomodorosSinceLongBreak++;
         updateTaskProgress();
         incrementPomodoroCount(timer.pomodoro);
       }
 
-      switch (timer.mode) {
-        case "pomodoro":
-          // Check if it's time for a long break (every 4 pomodoros)
-          if (timer.sessions % timer.longBreakInterval === 0) {
-            switchMode("longBreak");
-            startTimer();
-          } else {
-            switchMode("shortBreak");
-            startTimer();
-          }
-          break;
-        default:
-          // After any break, return to pomodoro and auto-start
-          switchMode("pomodoro");
-          startTimer();
+      let nextMode = "pomodoro";
+
+      if (timer.mode === "pomodoro") {
+        const shouldTakeLongBreak =
+          timer.pomodorosSinceLongBreak >= timer.longBreakInterval;
+
+        if (shouldTakeLongBreak) {
+          timer.pomodorosSinceLongBreak = 0;
+          nextMode = "longBreak";
+        } else {
+          nextMode = "shortBreak";
+        }
       }
+
+      switchMode(nextMode);
+      startTimer();
 
       if (Notification.permission === "granted") {
         const text =
@@ -157,6 +158,12 @@ export function updateIntervalDisplay() {
 
 export function switchMode(mode) {
   timer.mode = mode;
+
+  // Starting a long break resets the cycle counter
+  if (mode === "longBreak") {
+    timer.pomodorosSinceLongBreak = 0;
+  }
+
   timer.remainingTime = {
     total: timer[mode] * 60,
     minutes: timer[mode],
@@ -227,6 +234,9 @@ export function handleMode(event) {
 
 export function resetTimer() {
   stopTimer(); // Fully stop and reset button state
+
+  timer.sessions = 0;
+  timer.pomodorosSinceLongBreak = 0;
 
   // Reset to current mode's full duration
   const mode = timer.mode;

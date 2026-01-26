@@ -27,6 +27,11 @@ function applyTheme(colors) {
   if (colors.longBreak) root.style.setProperty("--longBreak", colors.longBreak);
 }
 
+function resetSessionCounters() {
+  timer.sessions = 0;
+  timer.pomodorosSinceLongBreak = 0;
+}
+
 // ==================== SETTINGS MODAL AND LOGIC ====================
 
 function resetSettingsToDefaults() {
@@ -34,6 +39,7 @@ function resetSettingsToDefaults() {
   timer.shortBreak = 5;
   timer.longBreak = 15;
   timer.longBreakInterval = 4;
+  resetSessionCounters();
 
   document.getElementById("js-pomodoro-duration").value = 25;
   document.getElementById("js-short-break-duration").value = 5;
@@ -70,6 +76,7 @@ export function fetchUserSettings(userId) {
   timer.shortBreak = 5;
   timer.longBreak = 15;
   timer.longBreakInterval = 4;
+  resetSessionCounters();
 
   // Reset UI inputs to defaults before loading account settings
   document.getElementById("js-pomodoro-duration").value = 25;
@@ -100,6 +107,7 @@ export function fetchUserSettings(userId) {
           timer.shortBreak = Number(data.shortBreak) || 5;
           timer.longBreak = Number(data.longBreak) || 15;
           timer.longBreakInterval = Number(data.longBreakInterval) || 4;
+          resetSessionCounters();
 
           document.getElementById("js-pomodoro-duration").value =
             timer.pomodoro;
@@ -214,6 +222,7 @@ export function loadSettings() {
       timer.shortBreak = Number(settings.shortBreak) || 5;
       timer.longBreak = Number(settings.longBreak) || 15;
       timer.longBreakInterval = Number(settings.longBreakInterval) || 4;
+      resetSessionCounters();
 
       // Update UI inputs
       document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
@@ -251,6 +260,7 @@ export function loadSettings() {
     timer.shortBreak = 5;
     timer.longBreak = 15;
     timer.longBreakInterval = 4;
+    resetSessionCounters();
 
     document.getElementById("js-pomodoro-duration").value = 25;
     document.getElementById("js-short-break-duration").value = 5;
@@ -325,11 +335,21 @@ export function saveSettings() {
     return;
   }
 
+  if (longBreakInterval < 1) {
+    showNotification(
+      "⚠️ Long break interval must be at least 1 pomodoro",
+      "warning",
+    );
+    document.getElementById("js-long-break-interval").value = 1;
+    return;
+  }
+
   // Update State
   timer.pomodoro = pomodoro;
   timer.shortBreak = shortBreak;
   timer.longBreak = longBreak;
   timer.longBreakInterval = longBreakInterval;
+  resetSessionCounters();
 
   const settingsData = {
     pomodoro,

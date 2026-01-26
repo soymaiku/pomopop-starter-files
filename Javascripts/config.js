@@ -5,6 +5,7 @@ export const timer = {
   shortBreak: 5,
   longBreak: 15,
   longBreakInterval: 4,
+  pomodorosSinceLongBreak: 0, // Tracks progress toward the next long break
   sessions: 0,
   mode: "pomodoro", // Initial mode
   remainingTime: {
