@@ -61,6 +61,88 @@ function resetSettingsToDefaults() {
 }
 
 let unsubscribeSettings = null;
+let lastAppliedSettings = null;
+
+function getDefaultSettings() {
+  return {
+    pomodoro: 25,
+    shortBreak: 5,
+    longBreak: 15,
+    longBreakInterval: 4,
+    colors: {
+      pomodoro: "#ba4949",
+      shortBreak: "#38858a",
+      longBreak: "#397097",
+    },
+  };
+}
+
+function safeNumber(value, fallback) {
+  const num = Number(value);
+  if (Number.isNaN(num) || value === undefined || value === null) return fallback;
+  return num;
+}
+
+function extractSettingsFromDoc(data) {
+  if (!data) return null;
+
+  const hasAnySetting =
+    data.pomodoro !== undefined ||
+    data.shortBreak !== undefined ||
+    data.longBreak !== undefined ||
+    data.longBreakInterval !== undefined ||
+    data.colors !== undefined;
+
+  if (!hasAnySetting) return null;
+
+  return {
+    pomodoro: safeNumber(data.pomodoro, 25),
+    shortBreak: safeNumber(data.shortBreak, 5),
+    longBreak: safeNumber(data.longBreak, 15),
+    longBreakInterval: safeNumber(data.longBreakInterval, 4),
+    colors: {
+      pomodoro: data.colors?.pomodoro || "#ba4949",
+      shortBreak: data.colors?.shortBreak || "#38858a",
+      longBreak: data.colors?.longBreak || "#397097",
+    },
+  };
+}
+
+function haveSettingsChanged(newSettings) {
+  if (!lastAppliedSettings) return true;
+  return (
+    newSettings.pomodoro !== lastAppliedSettings.pomodoro ||
+    newSettings.shortBreak !== lastAppliedSettings.shortBreak ||
+    newSettings.longBreak !== lastAppliedSettings.longBreak ||
+    newSettings.longBreakInterval !== lastAppliedSettings.longBreakInterval ||
+    newSettings.colors.pomodoro !== lastAppliedSettings.colors.pomodoro ||
+    newSettings.colors.shortBreak !== lastAppliedSettings.colors.shortBreak ||
+    newSettings.colors.longBreak !== lastAppliedSettings.colors.longBreak
+  );
+}
+
+function applySettingsToState(settings) {
+  timer.pomodoro = settings.pomodoro;
+  timer.shortBreak = settings.shortBreak;
+  timer.longBreak = settings.longBreak;
+  timer.longBreakInterval = settings.longBreakInterval;
+  resetSessionCounters();
+
+  document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
+  document.getElementById("js-short-break-duration").value = timer.shortBreak;
+  document.getElementById("js-long-break-duration").value = timer.longBreak;
+  document.getElementById("js-long-break-interval").value =
+    timer.longBreakInterval;
+
+  document.getElementById("js-color-pomodoro").value =
+    settings.colors.pomodoro;
+  document.getElementById("js-color-short").value = settings.colors.shortBreak;
+  document.getElementById("js-color-long").value = settings.colors.longBreak;
+
+  applyTheme(settings.colors);
+  switchMode(timer.mode);
+  lastAppliedSettings = settings;
+}
 
 export function fetchUserSettings(userId) {
   if (!db) {
@@ -98,44 +180,27 @@ export function fetchUserSettings(userId) {
   unsubscribeSettings = onSnapshot(
     docRef,
     (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-
-        // Only update if settings exist in the cloud data
-        if (data.pomodoro) {
-          timer.pomodoro = Number(data.pomodoro) || 25;
-          timer.shortBreak = Number(data.shortBreak) || 5;
-          timer.longBreak = Number(data.longBreak) || 15;
-          timer.longBreakInterval = Number(data.longBreakInterval) || 4;
-          resetSessionCounters();
-
-          document.getElementById("js-pomodoro-duration").value =
-            timer.pomodoro;
-          document.getElementById("js-short-break-duration").value =
-            timer.shortBreak;
-          document.getElementById("js-long-break-duration").value =
-            timer.longBreak;
-          document.getElementById("js-long-break-interval").value =
-            timer.longBreakInterval;
-
-          const colors = {
-            pomodoro: data.colors?.pomodoro || "#ba4949",
-            shortBreak: data.colors?.shortBreak || "#38858a",
-            longBreak: data.colors?.longBreak || "#397097",
-          };
-
-          document.getElementById("js-color-pomodoro").value = colors.pomodoro;
-          document.getElementById("js-color-short").value = colors.shortBreak;
-          document.getElementById("js-color-long").value = colors.longBreak;
-
-          applyTheme(colors);
-          switchMode(timer.mode); // Refresh UI with new settings
-          return;
+      if (!docSnap.exists()) {
+        if (!lastAppliedSettings) {
+          resetSettingsToDefaults();
+          lastAppliedSettings = getDefaultSettings();
         }
+        return;
       }
 
-      // If no settings found in cloud, reset to defaults (don't use guest settings)
-      resetSettingsToDefaults();
+      const cloudSettings = extractSettingsFromDoc(docSnap.data());
+
+      // Ignore Firestore updates that touch stats only to avoid resetting the timer mid-cycle
+      if (cloudSettings && haveSettingsChanged(cloudSettings)) {
+        applySettingsToState(cloudSettings);
+        return;
+      }
+
+      // No settings saved in the account yet; apply defaults once
+      if (!cloudSettings && !lastAppliedSettings) {
+        resetSettingsToDefaults();
+        lastAppliedSettings = getDefaultSettings();
+      }
     },
     (error) => {
       console.error("Error listening to user settings:", error);
@@ -150,6 +215,8 @@ export function stopSettingsListener() {
     unsubscribeSettings();
     unsubscribeSettings = null;
   }
+
+  lastAppliedSettings = null;
 
   // Completely reset UI and memory to prevent account data persisting
   // This will be followed by loadSettings() to restore guest data
@@ -218,10 +285,10 @@ export function loadSettings() {
       const settings = JSON.parse(saved);
 
       // Load Durations - explicitly set timer object
-      timer.pomodoro = Number(settings.pomodoro) || 25;
-      timer.shortBreak = Number(settings.shortBreak) || 5;
-      timer.longBreak = Number(settings.longBreak) || 15;
-      timer.longBreakInterval = Number(settings.longBreakInterval) || 4;
+      timer.pomodoro = safeNumber(settings.pomodoro, 25);
+      timer.shortBreak = safeNumber(settings.shortBreak, 5);
+      timer.longBreak = safeNumber(settings.longBreak, 15);
+      timer.longBreakInterval = safeNumber(settings.longBreakInterval, 4);
       resetSessionCounters();
 
       // Update UI inputs
