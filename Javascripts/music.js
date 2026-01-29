@@ -290,3 +290,27 @@ export function handleVolumeChange(e) {
   // Note: YouTube iframe API doesn't support volume control via parent page
   // Users will need to use YouTube's native controls
 }
+
+// Media Session API for lock screen controls and info
+if ("mediaSession" in navigator) {
+  musicPlayer.addEventListener("play", () => {
+    navigator.mediaSession.metadata = new window.MediaMetadata({
+      title: "Pomopop Music",
+      artist: "Pomopop",
+      album: "Focus",
+      artwork: [
+        { src: "./icons/icon-192.png", sizes: "192x192", type: "image/png" },
+        { src: "./icons/icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
+    });
+    navigator.mediaSession.playbackState = "playing";
+  });
+  musicPlayer.addEventListener("pause", () => {
+    navigator.mediaSession.playbackState = "paused";
+  });
+  // Optionally, add handlers for lock screen controls
+  navigator.mediaSession.setActionHandler("play", () => musicPlayer.play());
+  navigator.mediaSession.setActionHandler("pause", () => musicPlayer.pause());
+  navigator.mediaSession.setActionHandler("stop", () => musicPlayer.pause());
+  // You can add nexttrack/prevtrack if you have a playlist
+}
