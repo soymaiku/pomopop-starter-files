@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Video Selection with optimized loading
+  // Handle Video Selection with improved mobile compatibility
   videoOptions.forEach((option) => {
     option.addEventListener("click", () => {
       const videoFile = option.getAttribute("data-video");
@@ -42,14 +42,23 @@ document.addEventListener("DOMContentLoaded", () => {
         bgVideo.style.display = "none";
         bgVideo.pause();
       } else {
-        bgSource.src = videoFile;
-        bgVideo.preload = "auto"; // Load entire video when selected
-        bgVideo.load();
+        // Remove and re-add source for iOS compatibility
+        while (bgVideo.firstChild) bgVideo.removeChild(bgVideo.firstChild);
+        const newSource = document.createElement('source');
+        newSource.src = videoFile;
+        newSource.type = 'video/mp4';
+        bgVideo.appendChild(newSource);
+        bgVideo.muted = true;
+        bgVideo.setAttribute('muted', '');
+        bgVideo.setAttribute('playsinline', '');
+        bgVideo.setAttribute('autoplay', '');
+        bgVideo.preload = "auto";
         bgVideo.style.display = "block";
-        // Wait for video to be ready before playing
-        bgVideo.oncanplay = () => {
+        // Load and play in the same user gesture
+        bgVideo.load();
+        setTimeout(() => {
           bgVideo.play().catch(err => console.log("Autoplay prevented:", err));
-        };
+        }, 50);
       }
       closeModal();
     });
