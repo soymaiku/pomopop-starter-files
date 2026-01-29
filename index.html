@@ -47,24 +47,19 @@
   <body
     class="bg-pomodoro text-white h-dvh w-screen transition-colors duration-700 overflow-hidden font-sans selection:bg-black/20 fixed inset-0"
   >
+    <!-- Watermark Logo with Sparkle Effect -->
+    <h1 class="watermark-logo">POMOPOP</h1>
+
     <!-- Header with centered logo and right-side icons -->
     <header
       class="fixed top-0 left-0 right-0 p-4 pt-[max(1rem,env(safe-area-inset-top))] z-[200] flex items-center justify-between"
       id="js-header"
     >
-      <!-- Spacer for balance -->
+      <!-- Spacer on left for balance -->
       <div class="w-24"></div>
 
-      <!-- Centered Logo -->
-      <h1
-        class="text-white/95 text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.25em] uppercase drop-shadow-lg"
-        style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2)"
-      >
-        POMOPOP
-      </h1>
-
       <!-- Right side icons -->
-      <div class="flex items-center gap-3" id="js-burger-menu">
+      <div class="flex items-center gap-3 ml-auto" id="js-burger-menu">
         <button
           class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 neu-icon-btn"
           id="js-account-icon-btn"
