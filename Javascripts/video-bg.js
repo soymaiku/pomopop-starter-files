@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const bgVideo = document.getElementById("bg-video");
   const bgSource = bgVideo.querySelector("source");
 
+  // Preload video metadata for faster playback
+  bgVideo.preload = "metadata";
+
   // Open Modal
   videoBtn.addEventListener("click", () => {
     // Using .open class as per existing style conventions
@@ -31,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Handle Video Selection
+  // Handle Video Selection with optimized loading
   videoOptions.forEach((option) => {
     option.addEventListener("click", () => {
       const videoFile = option.getAttribute("data-video");
@@ -40,11 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
         bgVideo.pause();
       } else {
         bgSource.src = videoFile;
+        bgVideo.preload = "auto"; // Load entire video when selected
         bgVideo.load();
         bgVideo.style.display = "block";
-        bgVideo.play();
+        // Wait for video to be ready before playing
+        bgVideo.oncanplay = () => {
+          bgVideo.play().catch(err => console.log("Autoplay prevented:", err));
+        };
       }
       closeModal();
     });
   });
 });
+
