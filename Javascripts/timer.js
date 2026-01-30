@@ -148,8 +148,12 @@ export function updateIntervalDisplay() {
     const completed = currentTask.completedPomodoros || 0;
     const estimated = currentTask.pomodoros || 1;
     intervalDisplay.textContent = `Work ${completed} / ${estimated}`;
+    intervalDisplay.style.display = "inline-block";
   } else {
+    // No task: hide interval display
     intervalDisplay.textContent = "";
+    intervalDisplay.style.display = "none";
+    timer.longBreakInterval = 4;
   }
 }
 
