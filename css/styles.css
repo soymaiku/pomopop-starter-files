@@ -1,3 +1,11 @@
+.modal-content {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.modal-content::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
 /* ==========================================================================
    1. CSS Setup & Global Variables
    ========================================================================== */
@@ -23,6 +31,11 @@ body {
   padding-top: env(safe-area-inset-top);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+/* Allow modal content to scroll if needed */
+.modal-content {
+  overflow-y: auto;
 }
 
 :root {

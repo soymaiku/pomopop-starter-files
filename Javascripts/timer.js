@@ -30,6 +30,7 @@ export function startTimer() {
   mainButton.textContent = "pause";
   mainButton.classList.add("active");
 
+
   const newInterval = setInterval(function () {
     timer.remainingTime = getRemainingTime(endTime);
     updateClock();
@@ -38,20 +39,16 @@ export function startTimer() {
     if (total <= 0) {
       stopTimer(false); // Stop the current interval, but don't reset button state yet
 
-      // Update task progress when pomodoro completes
+      // Only increment and check for long break if Pomodoro was fully completed (not paused)
+      let nextMode = "pomodoro";
       if (timer.mode === "pomodoro") {
-        timer.sessions++; // Increment after completion, not before starting
+        timer.sessions++;
         timer.pomodorosSinceLongBreak++;
         updateTaskProgress();
         incrementPomodoroCount(timer.pomodoro);
-      }
 
-      let nextMode = "pomodoro";
-
-      if (timer.mode === "pomodoro") {
         const shouldTakeLongBreak =
           timer.pomodorosSinceLongBreak >= timer.longBreakInterval;
-
         if (shouldTakeLongBreak) {
           timer.pomodorosSinceLongBreak = 0;
           nextMode = "longBreak";
@@ -65,11 +62,11 @@ export function startTimer() {
 
       if (Notification.permission === "granted") {
         const text =
-          timer.mode === "pomodoro" ? "Get back to work!" : "Take a break!";
+          nextMode === "pomodoro" ? "Get back to work!" : "Take a break!";
         new Notification(text);
       }
 
-      document.querySelector(`[data-sound="${timer.mode}"]`).play();
+      document.querySelector(`[data-sound="${nextMode}"]`).play();
     }
   }, 1000);
 
