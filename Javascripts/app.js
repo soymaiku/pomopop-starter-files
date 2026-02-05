@@ -2,6 +2,8 @@
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import {
   doc,
+  getDoc,
+  setDoc,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { auth, db, waitForFirebase } from "./firebase-config-loader.js";
@@ -188,7 +190,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateModalState(); // Initial check
 
   // --- AUTH STATE LISTENER ---
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (user) {
       clearTasks(); // Clear guest tasks from view immediately
       fetchUserTasks(user.uid);
@@ -200,6 +202,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       clearTasks();
       loadTasks();
       loadSettings(); // Restore guest settings
+    }
+
+    if (user) {
+      await loadOnboardingPreference({ uid: user.uid, isGuest: false });
+      maybeOpenOnboardingModal();
+    } else {
+      onboardingPreferenceReady = false;
+      onboardingDismissedCache = false;
+      if (onboardingDismiss) onboardingDismiss.checked = false;
     }
   });
 
@@ -351,14 +362,87 @@ document.addEventListener("DOMContentLoaded", async () => {
   const onboardingOpenVideo = document.getElementById(
     "js-onboarding-open-video",
   );
-  const onboardingStorageKey = "pomopop-onboarding-dismissed";
+  let onboardingDismissedCache = false;
+  let onboardingPreferenceReady = false;
+
+  function getOnboardingStorageKey(userOverride) {
+    const user = userOverride || getCurrentUser();
+    const suffix = user && user.uid ? user.uid : "guest";
+    return `pomopop-onboarding-dismissed:${suffix}`;
+  }
   let onboardingShortcutContext = null;
 
-  function openOnboardingModal() {
-    if (onboardingDismiss) {
-      onboardingDismiss.checked =
-        localStorage.getItem(onboardingStorageKey) === "true";
+  function getLocalOnboardingPreference(userOverride) {
+    const key = getOnboardingStorageKey(userOverride);
+    return localStorage.getItem(key) === "true";
+  }
+
+  function setLocalOnboardingPreference(value, userOverride) {
+    const key = getOnboardingStorageKey(userOverride);
+    if (value) {
+      localStorage.setItem(key, "true");
+    } else {
+      localStorage.removeItem(key);
     }
+  }
+
+  function applyOnboardingPreference(value) {
+    onboardingDismissedCache = value;
+    onboardingPreferenceReady = true;
+    if (onboardingDismiss) onboardingDismiss.checked = value;
+  }
+
+  async function loadOnboardingPreference(userOverride) {
+    const user = userOverride || getCurrentUser();
+    const localPref = getLocalOnboardingPreference(userOverride);
+    applyOnboardingPreference(localPref);
+
+    if (!db || !user || user.isGuest) return;
+
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        if (typeof data.onboardingDismissed === "boolean") {
+          applyOnboardingPreference(data.onboardingDismissed);
+          setLocalOnboardingPreference(data.onboardingDismissed, userOverride);
+          return;
+        }
+      }
+
+      // Migrate local preference to Firestore on first login
+      applyOnboardingPreference(localPref);
+      await setDoc(
+        userRef,
+        { onboardingDismissed: localPref },
+        { merge: true },
+      );
+      setLocalOnboardingPreference(localPref, userOverride);
+    } catch (error) {
+      console.error("Error loading onboarding preference:", error);
+    }
+  }
+
+  async function persistOnboardingPreference(value) {
+    setLocalOnboardingPreference(value);
+
+    const user = getCurrentUser();
+    if (!db || !user || user.isGuest) return;
+
+    try {
+      await setDoc(
+        doc(db, "users", user.uid),
+        { onboardingDismissed: value },
+        { merge: true },
+      );
+    } catch (error) {
+      console.error("Error saving onboarding preference:", error);
+    }
+  }
+
+  function openOnboardingModal() {
+    if (onboardingDismiss) onboardingDismiss.checked = onboardingDismissedCache;
     if (onboardingModal) onboardingModal.classList.add("open");
   }
 
@@ -366,13 +450,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!onboardingModal) return;
     onboardingModal.classList.remove("open");
 
-    if (onboardingDismiss && onboardingDismiss.checked) {
-      localStorage.setItem(onboardingStorageKey, "true");
+    if (onboardingDismiss) {
+      applyOnboardingPreference(onboardingDismiss.checked);
+      persistOnboardingPreference(onboardingDismiss.checked);
     }
   }
 
   function maybeOpenOnboardingModal() {
-    if (localStorage.getItem(onboardingStorageKey) === "true") return;
+    if (!onboardingPreferenceReady || onboardingDismissedCache) return;
 
     const openModal = document.querySelector(".modal.open");
     if (openModal) {
@@ -440,11 +525,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   if (onboardingDismiss) {
     onboardingDismiss.addEventListener("change", () => {
-      if (onboardingDismiss.checked) {
-        localStorage.setItem(onboardingStorageKey, "true");
-      } else {
-        localStorage.removeItem(onboardingStorageKey);
-      }
+      applyOnboardingPreference(onboardingDismiss.checked);
+      persistOnboardingPreference(onboardingDismiss.checked);
     });
   }
   if (onboardingBackSettings) {
@@ -473,7 +555,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     quickTutorialBtn.addEventListener("click", () => {
       clearOnboardingShortcutContext();
       closeSettingsModal();
-      openOnboardingModal();
+      loadOnboardingPreference().then(openOnboardingModal);
     });
   }
 
