@@ -153,7 +153,6 @@ export function updateIntervalDisplay() {
     // No task: hide interval display
     intervalDisplay.textContent = "";
     intervalDisplay.style.display = "none";
-    timer.longBreakInterval = 4;
   }
 }
 
@@ -251,6 +250,11 @@ export function handleMainButtonClick() {
   buttonSound.play();
   const { action } = mainButton.dataset;
   if (action === "start") {
+    if (!getCurrentTask()) {
+      showNotification("Please add or select a task to start.");
+      openTaskModal();
+      return;
+    }
     startTimer();
   } else {
     stopTimer();
