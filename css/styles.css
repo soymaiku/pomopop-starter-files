@@ -248,6 +248,60 @@ body {
   display: none;
 }
 
+/* Onboarding toggle switch */
+.onboarding-toggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.onboarding-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.onboarding-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: #e5e7eb;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.08),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.6);
+}
+
+.onboarding-toggle-track::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 999px;
+  transition: transform 0.2s ease;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.onboarding-toggle input:checked + .onboarding-toggle-track {
+  background: #111827;
+}
+
+.onboarding-toggle input:checked + .onboarding-toggle-track::after {
+  transform: translateX(20px);
+}
+
+.onboarding-toggle input:focus-visible + .onboarding-toggle-track {
+  outline: 2px solid rgba(17, 24, 39, 0.35);
+  outline-offset: 3px;
+}
+
 /* ========================================================================== */
 /* MOBILE-FIRST UTILITIES                                                     */
 /* ========================================================================== */
@@ -460,9 +514,11 @@ html {
 @media screen and (max-width: 480px) {
   /* Hide video background and info buttons when any modal is open on mobile */
   body:has(.modal.open) .video-bg-btn,
+  body:has(.modal.open) .about-btn,
   body:has(.modal.open) .info-btn,
   body:has(.modal.open) .music-btn,
   body.modal-open .video-bg-btn,
+  body.modal-open .about-btn,
   body.modal-open .info-btn,
   body.modal-open .music-btn {
     display: none !important;
@@ -505,6 +561,7 @@ body.modal-open .footer-buttons-container {
 
 .video-bg-btn,
 .music-btn,
+.about-btn,
 .info-btn {
   width: 60px;
   height: 60px;
@@ -534,6 +591,7 @@ body.modal-open .footer-buttons-container {
 
 .video-bg-btn:hover,
 .music-btn:hover,
+.about-btn:hover,
 .info-btn:hover {
   background: linear-gradient(
     145deg,
@@ -548,6 +606,7 @@ body.modal-open .footer-buttons-container {
 
 .video-bg-btn:active,
 .music-btn:active,
+.about-btn:active,
 .info-btn:active {
   transform: translateY(0);
   box-shadow:
@@ -568,6 +627,12 @@ body.modal-open .footer-buttons-container {
   left: auto;
 }
 
+.about-btn {
+  position: relative;
+  bottom: auto;
+  right: auto;
+}
+
 .info-btn {
   position: relative;
   bottom: auto;
@@ -583,6 +648,7 @@ body.modal-open .footer-buttons-container {
 
   .video-bg-btn,
   .music-btn,
+  .about-btn,
   .info-btn {
     width: 56px;
     height: 56px;
@@ -599,6 +665,7 @@ body.modal-open .footer-buttons-container {
 
   .video-bg-btn,
   .music-btn,
+  .about-btn,
   .info-btn {
     width: 50px;
     height: 50px;

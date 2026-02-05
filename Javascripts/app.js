@@ -211,16 +211,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Header Buttons are now dropdown buttons
   document.getElementById("js-settings-btn").addEventListener("click", () => {
+    clearOnboardingShortcutContext();
     openSettingsModal();
     closeBurgerMenu();
   });
   document.getElementById("js-music-btn").addEventListener("click", () => {
+    clearOnboardingShortcutContext();
     openMusicModal();
     closeBurgerMenu();
   });
   document
     .getElementById("js-tasks-toggle-btn")
     .addEventListener("click", () => {
+      clearOnboardingShortcutContext();
       openTaskModal();
       closeBurgerMenu();
     });
@@ -249,7 +252,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Settings Modal Handlers
   document
     .getElementById("js-close-settings")
-    .addEventListener("click", closeSettingsModal);
+    .addEventListener("click", () => {
+      closeSettingsModal();
+      clearOnboardingShortcutContext();
+    });
   document
     .getElementById("js-save-settings")
     .addEventListener("click", saveSettings);
@@ -266,7 +272,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Music Modal Handlers
   document
     .getElementById("js-close-music")
-    .addEventListener("click", closeMusicModal);
+    .addEventListener("click", () => {
+      closeMusicModal();
+      clearOnboardingShortcutContext();
+    });
   document.getElementById("js-music-stop").addEventListener("click", stopMusic);
   document
     .getElementById("js-music-select")
@@ -293,7 +302,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Task open is now handled by the dropdown button above
   document
     .getElementById("js-close-tasks")
-    .addEventListener("click", closeTaskModal);
+    .addEventListener("click", () => {
+      closeTaskModal();
+      clearOnboardingShortcutContext();
+    });
   // Stats Modal Handlers
   document
     .getElementById("js-close-stats")
@@ -308,6 +320,162 @@ document.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("keypress", (e) => {
       if (e.key === "Enter") addTask();
     });
+
+  // ==================== ONBOARDING MODAL LOGIC ====================
+  const onboardingModal = document.getElementById("js-onboarding-modal");
+  const closeOnboardingBtn = document.getElementById("js-close-onboarding");
+  const onboardingDoneBtn = document.getElementById("js-onboarding-done");
+  const onboardingDismiss = document.getElementById("js-onboarding-dismiss");
+  const quickTutorialBtn = document.getElementById("js-quick-tutorial-btn");
+  const onboardingBackSettings = document.getElementById(
+    "js-onboarding-back-settings",
+  );
+  const onboardingBackTasks = document.getElementById(
+    "js-onboarding-back-tasks",
+  );
+  const onboardingBackMusic = document.getElementById(
+    "js-onboarding-back-music",
+  );
+  const onboardingBackVideo = document.getElementById(
+    "js-onboarding-back-video",
+  );
+  const onboardingOpenSettings = document.getElementById(
+    "js-onboarding-open-settings",
+  );
+  const onboardingOpenTasks = document.getElementById(
+    "js-onboarding-open-tasks",
+  );
+  const onboardingOpenMusic = document.getElementById(
+    "js-onboarding-open-music",
+  );
+  const onboardingOpenVideo = document.getElementById(
+    "js-onboarding-open-video",
+  );
+  const onboardingStorageKey = "pomopop-onboarding-dismissed";
+  let onboardingShortcutContext = null;
+
+  function openOnboardingModal() {
+    if (onboardingDismiss) {
+      onboardingDismiss.checked =
+        localStorage.getItem(onboardingStorageKey) === "true";
+    }
+    if (onboardingModal) onboardingModal.classList.add("open");
+  }
+
+  function closeOnboardingModal() {
+    if (!onboardingModal) return;
+    onboardingModal.classList.remove("open");
+
+    if (onboardingDismiss && onboardingDismiss.checked) {
+      localStorage.setItem(onboardingStorageKey, "true");
+    }
+  }
+
+  function maybeOpenOnboardingModal() {
+    if (localStorage.getItem(onboardingStorageKey) === "true") return;
+
+    const openModal = document.querySelector(".modal.open");
+    if (openModal) {
+      setTimeout(maybeOpenOnboardingModal, 400);
+      return;
+    }
+
+    openOnboardingModal();
+  }
+
+  function updateOnboardingBackButtons() {
+    const mapping = [
+      ["settings", onboardingBackSettings],
+      ["tasks", onboardingBackTasks],
+      ["music", onboardingBackMusic],
+      ["video", onboardingBackVideo],
+    ];
+
+    mapping.forEach(([key, btn]) => {
+      if (!btn) return;
+      if (onboardingShortcutContext === key) {
+        btn.classList.remove("hidden");
+      } else {
+        btn.classList.add("hidden");
+      }
+    });
+  }
+
+  function setOnboardingShortcutContext(context) {
+    onboardingShortcutContext = context;
+    updateOnboardingBackButtons();
+  }
+
+  function clearOnboardingShortcutContext() {
+    onboardingShortcutContext = null;
+    updateOnboardingBackButtons();
+  }
+
+  if (closeOnboardingBtn) {
+    closeOnboardingBtn.addEventListener("click", closeOnboardingModal);
+  }
+  if (onboardingDoneBtn) {
+    onboardingDoneBtn.addEventListener("click", closeOnboardingModal);
+  }
+  if (onboardingOpenSettings) {
+    onboardingOpenSettings.addEventListener("click", () => {
+      setOnboardingShortcutContext("settings");
+      closeOnboardingModal();
+      openSettingsModal();
+    });
+  }
+  if (onboardingOpenTasks) {
+    onboardingOpenTasks.addEventListener("click", () => {
+      setOnboardingShortcutContext("tasks");
+      closeOnboardingModal();
+      openTaskModal();
+    });
+  }
+  if (onboardingOpenMusic) {
+    onboardingOpenMusic.addEventListener("click", () => {
+      setOnboardingShortcutContext("music");
+      closeOnboardingModal();
+      openMusicModal();
+    });
+  }
+  if (onboardingDismiss) {
+    onboardingDismiss.addEventListener("change", () => {
+      if (onboardingDismiss.checked) {
+        localStorage.setItem(onboardingStorageKey, "true");
+      } else {
+        localStorage.removeItem(onboardingStorageKey);
+      }
+    });
+  }
+  if (onboardingBackSettings) {
+    onboardingBackSettings.addEventListener("click", () => {
+      closeSettingsModal();
+      clearOnboardingShortcutContext();
+      openOnboardingModal();
+    });
+  }
+  if (onboardingBackTasks) {
+    onboardingBackTasks.addEventListener("click", () => {
+      closeTaskModal();
+      clearOnboardingShortcutContext();
+      openOnboardingModal();
+    });
+  }
+  if (onboardingBackMusic) {
+    onboardingBackMusic.addEventListener("click", () => {
+      closeMusicModal();
+      clearOnboardingShortcutContext();
+      openOnboardingModal();
+    });
+  }
+
+  if (quickTutorialBtn) {
+    quickTutorialBtn.addEventListener("click", () => {
+      clearOnboardingShortcutContext();
+      closeSettingsModal();
+      openOnboardingModal();
+    });
+  }
 
   // ==================== ACCOUNT MODAL LOGIC ====================
   const accountModal = document.getElementById("js-account-modal");
@@ -394,20 +562,41 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ==================== ABOUT MODAL LOGIC ====================
   const infoBtn = document.getElementById("js-info-btn");
+  const aboutBtn = document.getElementById("js-about-btn");
   const aboutModal = document.getElementById("js-about-modal");
+  const aboutPomopopModal = document.getElementById(
+    "js-about-pomopop-modal",
+  );
   const closeAboutBtn = document.getElementById("js-close-about");
+  const closeAboutPomopopBtn = document.getElementById(
+    "js-close-about-pomopop",
+  );
 
   function openAboutModal() {
     aboutModal.classList.add("open");
+  }
+
+  function openAboutPomopopModal() {
+    aboutPomopopModal.classList.add("open");
   }
 
   function closeAboutModal() {
     aboutModal.classList.remove("open");
   }
 
+  function closeAboutPomopopModal() {
+    aboutPomopopModal.classList.remove("open");
+  }
+
   // Open About Modal
   infoBtn.addEventListener("click", openAboutModal);
   closeAboutBtn.addEventListener("click", closeAboutModal);
+  if (aboutBtn) {
+    aboutBtn.addEventListener("click", openAboutPomopopModal);
+  }
+  if (closeAboutPomopopBtn) {
+    closeAboutPomopopBtn.addEventListener("click", closeAboutPomopopModal);
+  }
 
   // ==================== GUEST WARNING MODAL LOGIC ====================
   const guestWarningModal = document.getElementById("js-guest-warning-modal");
@@ -447,19 +636,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   const bgVideo = document.getElementById("bg-video");
   const videoOptions = document.querySelectorAll(".video-option");
 
-  // Open Modal
-  videoBtn.addEventListener("click", () => {
+  function openVideoModal() {
     const user = getCurrentUser();
     if (user && user.isGuest) {
       guestWarningModal.classList.add("open");
       return;
     }
+    if (onboardingShortcutContext !== "video") {
+      clearOnboardingShortcutContext();
+    }
     videoModal.classList.add("open");
-  });
+  }
+
+  // Open Modal
+  videoBtn.addEventListener("click", openVideoModal);
+
+  if (onboardingOpenVideo) {
+    onboardingOpenVideo.addEventListener("click", () => {
+      setOnboardingShortcutContext("video");
+      closeOnboardingModal();
+      openVideoModal();
+    });
+  }
+
+  if (onboardingBackVideo) {
+    onboardingBackVideo.addEventListener("click", () => {
+      videoModal.classList.remove("open");
+      clearOnboardingShortcutContext();
+      openOnboardingModal();
+    });
+  }
 
   // Close Modal
   closeVideoBtn.addEventListener("click", () => {
     videoModal.classList.remove("open");
+    clearOnboardingShortcutContext();
   });
 
   // Handle Video Selection
@@ -512,6 +723,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const musicModal = document.getElementById("js-music-modal");
     const taskModal = document.getElementById("js-task-modal");
     const videoModal = document.getElementById("js-video-modal");
+    const onboardingModal = document.getElementById("js-onboarding-modal");
+    const aboutPomopopModal = document.getElementById(
+      "js-about-pomopop-modal",
+    );
     const statsModal = document.getElementById("js-stats-modal");
     const accountModalElem = document.getElementById("js-account-modal");
     // Note: Login modal is NOT closed by outside click
@@ -530,18 +745,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Close Modals
     if (e.target === settingsModal) {
       closeSettingsModal();
+      clearOnboardingShortcutContext();
     }
     if (e.target === musicModal) {
       closeMusicModal();
+      clearOnboardingShortcutContext();
     }
     if (e.target === taskModal) {
       closeTaskModal();
+      clearOnboardingShortcutContext();
     }
     if (e.target === videoModal) {
       videoModal.classList.remove("open");
+      clearOnboardingShortcutContext();
+    }
+    if (e.target === onboardingModal) {
+      closeOnboardingModal();
     }
     if (e.target === aboutModal) {
       closeAboutModal();
+    }
+    if (e.target === aboutPomopopModal) {
+      closeAboutPomopopModal();
     }
     if (e.target === statsModal) {
       closeStatsModal();
@@ -572,4 +797,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Initial setup: switch to pomodoro mode and update clock
   switchMode(timer.mode);
+  maybeOpenOnboardingModal();
 });
