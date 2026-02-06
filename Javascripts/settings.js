@@ -125,7 +125,7 @@ function applySettingsToState(settings) {
   timer.pomodoro = settings.pomodoro;
   timer.shortBreak = settings.shortBreak;
   timer.longBreak = settings.longBreak;
-  timer.longBreakInterval = settings.longBreakInterval;
+  timer.longBreakInterval = Math.max(settings.longBreakInterval, 2);
   resetSessionCounters();
 
   document.getElementById("js-pomodoro-duration").value = timer.pomodoro;
@@ -288,7 +288,10 @@ export function loadSettings() {
       timer.pomodoro = safeNumber(settings.pomodoro, 25);
       timer.shortBreak = safeNumber(settings.shortBreak, 5);
       timer.longBreak = safeNumber(settings.longBreak, 15);
-      timer.longBreakInterval = safeNumber(settings.longBreakInterval, 4);
+      timer.longBreakInterval = Math.max(
+        safeNumber(settings.longBreakInterval, 4),
+        2,
+      );
       resetSessionCounters();
 
       // Update UI inputs
@@ -420,12 +423,12 @@ export function saveSettings() {
     return;
   }
 
-  if (longBreakInterval < 1) {
+  if (longBreakInterval < 2) {
     showNotification(
-      "⚠️ Long break interval must be at least 1 pomodoro",
+      "⚠️ Long break interval must be at least 2 pomodoros",
       "warning",
     );
-    document.getElementById("js-long-break-interval").value = 1;
+    document.getElementById("js-long-break-interval").value = 2;
     return;
   }
 
@@ -509,7 +512,12 @@ export function setupDurationValidation() {
 
   const minimumDurationTimers = new WeakMap();
 
-  const scheduleMinimumDurationCheck = (input, minValue, label) => {
+  const scheduleMinimumDurationCheck = (
+    input,
+    minValue,
+    label,
+    unit = "minutes",
+  ) => {
     if (!input) return;
     const existingTimer = minimumDurationTimers.get(input);
     if (existingTimer) {
@@ -522,7 +530,7 @@ export function setupDurationValidation() {
       if (!Number.isFinite(value) || value < minValue) {
         input.value = minValue;
         showNotification(
-          `⚠️ ${label} duration must be at least ${minValue} minutes`,
+          `⚠️ ${label} must be at least ${minValue} ${unit}`,
           "warning",
         );
       }
@@ -614,6 +622,41 @@ export function setupDurationValidation() {
     }
     scheduleMinimumDurationCheck(longBreakInput, 5, "Long break");
   });
+
+  // ========== LONG BREAK INTERVAL ==========
+  if (intervalInput) {
+    intervalInput.addEventListener("change", (e) => {
+      const value = Number(e.target.value);
+      if (!Number.isFinite(value) || value < 2) {
+        e.target.value = 2;
+        showNotification(
+          "⚠️ Long break interval must be at least 2 pomodoros",
+          "warning",
+        );
+        return;
+      }
+      if (value > 10) {
+        e.target.value = 10;
+        showNotification(
+          "⚠️ 10 is the maximum for Long Break Interval",
+          "warning",
+        );
+      }
+    });
+
+    intervalInput.addEventListener("input", (e) => {
+      const value = Number(e.target.value);
+      if (value > 10) {
+        e.target.value = 10;
+      }
+      scheduleMinimumDurationCheck(
+        intervalInput,
+        2,
+        "Long break interval",
+        "pomodoros",
+      );
+    });
+  }
 }
 
 export function openSettingsModal() {
