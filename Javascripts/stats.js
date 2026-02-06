@@ -7,23 +7,23 @@ const LOCAL_USER_KEY = "pomopop-user";
 const TEST_PROFILES = [
   {
     uid: "test-ava",
-    displayName: "Ava Santos",
-    photoURL: "https://ui-avatars.com/api/?name=Ava+Santos&background=3b82f6&color=fff",
+    displayName: "Hanni Pham",
+    photoURL: "./Picture/hanni.jpg",
   },
   {
     uid: "test-miguel",
-    displayName: "Miguel Dizon",
-    photoURL: "https://ui-avatars.com/api/?name=Miguel+Dizon&background=10b981&color=fff",
+    displayName: "Miguel",
+    photoURL: "./Picture/miguel.jpg",
   },
   {
     uid: "test-lia",
     displayName: "Lia Cruz",
-    photoURL: "https://ui-avatars.com/api/?name=Lia+Cruz&background=f59e0b&color=fff",
+    photoURL: "./Picture/lia.jpg",
   },
   {
     uid: "test-noah",
-    displayName: "Noah Reyes",
-    photoURL: "https://ui-avatars.com/api/?name=Noah+Reyes&background=ef4444&color=fff",
+    displayName: "Dax Burger",
+    photoURL: "./Picture/dax.jpg",
   },
 ];
 
@@ -56,23 +56,31 @@ function saveOfflineUsers(users) {
 
 function ensureOfflineUsers() {
   let users = loadOfflineUsers();
+  const today = new Date().toISOString().split("T")[0];
+  const weekStartDate = getWeekStartDate().toISOString().split("T")[0];
+
   if (!users) {
-    const today = new Date().toISOString().split("T")[0];
-    const weekStartDate = getWeekStartDate().toISOString().split("T")[0];
     users = {};
-    TEST_PROFILES.forEach((profile, index) => {
-      users[profile.uid] = {
-        displayName: profile.displayName,
-        photoURL: profile.photoURL,
-        todayPomodoros: 0,
-        weeklyPomodoros: 0,
-        totalPomodoros: 12 + index * 7,
-        todayDate: today,
-        weekStartDate: weekStartDate,
-      };
-    });
-    saveOfflineUsers(users);
   }
+
+  TEST_PROFILES.forEach((profile, index) => {
+    const existing = users[profile.uid];
+    const baseStats = existing || {
+      todayPomodoros: 0,
+      weeklyPomodoros: 0,
+      totalPomodoros: 12 + index * 7,
+      todayDate: today,
+      weekStartDate: weekStartDate,
+    };
+
+    users[profile.uid] = {
+      ...baseStats,
+      displayName: profile.displayName,
+      photoURL: profile.photoURL,
+    };
+  });
+
+  saveOfflineUsers(users);
   return users;
 }
 
