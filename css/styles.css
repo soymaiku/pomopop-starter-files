@@ -987,6 +987,29 @@ body.video-active {
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {
+  #js-onboarding-modal {
+    align-items: stretch;
+  }
+
+  #js-onboarding-modal .modal-content {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  #js-onboarding-modal .onboarding-modal-content {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98) !important;
+    transition: opacity 0.3s ease, transform 0.45s ease;
+  }
+
+  #js-onboarding-modal.open .onboarding-modal-content {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+  }
+
   #js-stats-modal .modal-content {
     padding: 18px 14px;
   }
