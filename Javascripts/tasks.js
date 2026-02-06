@@ -17,7 +17,7 @@ import {
 } from "./config.js";
 import { switchMode, stopTimer, updateIntervalDisplay } from "./timer.js";
 import { escapeHtml, showNotification } from "./utils.js";
-import { getCurrentUser } from "./stats.js";
+import { getCurrentUser, handleTaskEstimateEdit } from "./stats.js";
 
 /* ==================== LOAD & SAVE ==================== */
 
@@ -271,6 +271,7 @@ export function renderTasks() {
       if (currentTaskId === task.id) {
         updateIntervalDisplay();
       }
+      handleTaskEstimateEdit(task);
       saveTasks();
       renderTasks();
     });

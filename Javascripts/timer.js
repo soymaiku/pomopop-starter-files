@@ -2,7 +2,7 @@
 import { timer, interval, setIntervalId } from "./config.js";
 import { updateTaskProgress, getCurrentTask } from "./tasks.js";
 import { showNotification } from "./utils.js";
-import { incrementPomodoroCount } from "./stats.js";
+import { incrementPomodoroCount, recordPomodoroCompletion } from "./stats.js";
 
 const buttonSound = new Audio("./Audio/button-sound.mp3");
 const mainButton = document.getElementById("js-btn");
@@ -45,7 +45,10 @@ export function startTimer() {
         timer.sessions++;
         timer.pomodorosSinceLongBreak++;
         updateTaskProgress();
-        incrementPomodoroCount(timer.pomodoro);
+        
+        // Record pomodoro completion for the current task
+        const currentTask = getCurrentTask();
+        recordPomodoroCompletion(currentTask, timer.pomodoro);
 
         const shouldTakeLongBreak =
           timer.pomodorosSinceLongBreak >= timer.longBreakInterval;

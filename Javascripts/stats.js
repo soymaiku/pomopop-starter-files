@@ -15,7 +15,9 @@ import {
 import { db } from "./firebase-config-loader.js";
 import { initializeLeaderboard, destroyLeaderboard } from "./leaderboard.js";
 
-// Track whether we've already incremented today/week's pomodoro counter this session
+// Track which tasks have already had their session count incremented
+const completedTaskSessions = new Set();
+// Also track timestamp for duplicate prevention (backward compatibility)
 let lastPomodoroIncrement = null;
 
 // ==================== AUTH LOGIC ====================
@@ -74,25 +76,7 @@ export async function logout() {
   await signOut(auth);
 }
 
-// ==================== FIRESTORE STATS LOGIC ====================
 
-/**
- * Firestore schema for user stats:
- * {
- *   displayName: string,       // Google account name
- *   photoURL: string,          // Google profile photo
- *   todayPomodoros: number,    // Resets daily
- *   weeklyPomodoros: number,   // Resets weekly (7 days)
- *   totalPomodoros: number,    // Never resets
- *   todayDate: string,         // ISO date string for tracking daily reset
- *   weekStartDate: string,     // ISO date string for tracking weekly reset
- *   lastUpdated: timestamp,    // Server timestamp
- * }
- */
-
-/**
- * Initialize user stats in Firestore (called on first login)
- */
 async function initializeUserStats(appUser) {
   try {
     if (!db) {
@@ -181,6 +165,81 @@ async function checkAndResetStats(uid, userData) {
     }
   } catch (error) {
     console.error("❌ Error checking/resetting stats:", error);
+  }
+}
+
+/**
+ * Re-evaluate task completion after editing estimated pomodoros.
+ * Allows counting when the new estimate is reached, and resets eligibility if increased.
+ * @param {Object} task - The edited task object
+ */
+export function handleTaskEstimateEdit(task) {
+  const user = getCurrentUser();
+  if (!user || user.isGuest || !task) {
+    return;
+  }
+
+  const taskKey = `${user.uid}-${task.id}`;
+
+  if (task.completedPomodoros >= task.pomodoros) {
+    // Count once if the edited estimate is already satisfied
+    recordPomodoroCompletion(task, 0);
+  } else if (completedTaskSessions.has(taskKey)) {
+    // Allow recounting if the estimate was increased
+    completedTaskSessions.delete(taskKey);
+  }
+}
+
+/**
+ * Record pomodoro completion and increment session count when task is finished
+ * IMPORTANT: Only increments session count when completedPomodoros equals estimated pomodoros
+ * @param {Object} task - The current task object
+ * @param {number} pomodoroDuration - Duration of the pomodoro session
+ */
+export async function recordPomodoroCompletion(task, pomodoroDuration) {
+  const user = getCurrentUser();
+  if (!user || user.isGuest) {
+    console.log("⚠️ Stats not saved: guest or no user");
+    return;
+  }
+
+  try {
+    // Check if task is complete (all estimated pomodoros are done)
+    if (task && task.completedPomodoros >= task.pomodoros) {
+      // Only increment session count once per completed task
+      const taskKey = `${user.uid}-${task.id}`;
+      if (!completedTaskSessions.has(taskKey)) {
+        completedTaskSessions.add(taskKey);
+
+        const userRef = doc(db, "users", user.uid);
+
+        // Only increment session count when task is fully completed
+        await updateDoc(userRef, {
+          todayPomodoros: increment(1),
+          weeklyPomodoros: increment(1),
+          totalPomodoros: increment(1),
+          lastUpdated: serverTimestamp(),
+        });
+
+        console.log(
+          "✅ Task completed! Session count incremented for:",
+          user.uid,
+          "Task:",
+          task.name
+        );
+        updateStatsDisplay(user);
+      }
+    } else {
+      console.log(
+        "⏱️ Task not yet complete:",
+        task?.completedPomodoros,
+        "/",
+        task?.pomodoros,
+        "pomodoros"
+      );
+    }
+  } catch (error) {
+    console.error("❌ Error recording pomodoro completion:", error);
   }
 }
 
