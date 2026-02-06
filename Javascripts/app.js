@@ -1,12 +1,4 @@
 // app.js
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { auth, db, waitForFirebase } from "./firebase-config-loader.js";
 import {
   loadSettings,
   openSettingsModal,
@@ -47,6 +39,7 @@ import {
   openStatsModal,
   closeStatsModal,
   getCurrentUser,
+  onAuthStateChangedLocal,
   loginWithGoogle,
   loginAsGuest,
   logout,
@@ -171,8 +164,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!localUser) {
     loginModal.classList.add("open");
   }
-  // Wait for Firebase to initialize before proceeding
-  await waitForFirebase();
   // Load settings and tasks
   loadSettings();
   updateTaskNameDisplay();
@@ -195,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateModalState(); // Initial check
 
   // --- AUTH STATE LISTENER ---
-  onAuthStateChanged(auth, async (user) => {
+  onAuthStateChangedLocal(async (user) => {
     if (user) {
       clearTasks(); // Clear guest tasks from view immediately
       fetchUserTasks(user.uid);
@@ -406,49 +397,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const user = userOverride || getCurrentUser();
     const localPref = getLocalOnboardingPreference(userOverride);
     applyOnboardingPreference(localPref);
-
-    if (!db || !user || user.isGuest) return;
-
-    try {
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        if (typeof data.onboardingDismissed === "boolean") {
-          applyOnboardingPreference(data.onboardingDismissed);
-          setLocalOnboardingPreference(data.onboardingDismissed, userOverride);
-          return;
-        }
-      }
-
-      // Migrate local preference to Firestore on first login
-      applyOnboardingPreference(localPref);
-      await setDoc(
-        userRef,
-        { onboardingDismissed: localPref },
-        { merge: true },
-      );
-      setLocalOnboardingPreference(localPref, userOverride);
-    } catch (error) {
-      console.error("Error loading onboarding preference:", error);
-    }
   }
 
   async function persistOnboardingPreference(value) {
     setLocalOnboardingPreference(value);
-
-    const user = getCurrentUser();
-    if (!db || !user || user.isGuest) return;
-
-    try {
-      await setDoc(
-        doc(db, "users", user.uid),
-        { onboardingDismissed: value },
-        { merge: true },
-      );
-    } catch (error) {
-      console.error("Error saving onboarding preference:", error);
-    }
   }
 
   function openOnboardingModal() {
@@ -614,37 +566,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
+      user.displayName = newName;
+      localStorage.setItem("pomopop-user", JSON.stringify(user));
       try {
-        // Update user profile in Firebase
-        const { updateProfile } =
-          await import("https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js");
-
-        const updates = {
-          displayName: newName,
-        };
-
-        await updateProfile(auth.currentUser, updates);
-
-        // Update Firestore to sync name across database (Leaderboard, etc.)
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          displayName: newName,
-        });
-
-        // Update local storage to reflect changes immediately
-        user.displayName = newName;
-        localStorage.setItem("pomopop-user", JSON.stringify(user));
-
-        // Update UI
-        updateProfileUI(user);
-        profileName.textContent = newName;
-
-        closeAccountModal();
-        alert("Profile updated successfully!");
+        const rawUsers = localStorage.getItem("pomopop-offline-users");
+        if (rawUsers) {
+          const users = JSON.parse(rawUsers);
+          if (users[user.uid]) {
+            users[user.uid].displayName = newName;
+            localStorage.setItem("pomopop-offline-users", JSON.stringify(users));
+          }
+        }
       } catch (error) {
-        console.error("Error updating profile:", error);
-        alert("Failed to update profile. Please try again.");
+        console.warn("⚠️ Failed to update offline profile name", error);
       }
+      updateProfileUI(user);
+      profileName.textContent = newName;
+      closeAccountModal();
+      alert("Profile updated successfully!");
     }
   });
 

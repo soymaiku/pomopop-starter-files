@@ -1,20 +1,93 @@
 // leaderboard.js
-// Real-time leaderboard system using Firebase Firestore
-// Shows top users ranked by weekly pomodoros with live updates
-
-import { db } from "./firebase-config-loader.js";
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  where,
-  getDocs,
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+// Offline leaderboard system using localStorage data
 
 // Store current leaderboard data
 let leaderboardData = [];
-let unsubscribe = null;
+let refreshTimer = null;
+
+const OFFLINE_USERS_KEY = "pomopop-offline-users";
+
+const TEST_PROFILES = [
+  {
+    uid: "test-ava",
+    displayName: "Ava Santos",
+    photoURL: "https://ui-avatars.com/api/?name=Ava+Santos&background=3b82f6&color=fff",
+    totalPomodoros: 12,
+  },
+  {
+    uid: "test-miguel",
+    displayName: "Miguel Dizon",
+    photoURL: "https://ui-avatars.com/api/?name=Miguel+Dizon&background=10b981&color=fff",
+    totalPomodoros: 19,
+  },
+  {
+    uid: "test-lia",
+    displayName: "Lia Cruz",
+    photoURL: "https://ui-avatars.com/api/?name=Lia+Cruz&background=f59e0b&color=fff",
+    totalPomodoros: 26,
+  },
+  {
+    uid: "test-noah",
+    displayName: "Noah Reyes",
+    photoURL: "https://ui-avatars.com/api/?name=Noah+Reyes&background=ef4444&color=fff",
+    totalPomodoros: 33,
+  },
+];
+
+function seedOfflineUsers() {
+  const today = new Date().toISOString().split("T")[0];
+  const weekStart = getWeekStartDate().toISOString().split("T")[0];
+  const users = {};
+  TEST_PROFILES.forEach((profile) => {
+    users[profile.uid] = {
+      displayName: profile.displayName,
+      photoURL: profile.photoURL,
+      todayPomodoros: 0,
+      weeklyPomodoros: 0,
+      totalPomodoros: profile.totalPomodoros,
+      todayDate: today,
+      weekStartDate: weekStart,
+    };
+  });
+  localStorage.setItem(OFFLINE_USERS_KEY, JSON.stringify(users));
+  return users;
+}
+
+function getWeekStartDate() {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+  return new Date(today.setDate(diff));
+}
+
+function loadOfflineUsers() {
+  const raw = localStorage.getItem(OFFLINE_USERS_KEY);
+  if (!raw) return seedOfflineUsers();
+  try {
+    const parsed = JSON.parse(raw) || {};
+    if (!Object.keys(parsed).length) return seedOfflineUsers();
+    return parsed;
+  } catch (error) {
+    console.warn("⚠️ Failed to parse offline users for leaderboard", error);
+    return seedOfflineUsers();
+  }
+}
+
+function buildOfflineLeaderboard() {
+  const users = loadOfflineUsers();
+  return Object.entries(users)
+    .map(([uid, data]) => ({
+      uid,
+      displayName: data.displayName || "Offline User",
+      photoURL: data.photoURL || "https://via.placeholder.com/48",
+      totalPomodoros: Number(data.totalPomodoros || 0),
+    }))
+    .sort((a, b) => b.totalPomodoros - a.totalPomodoros)
+    .map((user, index) => ({
+      ...user,
+      rank: index + 1,
+    }));
+}
 
 /**
  * Start real-time listener for leaderboard
@@ -28,42 +101,14 @@ export function initializeLeaderboard() {
     return;
   }
 
-  // Query all users by total pomodoros (descending)
-  const leaderboardQuery = query(
-    collection(db, "users"),
-    orderBy("totalPomodoros", "desc"),
-  );
+  leaderboardData = buildOfflineLeaderboard();
+  renderLeaderboard(leaderboardData);
 
-  // Set up real-time listener
-  unsubscribe = onSnapshot(
-    leaderboardQuery,
-    (snapshot) => {
-      if (snapshot.empty) {
-        console.log("ℹ️ No users in leaderboard yet");
-      }
-      leaderboardData = snapshot.docs.map((doc, index) => ({
-        rank: index + 1,
-        uid: doc.id,
-        ...doc.data(),
-      }));
-      renderLeaderboard(leaderboardData);
-    },
-    (error) => {
-      console.error("❌ Leaderboard listener error:", error);
-      console.error("Error code:", error.code);
-      console.error("Error message:", error.message);
-      if (error.code === "permission-denied") {
-        console.error(
-          "⚠️ Firestore 'Read' permission denied - update security rules",
-        );
-      } else if (error.code === "failed-precondition") {
-        console.error("⚠️ Firestore index missing or collection needs index");
-      }
-      displayLeaderboardError();
-    },
-  );
-
-  console.log("✅ Leaderboard listener started");
+  // Refresh occasionally in case stats change during the session
+  refreshTimer = setInterval(() => {
+    leaderboardData = buildOfflineLeaderboard();
+    renderLeaderboard(leaderboardData);
+  }, 5000);
 }
 
 /**
@@ -165,10 +210,9 @@ function displayLeaderboardError() {
  * Call this when closing stats modal to save resources
  */
 export function destroyLeaderboard() {
-  if (unsubscribe) {
-    unsubscribe();
-    unsubscribe = null;
-    console.log("🛑 Leaderboard listener stopped");
+  if (refreshTimer) {
+    clearInterval(refreshTimer);
+    refreshTimer = null;
   }
 }
 

@@ -1,18 +1,10 @@
 // settings.js
-import {
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot,
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db, auth } from "./firebase-config-loader.js";
 import { timer } from "./config.js";
 import { switchMode, stopTimer } from "./timer.js";
 import { getCurrentUser } from "./stats.js";
 import { showNotification } from "./utils.js";
 
-// Clear old shared storage key to prevent sync conflicts between Google and Guest
-// This ensures complete separation between logged-in and guest modes
+// Clear old shared storage key to prevent sync conflicts between accounts
 localStorage.removeItem("pomodoroSettings");
 
 /**
@@ -62,6 +54,12 @@ function resetSettingsToDefaults() {
 
 let unsubscribeSettings = null;
 let lastAppliedSettings = null;
+
+function getSettingsStorageKey(userOverride) {
+  const user = userOverride || getCurrentUser();
+  const suffix = user && user.uid ? user.uid : "guest";
+  return `pomopop-settings:${suffix}`;
+}
 
 function getDefaultSettings() {
   return {
@@ -145,69 +143,28 @@ function applySettingsToState(settings) {
 }
 
 export function fetchUserSettings(userId) {
-  if (!db) {
-    console.warn("⚠️ Firebase not initialized, skipping settings sync");
+  if (unsubscribeSettings) unsubscribeSettings();
+  unsubscribeSettings = null;
+
+  const saved = localStorage.getItem(getSettingsStorageKey({ uid: userId }));
+  if (!saved) {
+    if (!lastAppliedSettings) {
+      resetSettingsToDefaults();
+      lastAppliedSettings = getDefaultSettings();
+    }
     return;
   }
 
-  if (unsubscribeSettings) unsubscribeSettings();
-
-  // First, clear any guest settings from memory to prevent sync
-  // Reset timer and colors to defaults before loading user settings
-  timer.pomodoro = 25;
-  timer.shortBreak = 5;
-  timer.longBreak = 15;
-  timer.longBreakInterval = 4;
-  resetSessionCounters();
-
-  // Reset UI inputs to defaults before loading account settings
-  document.getElementById("js-pomodoro-duration").value = 25;
-  document.getElementById("js-short-break-duration").value = 5;
-  document.getElementById("js-long-break-duration").value = 15;
-  document.getElementById("js-long-break-interval").value = 4;
-  document.getElementById("js-color-pomodoro").value = "#ba4949";
-  document.getElementById("js-color-short").value = "#38858a";
-  document.getElementById("js-color-long").value = "#397097";
-
-  // Apply default theme
-  applyTheme({
-    pomodoro: "#ba4949",
-    shortBreak: "#38858a",
-    longBreak: "#397097",
-  });
-
-  const docRef = doc(db, "users", userId);
-  unsubscribeSettings = onSnapshot(
-    docRef,
-    (docSnap) => {
-      if (!docSnap.exists()) {
-        if (!lastAppliedSettings) {
-          resetSettingsToDefaults();
-          lastAppliedSettings = getDefaultSettings();
-        }
-        return;
-      }
-
-      const cloudSettings = extractSettingsFromDoc(docSnap.data());
-
-      // Ignore Firestore updates that touch stats only to avoid resetting the timer mid-cycle
-      if (cloudSettings && haveSettingsChanged(cloudSettings)) {
-        applySettingsToState(cloudSettings);
-        return;
-      }
-
-      // No settings saved in the account yet; apply defaults once
-      if (!cloudSettings && !lastAppliedSettings) {
-        resetSettingsToDefaults();
-        lastAppliedSettings = getDefaultSettings();
-      }
-    },
-    (error) => {
-      console.error("Error listening to user settings:", error);
-      // Continue with defaults if Firebase fails
-      resetSettingsToDefaults();
-    },
-  );
+  try {
+    const settings = JSON.parse(saved);
+    const extracted = extractSettingsFromDoc(settings);
+    if (extracted && haveSettingsChanged(extracted)) {
+      applySettingsToState(extracted);
+    }
+  } catch (error) {
+    console.error("Error loading offline settings:", error);
+    resetSettingsToDefaults();
+  }
 }
 
 export function stopSettingsListener() {
@@ -243,42 +200,11 @@ export function stopSettingsListener() {
 }
 
 export async function saveUserSettings(userId, data) {
-  try {
-    if (!db) {
-      console.warn(
-        "⚠️ Firebase not initialized, saving to localStorage instead",
-      );
-      localStorage.setItem("pomopop-guest-settings", JSON.stringify(data));
-      return;
-    }
-
-    await setDoc(doc(db, "users", userId), data, { merge: true });
-  } catch (error) {
-    console.error("Error saving user settings:", error);
-    // Fallback to localStorage
-    localStorage.setItem("pomopop-guest-settings", JSON.stringify(data));
-  }
+  localStorage.setItem(getSettingsStorageKey({ uid: userId }), JSON.stringify(data));
 }
 
 export function loadSettings() {
-  // Only load from guest localStorage if actually in guest mode
-  const user = getCurrentUser();
-  const guestSettingsKey = "pomopop-guest-settings";
-
-  // If user is logged in (not guest), don't load from localStorage
-  if (user && !user.isGuest) {
-    // Apply defaults and let fetchUserSettings load from Firestore
-    applyTheme({
-      pomodoro: "#ba4949",
-      shortBreak: "#38858a",
-      longBreak: "#397097",
-    });
-    switchMode(timer.mode);
-    return;
-  }
-
-  // For guest mode, fully clear and reload from guest settings storage
-  const saved = localStorage.getItem(guestSettingsKey);
+  const saved = localStorage.getItem(getSettingsStorageKey());
 
   if (saved) {
     try {
@@ -426,21 +352,9 @@ export function saveSettings() {
     colors,
   };
 
-  // Check Auth: Save to Cloud if logged in (not guest), otherwise save to guest localStorage
-  const user = auth.currentUser;
   const localUser = getCurrentUser();
-
-  // If user is logged in via Firebase (Google, etc.), save to Firestore
-  if (user) {
-    saveUserSettings(user.uid, settingsData);
-  }
-  // If user is guest, save to guest-specific localStorage (don't use auth.currentUser)
-  else if (localUser && localUser.isGuest) {
-    localStorage.setItem(
-      "pomopop-guest-settings",
-      JSON.stringify(settingsData),
-    );
-  }
+  const targetUid = localUser && !localUser.isGuest ? localUser.uid : "guest";
+  saveUserSettings(targetUid, settingsData);
 
   applyTheme(colors);
   closeSettingsModal();

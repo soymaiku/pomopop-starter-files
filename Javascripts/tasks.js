@@ -1,12 +1,5 @@
 // tasks.js
 import {
-  doc,
-  setDoc,
-  getDoc,
-  onSnapshot,
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db, auth } from "./firebase-config-loader.js";
-import {
   tasks,
   nextTaskId,
   currentTaskId,
@@ -21,8 +14,14 @@ import { getCurrentUser } from "./stats.js";
 
 /* ==================== LOAD & SAVE ==================== */
 
-export function loadTasks() {
-  const saved = localStorage.getItem("pomodoroTasks");
+function getTasksStorageKey(userOverride) {
+  const user = userOverride || getCurrentUser();
+  const suffix = user && user.uid ? user.uid : "guest";
+  return `pomodoroTasks:${suffix}`;
+}
+
+export function loadTasks(userOverride) {
+  const saved = localStorage.getItem(getTasksStorageKey(userOverride));
   if (saved) {
     const parsed = JSON.parse(saved);
     tasks.length = 0;
@@ -36,34 +35,9 @@ export function loadTasks() {
 let unsubscribeTasks = null;
 
 export function fetchUserTasks(userId) {
-  if (!db) {
-    console.warn("⚠️ Firebase not initialized, skipping task sync");
-    return;
-  }
-
-  if (unsubscribeTasks) unsubscribeTasks(); // Stop any previous listener
-
-  const docRef = doc(db, "users", userId);
-  unsubscribeTasks = onSnapshot(
-    docRef,
-    (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        tasks.length = 0;
-        if (data.tasks) tasks.push(...data.tasks);
-        setNextTaskId(data.nextTaskId || 1);
-        setCurrentTaskId(data.currentTaskId ?? null);
-      } else {
-        // New user or no data found, clear state
-        clearTasks();
-      }
-      renderTasks();
-    },
-    (error) => {
-      console.error("Error listening to user tasks:", error);
-      // Continue with local tasks if Firebase fails
-    },
-  );
+  if (unsubscribeTasks) unsubscribeTasks();
+  loadTasks({ uid: userId });
+  renderTasks();
 }
 
 export function stopTasksListener() {
@@ -74,21 +48,7 @@ export function stopTasksListener() {
 }
 
 export async function saveUserTasks(userId, data) {
-  try {
-    if (!db) {
-      console.warn(
-        "⚠️ Firebase not initialized, saving to localStorage instead",
-      );
-      localStorage.setItem("pomodoroTasks", JSON.stringify(data));
-      return;
-    }
-
-    await setDoc(doc(db, "users", userId), data, { merge: true });
-  } catch (error) {
-    console.error("Error saving user tasks:", error);
-    // Fallback to localStorage
-    localStorage.setItem("pomodoroTasks", JSON.stringify(data));
-  }
+  localStorage.setItem(getTasksStorageKey({ uid: userId }), JSON.stringify(data));
 }
 
 export function clearTasks() {
@@ -99,21 +59,14 @@ export function clearTasks() {
 }
 
 export function saveTasks() {
-  const user = auth.currentUser;
   const localUser = getCurrentUser();
+  const targetUid = localUser && !localUser.isGuest ? localUser.uid : "guest";
 
-  if (user || (localUser && !localUser.isGuest)) {
-    saveUserTasks(user ? user.uid : localUser.uid, {
-      tasks,
-      nextTaskId,
-      currentTaskId,
-    });
-  } else {
-    localStorage.setItem(
-      "pomodoroTasks",
-      JSON.stringify({ tasks, nextTaskId, currentTaskId }),
-    );
-  }
+  saveUserTasks(targetUid, {
+    tasks,
+    nextTaskId,
+    currentTaskId,
+  });
 }
 
 /* ==================== TASK ACTIONS ==================== */
