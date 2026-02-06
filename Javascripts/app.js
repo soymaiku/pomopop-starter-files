@@ -167,6 +167,10 @@ async function handleLogin(type) {
 // ==================== EVENT LISTENERS ====================
 document.addEventListener("DOMContentLoaded", async () => {
   applyCustomFont();
+  const localUser = getCurrentUser();
+  if (!localUser) {
+    loginModal.classList.add("open");
+  }
   // Wait for Firebase to initialize before proceeding
   await waitForFirebase();
   // Load settings and tasks
