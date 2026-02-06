@@ -130,8 +130,9 @@ export function addTask() {
     return;
   }
 
+  const newTaskId = nextTaskId;
   tasks.push({
-    id: nextTaskId,
+    id: newTaskId,
     name,
     pomodoros,
     completedPomodoros: 0,
@@ -143,8 +144,7 @@ export function addTask() {
   nameInput.value = "";
   pomosInput.value = 1;
 
-  saveTasks();
-  renderTasks();
+  setCurrentTask(newTaskId);
 }
 
 export function deleteTask(id) {
