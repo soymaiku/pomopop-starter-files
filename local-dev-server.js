@@ -13,8 +13,10 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const url = require("url");
+const os = require("os");
 
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || "0.0.0.0";
 
 // Get Firebase config from environment variables
 const firebaseConfig = {
@@ -133,13 +135,36 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+const getLocalIpAddresses = () => {
+  const interfaces = os.networkInterfaces();
+  const ips = [];
+
+  Object.values(interfaces).forEach((netInterface) => {
+    if (!netInterface) return;
+    netInterface.forEach((net) => {
+      if (net.family === "IPv4" && !net.internal) {
+        ips.push(net.address);
+      }
+    });
+  });
+
+  return ips;
+};
+
+server.listen(PORT, HOST, () => {
+  const localIps = getLocalIpAddresses();
+  const networkUrls = localIps
+    .map((ip) => `   http://${ip}:${PORT}/`)
+    .join("\n");
+
   console.log(`
 ╔════════════════════════════════════════════════════╗
 ║   Pomopop Local Development Server                ║
 ╚════════════════════════════════════════════════════╝
 
-🚀 Server running at http://localhost:${PORT}/
+🚀 Server running at:
+   http://localhost:${PORT}/
+${networkUrls ? `\n🌐 On your phone (same Wi‑Fi):\n${networkUrls}` : ""}
 
 ✅ Firebase config endpoint available at:
    /.netlify/functions/firebase-config

@@ -336,6 +336,7 @@ html {
   max-height: 90vh;
   max-height: 90dvh; /* Dynamic viewport height */
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 475px) {
@@ -989,13 +990,16 @@ body.video-active {
 @media (max-width: 640px) {
   #js-onboarding-modal {
     align-items: stretch;
+    padding: 0;
   }
 
   #js-onboarding-modal .modal-content {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     height: 100dvh;
     max-height: 100dvh;
-    border-radius: 0;
+    border-radius: 0 !important;
     box-shadow: none;
   }
 
@@ -1913,6 +1917,33 @@ html {
 
   .modal {
     min-height: -webkit-fill-available;
+  }
+}
+
+/* iOS/Chrome: use small viewport height to avoid toolbar overlap */
+@supports (height: 100svh) {
+  html,
+  body {
+    height: 100svh;
+    min-height: 100svh;
+  }
+
+  .modal,
+  .modal-overlay {
+    height: 100svh;
+  }
+
+  @media (max-width: 640px) {
+    .modal-content {
+      max-height: calc(
+        85svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+      ) !important;
+    }
+
+    #js-onboarding-modal .modal-content {
+      height: 100svh !important;
+      max-height: 100svh !important;
+    }
   }
 }
 
