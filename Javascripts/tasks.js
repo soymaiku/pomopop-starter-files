@@ -69,6 +69,39 @@ export function saveTasks() {
   });
 }
 
+const minimumPomodoroTimers = new WeakMap();
+
+function enforceMinimumPomodoros(input) {
+  if (!input) return 2;
+  if (input.value === "") return 2;
+
+  const rawPomodoros = Number(input.value);
+  if (!Number.isFinite(rawPomodoros) || rawPomodoros < 2) {
+    showNotification("⚠️ Est. Pomodoros must be 2 or more");
+    input.value = 2;
+    return 2;
+  }
+
+  return rawPomodoros;
+}
+
+function scheduleMinimumPomodorosCheck(input) {
+  if (!input) return;
+  const existingTimer = minimumPomodoroTimers.get(input);
+  if (existingTimer) {
+    clearTimeout(existingTimer);
+  }
+
+  const timer = setTimeout(() => {
+    if (input.value === "") return;
+    if (Number(input.value) < 2) {
+      enforceMinimumPomodoros(input);
+    }
+  }, 300);
+
+  minimumPomodoroTimers.set(input, timer);
+}
+
 /* ==================== TASK ACTIONS ==================== */
 
 export function addTask() {
@@ -76,7 +109,7 @@ export function addTask() {
   const pomosInput = document.getElementById("js-task-pomodoros");
 
   const name = nameInput.value.trim();
-  const pomodoros = Math.max(1, Number(pomosInput.value) || 1);
+  const pomodoros = Math.max(2, enforceMinimumPomodoros(pomosInput));
 
   if (!name) {
     alert("Please enter a task name");
@@ -95,7 +128,7 @@ export function addTask() {
 
   setNextTaskId(nextTaskId + 1);
   nameInput.value = "";
-  pomosInput.value = 1;
+  pomosInput.value = 2;
 
   setCurrentTask(newTaskId);
 }
@@ -166,7 +199,7 @@ function getTaskHtml(task) {
           task.editing
             ? `
           <input class="task-edit-name" value="${escapeHtml(task.name)}">
-          <input class="task-edit-pomos" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="${
+          <input class="task-edit-pomos" type="number" inputmode="numeric" pattern="[0-9]*" min="2" value="${
             task.pomodoros
           }">
         `
@@ -203,6 +236,16 @@ export function renderTasks() {
     wrapper.innerHTML = getTaskHtml(task);
     const el = wrapper.firstElementChild;
 
+    if (task.editing) {
+      const editPomosInput = el.querySelector(".task-edit-pomos");
+      editPomosInput?.addEventListener("input", () => {
+        scheduleMinimumPomodorosCheck(editPomosInput);
+      });
+      editPomosInput?.addEventListener("change", () => {
+        enforceMinimumPomodoros(editPomosInput);
+      });
+    }
+
     el.querySelector(".task-info")?.addEventListener("click", () => {
       if (!task.completed && !task.editing) {
         setCurrentTask(currentTaskId === task.id ? null : task.id);
@@ -216,10 +259,8 @@ export function renderTasks() {
 
     el.querySelector(".save")?.addEventListener("click", () => {
       task.name = el.querySelector(".task-edit-name").value.trim() || task.name;
-      task.pomodoros = Math.max(
-        1,
-        Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros,
-      );
+      const pomosInput = el.querySelector(".task-edit-pomos");
+      task.pomodoros = Math.max(2, enforceMinimumPomodoros(pomosInput));
       task.editing = false;
       if (currentTaskId === task.id) {
         updateIntervalDisplay();
@@ -269,6 +310,14 @@ export function setupTaskInputValidation() {
     if (["e", "E", ".", "+", "-"].includes(e.key)) {
       e.preventDefault();
     }
+  });
+
+  pomosInput.addEventListener("input", () => {
+    scheduleMinimumPomodorosCheck(pomosInput);
+  });
+
+  pomosInput.addEventListener("change", () => {
+    enforceMinimumPomodoros(pomosInput);
   });
 
   // Prevent paste of invalid characters
