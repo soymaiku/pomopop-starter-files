@@ -159,6 +159,7 @@ async function handleLogin(type) {
     await loginWithGoogle();
   } else {
     loginAsGuest();
+    document.dispatchEvent(new CustomEvent("pomopop-guest-login"));
   }
   checkAuth();
 }
@@ -202,16 +203,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       clearTasks();
       loadTasks();
       loadSettings(); // Restore guest settings
+
+      const localUser = getCurrentUser();
+      if (localUser && localUser.isGuest) {
+        await loadOnboardingPreference(localUser);
+        maybeOpenOnboardingModal();
+      } else {
+        onboardingPreferenceReady = false;
+        onboardingDismissedCache = false;
+        if (onboardingDismiss) onboardingDismiss.checked = false;
+      }
+      return;
     }
 
-    if (user) {
-      await loadOnboardingPreference({ uid: user.uid, isGuest: false });
-      maybeOpenOnboardingModal();
-    } else {
-      onboardingPreferenceReady = false;
-      onboardingDismissedCache = false;
-      if (onboardingDismiss) onboardingDismiss.checked = false;
-    }
+    await loadOnboardingPreference({ uid: user.uid, isGuest: false });
+    maybeOpenOnboardingModal();
   });
 
   // --- BURGER MENU HANDLERS ---
@@ -558,6 +564,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadOnboardingPreference().then(openOnboardingModal);
     });
   }
+
+  document.addEventListener("pomopop-guest-login", async () => {
+    await loadOnboardingPreference({ uid: "guest", isGuest: true });
+    maybeOpenOnboardingModal();
+  });
 
   // ==================== ACCOUNT MODAL LOGIC ====================
   const accountModal = document.getElementById("js-account-modal");
