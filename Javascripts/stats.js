@@ -258,89 +258,51 @@ async function updateStatsDisplay(user) {
     return;
   }
 
-  // Show stats content, hide guest overlay
-  if (statsContent) statsContent.classList.remove("hidden");
-  if (guestOverlay) guestOverlay.classList.add("hidden");
 
-  // Fetch latest stats from local storage
-  const stats = await getUserStats(user.uid);
-  if (!stats) {
-    console.warn("Could not load stats for user:", user.uid);
-    return;
-  }
+    // ==================== OFFLINE STATS LOGIC ====================
 
-  // Update only Total stat card (hide Today and This Week)
-  const totalEl = document.getElementById("js-stat-sessions");
-  const todayEl = document.getElementById("js-stat-today");
-  const weekEl = document.getElementById("js-stat-week");
+    export function handleTaskEstimateEdit(task) {
+      const user = getCurrentUser();
+      if (!user || user.isGuest || !task) {
+        return;
+      }
 
-  if (totalEl) totalEl.textContent = stats.totalPomodoros || 0;
+      const taskKey = `${user.uid}-${task.id}`;
 
-  // Show only Total, hide Today and This Week
-  if (todayEl && todayEl.parentElement) {
-    todayEl.parentElement.style.display = "none";
-  }
-  if (weekEl && weekEl.parentElement) {
-    weekEl.parentElement.style.display = "none";
-  }
-}
+      if (task.completedPomodoros >= task.pomodoros) {
+        recordPomodoroCompletion(task);
+      } else if (completedTaskSessions.has(taskKey)) {
+        completedTaskSessions.delete(taskKey);
+      }
+    }
 
-export async function loadStats() {
-  const user = getCurrentUser();
-  if (user) {
-    await updateStatsDisplay(user);
-  }
-}
+    export async function recordPomodoroCompletion(task) {
+      const user = getCurrentUser();
+      if (!user || user.isGuest) {
+        console.log("⚠️ Stats not saved: guest or no user");
+        return;
+      }
 
-export async function openStatsModal() {
-  const statsModal = document.getElementById("js-stats-modal");
-  statsModal.classList.add("open");
+      if (!task || task.completedPomodoros < task.pomodoros) {
+        return;
+      }
 
-  await loadStats();
+      const taskKey = `${user.uid}-${task.id}`;
+      if (completedTaskSessions.has(taskKey)) {
+        return;
+      }
 
-  // Initialize leaderboard when stats modal opens
-  initializeLeaderboard();
+      completedTaskSessions.add(taskKey);
 
-  // Initialize tab switching
-  initializeStatsTabs();
-}
+      const users = ensureOfflineUsers();
+      const stats = ensureUserStats(user.uid, user);
+      stats.todayPomodoros += 1;
+      stats.weeklyPomodoros += 1;
+      stats.totalPomodoros += 1;
+      users[user.uid] = stats;
+      saveOfflineUsers(users);
+      updateStatsDisplay(user);
+    }
 
+    export async function incrementPomodoroCount() {
 export function closeStatsModal() {
-  const statsModal = document.getElementById("js-stats-modal");
-  statsModal.classList.remove("open");
-
-  // Stop any offline listeners/timers
-  destroyLeaderboard();
-}
-
-/**
- * Initialize stats modal tab switching
- */
-function initializeStatsTabs() {
-  const tabs = document.querySelectorAll(".stats-tab");
-  const tabContents = {
-    summary: document.getElementById("js-tab-summary"),
-    ranking: document.getElementById("js-tab-ranking"),
-  };
-
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const targetTab = tab.dataset.tab;
-
-      // Update active tab styling
-      tabs.forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      // Show/hide tab content
-      Object.keys(tabContents).forEach((key) => {
-        if (tabContents[key]) {
-          if (key === targetTab) {
-            tabContents[key].classList.remove("hidden");
-          } else {
-            tabContents[key].classList.add("hidden");
-          }
-        }
-      });
-    });
-  });
-}

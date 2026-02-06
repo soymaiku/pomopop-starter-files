@@ -109,6 +109,12 @@ export function addTask() {
   const pomosInput = document.getElementById("js-task-pomodoros");
 
   const name = nameInput.value.trim();
+  const rawPomodoros = Number(pomosInput.value);
+  if (!Number.isFinite(rawPomodoros) || rawPomodoros < 2) {
+    showNotification("⚠️ Est. Pomodoros must be 2 or more");
+    pomosInput.value = 2;
+    return;
+  }
   const pomodoros = Math.max(2, enforceMinimumPomodoros(pomosInput));
 
   if (!name) {
@@ -260,6 +266,12 @@ export function renderTasks() {
     el.querySelector(".save")?.addEventListener("click", () => {
       task.name = el.querySelector(".task-edit-name").value.trim() || task.name;
       const pomosInput = el.querySelector(".task-edit-pomos");
+      const rawPomodoros = Number(pomosInput.value);
+      if (!Number.isFinite(rawPomodoros) || rawPomodoros < 2) {
+        showNotification("⚠️ Est. Pomodoros must be 2 or more");
+        pomosInput.value = 2;
+        return;
+      }
       task.pomodoros = Math.max(2, enforceMinimumPomodoros(pomosInput));
       task.editing = false;
       if (currentTaskId === task.id) {

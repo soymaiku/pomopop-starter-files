@@ -300,6 +300,24 @@ export function saveSettings() {
     return;
   }
 
+  if (pomodoro < 5) {
+    showNotification("⚠️ Pomodoro duration must be at least 5 minutes", "warning");
+    document.getElementById("js-pomodoro-duration").value = 5;
+    return;
+  }
+
+  if (shortBreak < 5) {
+    showNotification("⚠️ Short break duration must be at least 5 minutes", "warning");
+    document.getElementById("js-short-break-duration").value = 5;
+    return;
+  }
+
+  if (longBreak < 5) {
+    showNotification("⚠️ Long break duration must be at least 5 minutes", "warning");
+    document.getElementById("js-long-break-duration").value = 5;
+    return;
+  }
+
   // Enforce max limits
   if (pomodoro > 60) {
     showNotification(
@@ -403,9 +421,41 @@ export function setupDurationValidation() {
     },
   );
 
+  const minimumDurationTimers = new WeakMap();
+
+  const scheduleMinimumDurationCheck = (input, minValue, label) => {
+    if (!input) return;
+    const existingTimer = minimumDurationTimers.get(input);
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    const timer = setTimeout(() => {
+      if (input.value === "") return;
+      const value = Number(input.value);
+      if (!Number.isFinite(value) || value < minValue) {
+        input.value = minValue;
+        showNotification(
+          `⚠️ ${label} duration must be at least ${minValue} minutes`,
+          "warning",
+        );
+      }
+    }, 300);
+
+    minimumDurationTimers.set(input, timer);
+  };
+
   // ========== POMODORO DURATION ==========
   pomodoroInput.addEventListener("change", (e) => {
     const value = Number(e.target.value);
+    if (!Number.isFinite(value) || value < 5) {
+      e.target.value = 5;
+      showNotification(
+        "⚠️ Pomodoro duration must be at least 5 minutes",
+        "warning",
+      );
+      return;
+    }
     if (value > 60) {
       e.target.value = 60;
       showNotification(
@@ -420,11 +470,20 @@ export function setupDurationValidation() {
     if (value > 60) {
       e.target.value = 60;
     }
+    scheduleMinimumDurationCheck(pomodoroInput, 5, "Pomodoro");
   });
 
   // ========== SHORT BREAK DURATION ==========
   shortBreakInput.addEventListener("change", (e) => {
     const value = Number(e.target.value);
+    if (!Number.isFinite(value) || value < 5) {
+      e.target.value = 5;
+      showNotification(
+        "⚠️ Short break duration must be at least 5 minutes",
+        "warning",
+      );
+      return;
+    }
     if (value > 30) {
       e.target.value = 30;
       showNotification(
@@ -439,11 +498,20 @@ export function setupDurationValidation() {
     if (value > 30) {
       e.target.value = 30;
     }
+    scheduleMinimumDurationCheck(shortBreakInput, 5, "Short break");
   });
 
   // ========== LONG BREAK DURATION ==========
   longBreakInput.addEventListener("change", (e) => {
     const value = Number(e.target.value);
+    if (!Number.isFinite(value) || value < 5) {
+      e.target.value = 5;
+      showNotification(
+        "⚠️ Long break duration must be at least 5 minutes",
+        "warning",
+      );
+      return;
+    }
     if (value > 60) {
       e.target.value = 60;
       showNotification(
@@ -458,6 +526,7 @@ export function setupDurationValidation() {
     if (value > 60) {
       e.target.value = 60;
     }
+    scheduleMinimumDurationCheck(longBreakInput, 5, "Long break");
   });
 }
 
