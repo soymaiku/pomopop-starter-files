@@ -28,6 +28,7 @@ const TEST_PROFILES = [
 ];
 
 const authListeners = new Set();
+const completedTaskSessions = new Set();
 let lastPomodoroIncrement = null;
 
 function getWeekStartDate() {
@@ -163,6 +164,49 @@ export async function logout() {
 }
 
 // ==================== OFFLINE STATS LOGIC ====================
+
+export function handleTaskEstimateEdit(task) {
+  const user = getCurrentUser();
+  if (!user || user.isGuest || !task) {
+    return;
+  }
+
+  const taskKey = `${user.uid}-${task.id}`;
+
+  if (task.completedPomodoros >= task.pomodoros) {
+    recordPomodoroCompletion(task);
+  } else if (completedTaskSessions.has(taskKey)) {
+    completedTaskSessions.delete(taskKey);
+  }
+}
+
+export async function recordPomodoroCompletion(task) {
+  const user = getCurrentUser();
+  if (!user || user.isGuest) {
+    console.log("⚠️ Stats not saved: guest or no user");
+    return;
+  }
+
+  if (!task || task.completedPomodoros < task.pomodoros) {
+    return;
+  }
+
+  const taskKey = `${user.uid}-${task.id}`;
+  if (completedTaskSessions.has(taskKey)) {
+    return;
+  }
+
+  completedTaskSessions.add(taskKey);
+
+  const users = ensureOfflineUsers();
+  const stats = ensureUserStats(user.uid, user);
+  stats.todayPomodoros += 1;
+  stats.weeklyPomodoros += 1;
+  stats.totalPomodoros += 1;
+  users[user.uid] = stats;
+  saveOfflineUsers(users);
+  updateStatsDisplay(user);
+}
 
 export async function incrementPomodoroCount() {
   const user = getCurrentUser();
