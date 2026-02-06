@@ -423,11 +423,6 @@
       >
         <!-- Header with Drag Handle & Close -->
         <div class="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3">
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <button
               class="onboarding-back hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 cursor-pointer transition-all text-lg sm:text-xl"
@@ -608,6 +603,8 @@
                 <div class="flex items-center gap-1 bg-gray-50 rounded-lg px-2 py-2">
                   <input
                     type="number"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                     id="js-pomodoro-duration"
                     min="1"
                     max="60"
@@ -623,6 +620,8 @@
                 <div class="flex items-center gap-1 bg-gray-50 rounded-lg px-2 py-2">
                   <input
                     type="number"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                     id="js-short-break-duration"
                     min="1"
                     max="30"
@@ -638,6 +637,8 @@
                 <div class="flex items-center gap-1 bg-gray-50 rounded-lg px-2 py-2">
                   <input
                     type="number"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                     id="js-long-break-duration"
                     min="1"
                     max="60"
@@ -653,6 +654,8 @@
                 <div class="flex items-center gap-1 bg-gray-50 rounded-lg px-2 py-2">
                   <input
                     type="number"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                     id="js-long-break-interval"
                     min="1"
                     max="10"
@@ -732,11 +735,6 @@
       >
         <!-- Header with Drag Handle & Close -->
         <div class="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3">
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <button
               class="onboarding-back hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 cursor-pointer transition-all text-lg sm:text-xl"
@@ -1064,11 +1062,6 @@
       >
         <!-- Header with Drag Handle & Close -->
         <div class="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3">
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <button
               class="onboarding-back hidden w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 cursor-pointer transition-all text-lg sm:text-xl"
@@ -1258,6 +1251,8 @@
                   <span class="text-gray-400 text-xs">🍅</span>
                   <input
                     type="number"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
                     id="js-task-pomodoros"
                     placeholder="Est."
                     min="1"
@@ -1722,11 +1717,6 @@
         <div
           class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <button
               class="onboarding-back hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 cursor-pointer transition-all text-xl sm:text-2xl"
@@ -1945,11 +1935,6 @@
       >
         <!-- Header with Drag Handle & Close -->
         <div class="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3">
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <div class="w-8 sm:w-9"></div>
             <h2
@@ -2058,11 +2043,6 @@
       >
         <!-- Header with Drag Handle & Close -->
         <div class="px-4 sm:px-6 pt-3 sm:pt-4 pb-2 sm:pb-3">
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <div class="w-8 sm:w-9"></div>
             <h2
@@ -2167,11 +2147,6 @@
         <div
           class="sticky top-0 bg-gradient-to-b from-white to-white/95 z-10 px-4 sm:px-8 pt-3 sm:pt-5 pb-3 sm:pb-4"
         >
-          <!-- Drag Handle for Mobile -->
-          <div class="sm:hidden w-full pb-2 flex justify-center">
-            <div class="w-10 h-1 bg-gray-300 rounded-full"></div>
-          </div>
-
           <div class="flex items-center justify-between">
             <div class="w-9 sm:w-10"></div>
             <h2
@@ -2238,9 +2213,7 @@
           </div>
 
           <!-- Scrollable Content -->
-          <div
-            class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pb-6 sm:pb-8"
-          >
+          <div class="flex-1 overflow-hidden px-4 sm:px-8 pb-6 sm:pb-8">
             <!-- Summary Tab Content -->
             <div
               id="js-tab-summary"

@@ -843,6 +843,10 @@ body.video-active {
   animation: fadeIn 0.2s ease;
 }
 
+#js-tab-ranking {
+  height: 100%;
+}
+
 .stats-tab-content.hidden {
   display: none;
 }
@@ -865,6 +869,7 @@ body.video-active {
 .leaderboard-container {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   max-height: 480px;
   overflow: hidden;
   background: #fff;
@@ -910,6 +915,9 @@ body.video-active {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
 
 .leaderboard-row {
@@ -1071,7 +1079,7 @@ body.video-active {
   }
 
   .leaderboard-container {
-    max-height: 420px;
+    max-height: calc(60svh - env(safe-area-inset-bottom, 0px));
   }
 
   .leaderboard-header {
@@ -1177,7 +1185,7 @@ body.video-active {
   }
 
   .leaderboard-container {
-    max-height: 380px;
+    max-height: calc(56svh - env(safe-area-inset-bottom, 0px));
   }
 
   .leaderboard-header {
@@ -1288,7 +1296,7 @@ body.video-active {
   }
 
   .leaderboard-container {
-    max-height: 350px;
+    max-height: calc(52svh - env(safe-area-inset-bottom, 0px));
   }
 
   .leaderboard-header {
@@ -1399,7 +1407,7 @@ body.video-active {
   }
 
   .leaderboard-container {
-    max-height: 320px;
+    max-height: calc(48svh - env(safe-area-inset-bottom, 0px));
   }
 
   .leaderboard-header {
@@ -1893,6 +1901,20 @@ html {
     /* Account for browser UI on mobile */
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  #js-stats-modal {
+    align-items: stretch;
+  }
+
+  #js-stats-modal .modal-content {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100svh;
+    max-height: 100svh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none;
   }
 
   .modal-content {

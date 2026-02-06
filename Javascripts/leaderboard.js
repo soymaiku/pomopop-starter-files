@@ -7,7 +7,6 @@ import {
   collection,
   query,
   orderBy,
-  limit,
   onSnapshot,
   where,
   getDocs,
@@ -29,11 +28,10 @@ export function initializeLeaderboard() {
     return;
   }
 
-  // Query top 10 users by total pomodoros (descending)
+  // Query all users by total pomodoros (descending)
   const leaderboardQuery = query(
     collection(db, "users"),
     orderBy("totalPomodoros", "desc"),
-    limit(10),
   );
 
   // Set up real-time listener
@@ -86,9 +84,6 @@ function renderLeaderboard(users) {
     return;
   }
 
-  // Show all 10 users - leaderboard is scrollable on mobile
-  const displayUsers = users.slice(0, 10);
-
   // Build leaderboard rows - Pomofocus style: simple, text-first
   let html = `
     <div class="leaderboard-header">
@@ -99,7 +94,7 @@ function renderLeaderboard(users) {
     <div class="leaderboard-body">
   `;
 
-  displayUsers.forEach((user) => {
+  users.forEach((user) => {
     const photoUrl = user.photoURL || "https://via.placeholder.com/48";
 
     html += `

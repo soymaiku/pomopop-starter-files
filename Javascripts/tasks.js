@@ -213,7 +213,7 @@ function getTaskHtml(task) {
           task.editing
             ? `
           <input class="task-edit-name" value="${escapeHtml(task.name)}">
-          <input class="task-edit-pomos" type="number" min="1" value="${
+          <input class="task-edit-pomos" type="number" inputmode="numeric" pattern="[0-9]*" min="1" value="${
             task.pomodoros
           }">
         `
@@ -268,6 +268,9 @@ export function renderTasks() {
         Number(el.querySelector(".task-edit-pomos").value) || task.pomodoros,
       );
       task.editing = false;
+      if (currentTaskId === task.id) {
+        updateIntervalDisplay();
+      }
       saveTasks();
       renderTasks();
     });
