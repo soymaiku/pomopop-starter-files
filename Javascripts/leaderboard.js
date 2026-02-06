@@ -10,26 +10,26 @@ const OFFLINE_USERS_KEY = "pomopop-offline-users";
 const TEST_PROFILES = [
   {
     uid: "test-ava",
-    displayName: "Ava Santos",
-    photoURL: "https://ui-avatars.com/api/?name=Ava+Santos&background=3b82f6&color=fff",
+    displayName: "Hanni Pham",
+    photoURL: "/Pictures/hanni.jpg",
     totalPomodoros: 12,
   },
   {
     uid: "test-miguel",
-    displayName: "Miguel Dizon",
-    photoURL: "https://ui-avatars.com/api/?name=Miguel+Dizon&background=10b981&color=fff",
+    displayName: "Miguel",
+    photoURL: "/Pictures/miguel.jpg",
     totalPomodoros: 19,
   },
   {
     uid: "test-lia",
     displayName: "Lia Cruz",
-    photoURL: "https://ui-avatars.com/api/?name=Lia+Cruz&background=f59e0b&color=fff",
+    photoURL: "/Pictures/lia.jpg",
     totalPomodoros: 26,
   },
   {
     uid: "test-noah",
-    displayName: "Noah Reyes",
-    photoURL: "https://ui-avatars.com/api/?name=Noah+Reyes&background=ef4444&color=fff",
+    displayName: "Dax The Burger Rapper",
+    photoURL: "/Pictures/dax.jpg",
     totalPomodoros: 33,
   },
 ];
