@@ -1,8 +1,7 @@
 // timer.js
-import { timer, interval, setIntervalId } from "./config.js";
-import { updateTaskProgress, getCurrentTask } from "./tasks.js";
+import { timer, interval, setIntervalId, taskAwaitingCompletion } from "./config.js";
+import { updateTaskProgress, getCurrentTask, completeTaskAfterBreak } from "./tasks.js";
 import { showNotification } from "./utils.js";
-import { incrementPomodoroCount, recordPomodoroCompletion } from "./stats.js";
 
 const buttonSound = new Audio("./Audio/button-sound.mp3");
 const mainButton = document.getElementById("js-btn");
@@ -44,11 +43,8 @@ export function startTimer() {
       if (timer.mode === "pomodoro") {
         timer.sessions++;
         timer.pomodorosSinceLongBreak++;
-        updateTaskProgress();
         
-        // Record pomodoro completion for the current task
-        const currentTask = getCurrentTask();
-        recordPomodoroCompletion(currentTask, timer.pomodoro);
+        updateTaskProgress(); // Update task progress
 
         const shouldTakeLongBreak =
           timer.pomodorosSinceLongBreak >= timer.longBreakInterval;
@@ -57,6 +53,13 @@ export function startTimer() {
           nextMode = "longBreak";
         } else {
           nextMode = "shortBreak";
+        }
+      } else {
+        // Break just ended - check if a task was awaiting completion
+        if (taskAwaitingCompletion) {
+          completeTaskAfterBreak();
+          stopTimer(); // Stop timer, ready for user to select new task
+          return; // Don't continue to next cycle
         }
       }
 
@@ -187,6 +190,12 @@ export function switchMode(mode) {
     .getElementById("js-progress")
     .setAttribute("max", timer.remainingTime.total);
 
+  // Show skip button
+  const skipBtn = document.getElementById("js-skip-btn");
+  if (skipBtn) {
+    skipBtn.style.display = "flex";
+  }
+
   updateClock();
 }
 
@@ -247,6 +256,36 @@ export function resetTimer() {
 
   // Show notification
   showNotification(`Timer reset to ${timer[mode]} minutes`);
+}
+
+export function skipBreak() {
+  stopTimer();
+  
+  if (timer.mode === "pomodoro") {
+    // Skip pomodoro to break - count as completed pomodoro
+    timer.sessions++;
+    timer.pomodorosSinceLongBreak++;
+    
+    updateTaskProgress(); // Update task progress (may set taskAwaitingCompletion)
+    
+    const shouldTakeLongBreak = timer.pomodorosSinceLongBreak >= timer.longBreakInterval;
+    if (shouldTakeLongBreak) {
+      timer.pomodorosSinceLongBreak = 0;
+    }
+    const nextMode = shouldTakeLongBreak ? "longBreak" : "shortBreak";
+    switchMode(nextMode);
+    showNotification("⏭ Pomodoro skipped! Take a break.");
+  } else {
+    // Skip break - check if task was awaiting completion
+    if (taskAwaitingCompletion) {
+      completeTaskAfterBreak();
+      stopTimer(); // Timer already reset to pomodoro by completeTaskAfterBreak
+      showNotification("⏭ Break skipped! Task finished. Select a new task.");
+    } else {
+      switchMode("pomodoro");
+      showNotification("⏭ Break skipped! Back to work.");
+    }
+  }
 }
 
 export function handleMainButtonClick() {

@@ -32,6 +32,7 @@ import {
   handleMode,
   handleMainButtonClick,
   resetTimer,
+  skipBreak,
   initModeSlider,
 } from "./timer.js";
 import {
@@ -813,6 +814,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     .getElementById("js-btn")
     .addEventListener("click", handleMainButtonClick);
   document.getElementById("js-reset-btn").addEventListener("click", resetTimer);
+  document.getElementById("js-skip-btn").addEventListener("click", skipBreak);
+  document.getElementById("js-skip-btn").addEventListener("click", skipBreak);
 
   // Close modals AND BURGER MENU on outside click
   window.addEventListener("click", (e) => {

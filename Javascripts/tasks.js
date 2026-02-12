@@ -14,10 +14,12 @@ import {
   setCurrentTaskId,
   interval,
   timer,
+  taskAwaitingCompletion,
+  setTaskAwaitingCompletion,
 } from "./config.js";
 import { switchMode, stopTimer, updateIntervalDisplay } from "./timer.js";
 import { escapeHtml, showNotification } from "./utils.js";
-import { getCurrentUser, handleTaskEstimateEdit } from "./stats.js";
+import { getCurrentUser, handleTaskEstimateEdit, recordPomodoroCompletion } from "./stats.js";
 
 /* ==================== LOAD & SAVE ==================== */
 
@@ -211,12 +213,56 @@ export function completeTask(id) {
 
 export function updateTaskProgress() {
   const task = tasks.find((t) => t.id === currentTaskId);
-  if (!task) return;
+  if (!task) return false;
 
   task.completedPomodoros++;
+  
+  // Check if task has reached its estimated pomodoros
+  if (task.completedPomodoros >= task.pomodoros) {
+    // Record completion for stats
+    recordPomodoroCompletion(task, timer.pomodoro);
+    
+    // Mark task as awaiting completion after break
+    setTaskAwaitingCompletion(task.id);
+    showNotification(`🎉 Task "${task.name}" completed! Take your break.`);
+    
+    updateIntervalDisplay();
+    saveTasks();
+    renderTasks();
+    return false; // Continue to break
+  }
+  
   updateIntervalDisplay();
   saveTasks();
   renderTasks();
+  return false; // Task not completed, continue timer cycle
+}
+
+/* ==================== TASK COMPLETION ==================== */
+
+export function completeTaskAfterBreak() {
+  if (!taskAwaitingCompletion) return;
+  
+  const task = tasks.find((t) => t.id === taskAwaitingCompletion);
+  if (!task) {
+    setTaskAwaitingCompletion(null);
+    return;
+  }
+  
+  // Mark task as complete
+  task.completed = true;
+  showNotification(`✅ Task "${task.name}" finished! Select a new task to continue.`);
+  
+  // Deselect current task (don't auto-switch)
+  setCurrentTaskId(null);
+  setTaskAwaitingCompletion(null);
+  
+  saveTasks();
+  renderTasks();
+  updateTaskNameDisplay();
+  
+  // Switch to pomodoro mode for next task
+  switchMode("pomodoro");
 }
 
 /* ==================== CURRENT TASK ==================== */
