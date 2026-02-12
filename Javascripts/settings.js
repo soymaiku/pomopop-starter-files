@@ -377,21 +377,21 @@ export function saveSettings() {
     return;
   }
 
-  if (pomodoro < 5) {
-    showNotification("⚠️ Pomodoro duration must be at least 5 minutes", "warning");
-    document.getElementById("js-pomodoro-duration").value = 5;
+  if (pomodoro < 1) {
+    showNotification("⚠️ Pomodoro duration must be at least 1 minute", "warning");
+    document.getElementById("js-pomodoro-duration").value = 1;
     return;
   }
 
-  if (shortBreak < 5) {
-    showNotification("⚠️ Short break duration must be at least 5 minutes", "warning");
-    document.getElementById("js-short-break-duration").value = 5;
+  if (shortBreak < 1) {
+    showNotification("⚠️ Short break duration must be at least 1 minute", "warning");
+    document.getElementById("js-short-break-duration").value = 1;
     return;
   }
 
-  if (longBreak < 5) {
-    showNotification("⚠️ Long break duration must be at least 5 minutes", "warning");
-    document.getElementById("js-long-break-duration").value = 5;
+  if (longBreak < 1) {
+    showNotification("⚠️ Long break duration must be at least 1 minute", "warning");
+    document.getElementById("js-long-break-duration").value = 1;
     return;
   }
 
@@ -542,10 +542,10 @@ export function setupDurationValidation() {
   // ========== POMODORO DURATION ==========
   pomodoroInput.addEventListener("change", (e) => {
     const value = Number(e.target.value);
-    if (!Number.isFinite(value) || value < 5) {
-      e.target.value = 5;
+    if (!Number.isFinite(value) || value < 1) {
+      e.target.value = 1;
       showNotification(
-        "⚠️ Pomodoro duration must be at least 5 minutes",
+        "⚠️ Pomodoro duration must be at least 1 minute",
         "warning",
       );
       return;
@@ -564,16 +564,16 @@ export function setupDurationValidation() {
     if (value > 60) {
       e.target.value = 60;
     }
-    scheduleMinimumDurationCheck(pomodoroInput, 5, "Pomodoro");
+    scheduleMinimumDurationCheck(pomodoroInput, 1, "Pomodoro");
   });
 
   // ========== SHORT BREAK DURATION ==========
   shortBreakInput.addEventListener("change", (e) => {
     const value = Number(e.target.value);
-    if (!Number.isFinite(value) || value < 5) {
-      e.target.value = 5;
+    if (!Number.isFinite(value) || value < 1) {
+      e.target.value = 1;
       showNotification(
-        "⚠️ Short break duration must be at least 5 minutes",
+        "⚠️ Short break duration must be at least 1 minute",
         "warning",
       );
       return;
@@ -592,16 +592,16 @@ export function setupDurationValidation() {
     if (value > 30) {
       e.target.value = 30;
     }
-    scheduleMinimumDurationCheck(shortBreakInput, 5, "Short break");
+    scheduleMinimumDurationCheck(shortBreakInput, 1, "Short break");
   });
 
   // ========== LONG BREAK DURATION ==========
   longBreakInput.addEventListener("change", (e) => {
     const value = Number(e.target.value);
-    if (!Number.isFinite(value) || value < 5) {
-      e.target.value = 5;
+    if (!Number.isFinite(value) || value < 1) {
+      e.target.value = 1;
       showNotification(
-        "⚠️ Long break duration must be at least 5 minutes",
+        "⚠️ Long break duration must be at least 1 minute",
         "warning",
       );
       return;
@@ -620,7 +620,7 @@ export function setupDurationValidation() {
     if (value > 60) {
       e.target.value = 60;
     }
-    scheduleMinimumDurationCheck(longBreakInput, 5, "Long break");
+    scheduleMinimumDurationCheck(longBreakInput, 1, "Long break");
   });
 
   // ========== LONG BREAK INTERVAL ==========

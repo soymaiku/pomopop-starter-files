@@ -16,6 +16,8 @@ import {
   timer,
   taskAwaitingCompletion,
   setTaskAwaitingCompletion,
+  inFinalPomodoro,
+  setInFinalPomodoro,
 } from "./config.js";
 import { switchMode, stopTimer, updateIntervalDisplay } from "./timer.js";
 import { escapeHtml, showNotification } from "./utils.js";
@@ -185,6 +187,11 @@ export function addTask() {
   nameInput.value = "";
   pomosInput.value = 2;
 
+  // Reset timer sessions and intervals when adding a new task
+  timer.sessions = 0;
+  timer.pomodorosSinceLongBreak = 0;
+  setInFinalPomodoro(false);
+
   setCurrentTask(newTaskId);
 }
 
@@ -246,6 +253,7 @@ export function completeTaskAfterBreak() {
   const task = tasks.find((t) => t.id === taskAwaitingCompletion);
   if (!task) {
     setTaskAwaitingCompletion(null);
+    setInFinalPomodoro(false);
     return;
   }
   
@@ -256,6 +264,7 @@ export function completeTaskAfterBreak() {
   // Deselect current task (don't auto-switch)
   setCurrentTaskId(null);
   setTaskAwaitingCompletion(null);
+  setInFinalPomodoro(false);
   
   saveTasks();
   renderTasks();
@@ -270,6 +279,7 @@ export function completeTaskAfterBreak() {
 export function setCurrentTask(id) {
   stopTimer();
   setCurrentTaskId(id);
+  setInFinalPomodoro(false); // Clear final pomodoro state when switching tasks
   switchMode("pomodoro");
   updateIntervalDisplay();
   saveTasks();

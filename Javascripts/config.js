@@ -22,6 +22,7 @@ export let nextTaskId = 1;
 export let interval = null;
 export let currentTaskId = null;
 export let taskAwaitingCompletion = null; // Task ID that completed pomodoros, awaiting break
+export let inFinalPomodoro = false; // True when doing the final pomodoro after break
 
 // Setter functions for 'let' variables to allow modules to update them
 export function setNextTaskId(id) {
@@ -38,4 +39,8 @@ export function setCurrentTaskId(id) {
 
 export function setTaskAwaitingCompletion(id) {
   taskAwaitingCompletion = id;
+}
+
+export function setInFinalPomodoro(value) {
+  inFinalPomodoro = value;
 }

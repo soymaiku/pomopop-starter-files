@@ -1,5 +1,5 @@
 // timer.js
-import { timer, interval, setIntervalId, taskAwaitingCompletion } from "./config.js";
+import { timer, interval, setIntervalId, taskAwaitingCompletion, inFinalPomodoro, setInFinalPomodoro } from "./config.js";
 import { updateTaskProgress, getCurrentTask, completeTaskAfterBreak } from "./tasks.js";
 import { showNotification } from "./utils.js";
 
@@ -41,6 +41,14 @@ export function startTimer() {
       // Only increment and check for long break if Pomodoro was fully completed (not paused)
       let nextMode = "pomodoro";
       if (timer.mode === "pomodoro") {
+        // Check if this was the final pomodoro after completing all estimated
+        if (inFinalPomodoro) {
+          // Final pomodoro is done, now complete the task
+          completeTaskAfterBreak();
+          stopTimer();
+          return; // Don't continue
+        }
+        
         timer.sessions++;
         timer.pomodorosSinceLongBreak++;
         
@@ -57,9 +65,10 @@ export function startTimer() {
       } else {
         // Break just ended - check if a task was awaiting completion
         if (taskAwaitingCompletion) {
-          completeTaskAfterBreak();
-          stopTimer(); // Stop timer, ready for user to select new task
-          return; // Don't continue to next cycle
+          // Start the final pomodoro before completing task
+          setInFinalPomodoro(true);
+          showNotification("💪 Final pomodoro! Finish strong.");
+          nextMode = "pomodoro";
         }
       }
 
@@ -190,10 +199,10 @@ export function switchMode(mode) {
     .getElementById("js-progress")
     .setAttribute("max", timer.remainingTime.total);
 
-  // Show skip button
+  // Hide skip button in all modes
   const skipBtn = document.getElementById("js-skip-btn");
   if (skipBtn) {
-    skipBtn.style.display = "flex";
+    skipBtn.style.display = "none";
   }
 
   updateClock();
@@ -249,6 +258,7 @@ export function resetTimer() {
 
   timer.sessions = 0;
   timer.pomodorosSinceLongBreak = 0;
+  setInFinalPomodoro(false); // Clear final pomodoro state
 
   // Reset to current mode's full duration
   const mode = timer.mode;
@@ -262,6 +272,13 @@ export function skipBreak() {
   stopTimer();
   
   if (timer.mode === "pomodoro") {
+    // Check if this is the final pomodoro
+    if (inFinalPomodoro) {
+      completeTaskAfterBreak();
+      showNotification("⏭ Final pomodoro skipped! Task finished.");
+      return;
+    }
+    
     // Skip pomodoro to break - count as completed pomodoro
     timer.sessions++;
     timer.pomodorosSinceLongBreak++;
@@ -278,9 +295,10 @@ export function skipBreak() {
   } else {
     // Skip break - check if task was awaiting completion
     if (taskAwaitingCompletion) {
-      completeTaskAfterBreak();
-      stopTimer(); // Timer already reset to pomodoro by completeTaskAfterBreak
-      showNotification("⏭ Break skipped! Task finished. Select a new task.");
+      // Start the final pomodoro
+      setInFinalPomodoro(true);
+      switchMode("pomodoro");
+      showNotification("⏭ Break skipped! Final pomodoro starting.");
     } else {
       switchMode("pomodoro");
       showNotification("⏭ Break skipped! Back to work.");
