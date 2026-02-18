@@ -81,7 +81,20 @@ export function startTimer() {
         new Notification(text);
       }
 
-      document.querySelector(`[data-sound="${nextMode}"]`).play();
+      // Play sound with better mobile support
+      const soundElement = document.querySelector(`[data-sound="${nextMode}"]`);
+      if (soundElement) {
+        // Reset audio to start from beginning
+        soundElement.currentTime = 0;
+        const playPromise = soundElement.play();
+        
+        // Handle autoplay policy on mobile
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.log("Audio autoplay blocked on mobile. User interaction may be required.");
+          });
+        }
+      }
     }
   }, 1000);
 

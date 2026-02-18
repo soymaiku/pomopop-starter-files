@@ -174,6 +174,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!localUser) {
     loginModal.classList.add("open");
   }
+  
+  // Enable audio on first user interaction (fixes mobile autoplay restrictions)
+  const enableAudioOnInteraction = () => {
+    const audioElements = document.querySelectorAll("audio");
+    audioElements.forEach((audio) => {
+      audio.play().catch(() => {
+        // Audio play failed, but context is now active for future plays
+      });
+      audio.pause();
+    });
+    // Remove listener after first interaction
+    document.removeEventListener("click", enableAudioOnInteraction);
+    document.removeEventListener("touchstart", enableAudioOnInteraction);
+    document.removeEventListener("touchend", enableAudioOnInteraction);
+  };
+  
+  document.addEventListener("click", enableAudioOnInteraction, { once: true });
+  document.addEventListener("touchstart", enableAudioOnInteraction, { once: true });
+  
   // Wait for Firebase to initialize before proceeding
   await waitForFirebase();
   // Load settings and tasks
