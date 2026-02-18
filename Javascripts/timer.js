@@ -199,12 +199,6 @@ export function switchMode(mode) {
     .getElementById("js-progress")
     .setAttribute("max", timer.remainingTime.total);
 
-  // Hide skip button in all modes
-  const skipBtn = document.getElementById("js-skip-btn");
-  if (skipBtn) {
-    skipBtn.style.display = "none";
-  }
-
   updateClock();
 }
 
@@ -256,16 +250,36 @@ export function handleMode(event) {
 export function resetTimer() {
   stopTimer(); // Fully stop and reset button state
 
-  timer.sessions = 0;
-  timer.pomodorosSinceLongBreak = 0;
-  setInFinalPomodoro(false); // Clear final pomodoro state
-
-  // Reset to current mode's full duration
+  // Reset only the timer display to the current mode's full duration
+  // Do NOT reset sessions or pomodorosSinceLongBreak to preserve session progress
   const mode = timer.mode;
-  switchMode(mode);
+  const fullDuration = timer[mode] * 60; // Convert minutes to seconds
+  
+  timer.remainingTime = {
+    total: fullDuration,
+    minutes: timer[mode],
+    seconds: 0,
+  };
+
+  // Update the display immediately
+  updateClock();
 
   // Show notification
   showNotification(`Timer reset to ${timer[mode]} minutes`);
+}
+
+export function openResetModal() {
+  const resetModal = document.getElementById("js-reset-modal");
+  if (resetModal) {
+    resetModal.classList.add("open");
+  }
+}
+
+export function closeResetModal() {
+  const resetModal = document.getElementById("js-reset-modal");
+  if (resetModal) {
+    resetModal.classList.remove("open");
+  }
 }
 
 export function skipBreak() {

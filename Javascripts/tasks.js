@@ -231,7 +231,7 @@ export function updateTaskProgress() {
     
     // Mark task as awaiting completion after break
     setTaskAwaitingCompletion(task.id);
-    showNotification(`🎉 Task "${task.name}" completed! Take your break.`);
+    showNotification(`🎉 One more Session for "${task.name}" before completing! Take your break.`);
     
     updateIntervalDisplay();
     saveTasks();
@@ -327,10 +327,10 @@ function getTaskHtml(task) {
             ? `<button class="task-btn save">Save</button>
         <button class="task-btn cancel">Cancel</button>`
             : `<button class="task-btn edit">Edit</button>
-        <button class="task-btn done">${
+        <button class="task-btn done hidden">${
           task.completed ? "Undo" : "Done"
         }</button>
-        <button class="task-btn delete">✕</button>`
+        <button class="task-btn delete">Delete</button>`
         }
       </div>
     </div>

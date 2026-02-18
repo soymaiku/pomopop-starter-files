@@ -509,6 +509,11 @@ html {
   display: none !important;
 }
 
+/* Skip button hidden state */
+.skip-btn-hidden {
+  display: none !important;
+}
+
 /* PiP button - hide on mobile, show on desktop */
 .pip-btn-desktop {
   display: flex;

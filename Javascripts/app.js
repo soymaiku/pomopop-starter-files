@@ -32,6 +32,8 @@ import {
   handleMode,
   handleMainButtonClick,
   resetTimer,
+  openResetModal,
+  closeResetModal,
   skipBreak,
   initModeSlider,
 } from "./timer.js";
@@ -813,13 +815,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("js-btn")
     .addEventListener("click", handleMainButtonClick);
-  document.getElementById("js-reset-btn").addEventListener("click", resetTimer);
+  document.getElementById("js-reset-btn").addEventListener("click", openResetModal);
   document.getElementById("js-skip-btn").addEventListener("click", skipBreak);
   document.getElementById("js-skip-btn").addEventListener("click", skipBreak);
+
+  // Reset modal buttons
+  document
+    .getElementById("js-reset-confirm")
+    .addEventListener("click", () => {
+      resetTimer();
+      closeResetModal();
+    });
+  document
+    .getElementById("js-reset-cancel")
+    .addEventListener("click", closeResetModal);
 
   // Close modals AND BURGER MENU on outside click
   window.addEventListener("click", (e) => {
     const settingsModal = document.getElementById("js-settings-modal");
+    const resetModal = document.getElementById("js-reset-modal");
     const musicModal = document.getElementById("js-music-modal");
     const taskModal = document.getElementById("js-task-modal");
     const videoModal = document.getElementById("js-video-modal");
@@ -846,6 +860,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target === settingsModal) {
       closeSettingsModal();
       clearOnboardingShortcutContext();
+    }
+    if (e.target === resetModal) {
+      closeResetModal();
     }
     if (e.target === musicModal) {
       closeMusicModal();
@@ -898,4 +915,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initial setup: switch to pomodoro mode and update clock
   switchMode(timer.mode);
   maybeOpenOnboardingModal();
+
+  // Keyboard shortcut to toggle skip button (Press 'B')
+  document.addEventListener("keydown", (e) => {
+    // Only trigger if 'B' or 'b' is pressed and no modal is open or input is focused
+    if (
+      (e.key === "b" || e.key === "B") &&
+      !document.activeElement.matches("input, textarea")
+    ) {
+      const skipBtn = document.getElementById("js-skip-btn");
+      if (skipBtn) {
+        skipBtn.classList.toggle("skip-btn-hidden");
+        
+        // Show feedback notification
+        const isVisible = !skipBtn.classList.contains("skip-btn-hidden");
+        showNotification(
+          isVisible ? "🔓 Skip button unlocked (Press B to lock)" : "🔒 Skip button locked (Press B to unlock)"
+        );
+      }
+    }
+  });
 });
