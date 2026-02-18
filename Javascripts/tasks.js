@@ -324,13 +324,14 @@ function getTaskHtml(task) {
       <div class="task-controls">
         ${
           task.editing
-            ? `<button class="task-btn save">Save</button>`
+            ? `<button class="task-btn save">Save</button>
+        <button class="task-btn cancel">Cancel</button>`
             : `<button class="task-btn edit">Edit</button>
         <button class="task-btn done">${
           task.completed ? "Undo" : "Done"
-        }</button>`
+        }</button>
+        <button class="task-btn delete">✕</button>`
         }
-        <button class="task-btn delete">✕</button>
       </div>
     </div>
   `;
@@ -352,8 +353,10 @@ export function renderTasks() {
     });
 
     el.querySelector(".edit")?.addEventListener("click", () => {
-      task.editing = true;
-      renderTasks();
+      if (!task.completed) {
+        task.editing = true;
+        renderTasks();
+      }
     });
 
     if (task.editing) {
@@ -390,7 +393,12 @@ export function renderTasks() {
       completeTask(task.id);
     });
 
-    el.querySelector(".delete").addEventListener("click", (e) => {
+    el.querySelector(".cancel")?.addEventListener("click", () => {
+      task.editing = false;
+      renderTasks();
+    });
+
+    el.querySelector(".delete")?.addEventListener("click", (e) => {
       e.stopPropagation();
       deleteTask(task.id);
     });

@@ -417,6 +417,13 @@ html {
   background: #e0e0e0;
 }
 
+.task-item.completed .task-btn.edit {
+  background: #cccccc;
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .task-btn.save {
   background: #4caf50;
   color: white;
@@ -424,6 +431,11 @@ html {
 
 .task-btn.done {
   background: #2196f3;
+  color: white;
+}
+
+.task-btn.cancel {
+  background: #f44336;
   color: white;
 }
 
