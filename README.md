@@ -30,8 +30,6 @@ https://pomopop.netlify.app/
 
 ---
 
----
-
 ## 📚 Credits
 
 This project was forked and reverse engineered from:
@@ -46,12 +44,8 @@ The codebase was studied and extended as part of my learning process and capston
 
 ---
 
----
-
 ## 🎓 Project Context
 Pomopop was developed as part of the Nanays in IT program by PBSP, which helps learners build real-world web applications as part of their capstone project.
-
---=
 
 ---
 
