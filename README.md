@@ -1,29 +1,38 @@
-# Pomodoro Timer Starter files
+# 🍅 Pomopop – Focus Timer Web App
 
-Here lies the starter files for the Pomodoro timer tutorial which can be found
-here: https://freshman.tech/pomodoro-timer
+Pomopop is a simple productivity web application inspired by the Pomodoro Technique.  
+It helps users stay focused by using a timer for work sessions and short breaks while also tracking tasks.
 
-## Live demo
+This project was created as part of a learning process and capstone development.
 
-The completed version of this project is live at
-https://freshman-pomodoro.surge.sh/
+🔗 Live Demo  
+https://pomopop.netlify.app/
 
-## Prerequisites
+---
 
-You must have [Node.js](https://nodejs.org/en/download/) and
-[npm](https://www.npmjs.com/get-npm) installed on your machine. This project was
-built against the following versions:
+## ✨ Features
 
-Node v13.13.0
-npm v6.14.5
+- ⏱ Pomodoro focus timer  
+- 📋 Task tracking  
+- 🔐 Google authentication using Firebase  
+- 📱 Responsive design (desktop and mobile)  
+- 🌐 Web-based application (no installation required)
 
-## Get started
+---
 
-Clone this repository to your local machine with:
+## 🛠 Tech Stack
+
+- HTML  
+- CSS  
+- JavaScript  
+- Firebase Authentication  
+- Firebase Database
+
+---
+
+## 🚀 Getting Started
+
+Clone the repository:
 
 ```bash
-$ git clone https://github.com/Freshman-tech/pomodoro-starter-files.git
-```
-
-`cd` into the downloaded directory and follow along with the
-[tutorial](https://freshman.tech/pomodoro-timer/).
+git clone https://github.com/soymaiku/pomopop-starter-files.git
