@@ -59,7 +59,7 @@ Works best on modern browsers
 
 Some older versions of iOS and Android may have limited support
 
---=
+---
 
 ## 🚀 Getting Started
 
