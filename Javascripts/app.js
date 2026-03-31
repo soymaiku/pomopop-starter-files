@@ -131,7 +131,6 @@ const avatarModal = document.getElementById("js-avatar-modal");
 const closeAvatarBtn = document.getElementById("js-close-avatar");
 const cancelAvatarBtn = document.getElementById("js-cancel-avatar");
 const editProfileBtn = document.getElementById("js-edit-profile-btn");
-const resetGmailPhotoBtn = document.getElementById("js-reset-gmail-photo");
 
 function checkAuth() {
   const user = getCurrentUser();
@@ -750,7 +749,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   closeAvatarBtn.addEventListener("click", closeAvatarModal);
   cancelAvatarBtn.addEventListener("click", closeAvatarModal);
-  resetGmailPhotoBtn.addEventListener("click", resetToGmailPhoto);
   editProfileBtn.addEventListener("click", () => {
     closeAvatarModal();
     openAccountModal();
