@@ -308,6 +308,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   logoutBtn.addEventListener("click", () => {
+    // Close and reset chat modal
+    closeChatModal();
+    showInitialView();
+    
     logout();
     closeBurgerMenu();
     checkAuth(); // Will reopen login modal
@@ -970,6 +974,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    // Set initial position if not set
+    if (!chatModal.style.left) {
+      chatModal.style.left = '50%';
+      chatModal.style.top = '50%';
+      chatModal.style.transform = 'translate(-50%, -50%)';
+    }
+
     chatModal.classList.add("open");
     showInitialView();
   }
@@ -986,6 +997,50 @@ document.addEventListener("DOMContentLoaded", async () => {
       setCurrentRoomId(null);
     }
   }
+
+  // ==================== CHAT MODAL DRAG FUNCTIONALITY ====================
+  const chatHeader = document.getElementById("js-chat-header");
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let initialX = 0;
+  let initialY = 0;
+
+  function startDrag(e) {
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    const rect = chatModal.getBoundingClientRect();
+    initialX = rect.left;
+    initialY = rect.top;
+    chatHeader.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
+  }
+
+  function drag(e) {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    const newX = initialX + dx;
+    const newY = initialY + dy;
+    // Constrain to viewport
+    const maxX = window.innerWidth - chatModal.offsetWidth;
+    const maxY = window.innerHeight - chatModal.offsetHeight;
+    chatModal.style.left = Math.max(0, Math.min(newX, maxX)) + 'px';
+    chatModal.style.top = Math.max(0, Math.min(newY, maxY)) + 'px';
+    chatModal.style.transform = 'translate(0, 0)';
+  }
+
+  function stopDrag() {
+    isDragging = false;
+    chatHeader.style.cursor = 'grab';
+    document.body.style.userSelect = '';
+  }
+
+  // Make chat header draggable
+  chatHeader.addEventListener('mousedown', startDrag);
+  document.addEventListener('mousemove', drag);
+  document.addEventListener('mouseup', stopDrag);
 
   function showInitialView() {
     initialView.classList.remove("hidden");
@@ -1026,7 +1081,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     listenToRooms((rooms) => {
       localRooms = rooms;
       if (rooms.length === 0) {
-        roomsList.innerHTML = '<p class="text-center text-gray-500 text-xs py-4">No rooms yet!</p>';
+        roomsList.innerHTML = '<p class="text-center text-gray-500 text-base py-4">No rooms yet!</p>';
         return;
       }
 
@@ -1035,26 +1090,24 @@ document.addEventListener("DOMContentLoaded", async () => {
           const isMember = room.members.includes(user.uid);
           const lockIcon = room.hasPassword ? '🔒' : '';
           return `
-            <div class="p-2 bg-gray-800 rounded-lg border border-gray-700 hover:border-pink-400 transition-all">
-              <div class="flex justify-between items-start mb-1">
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-1">
-                    <h3 class="font-bold text-gray-100 text-xs truncate">${room.name}</h3>
-                    ${lockIcon ? `<span class="text-xs">${lockIcon}</span>` : ''}
-                  </div>
-                  <p class="text-xs text-gray-400 truncate">${room.description || "No description"}</p>
+            <div class="flex items-center justify-between py-3 px-2 border-b border-gray-200 hover:bg-gray-50 transition-colors">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-bold text-gray-800 text-base truncate">${room.name}</h3>
+                  ${lockIcon ? `<span class="text-base">${lockIcon}</span>` : ''}
+                  <span class="text-sm bg-pink-500 text-white px-2 py-0.5 rounded-full flex-shrink-0">
+                    ${room.memberCount || 0}/${room.capacity}
+                  </span>
                 </div>
-                <span class="text-xs bg-pink-500 text-white px-1.5 py-0.5 rounded ml-1 flex-shrink-0">
-                  ${room.memberCount || 0}/${room.capacity}
-                </span>
+                <p class="text-sm text-gray-600 truncate">${room.description || "No description"}</p>
               </div>
-              <div class="flex gap-1">
+              <div class="ml-3 flex-shrink-0">
                 ${
                   isMember
-                    ? `<button class="flex-1 py-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded text-xs transition-all active:scale-95" onclick="window.openChatRoom('${room.id}')">Chat</button>`
+                    ? `<button class="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg text-sm transition-all active:scale-95" onclick="window.openChatRoom('${room.id}')">Chat</button>`
                     : room.memberCount < room.capacity
-                      ? `<button class="flex-1 py-1 bg-gray-600 hover:bg-gray-500 text-white font-semibold rounded text-xs transition-all active:scale-95" onclick="window.joinRoom('${room.id}')">Join</button>`
-                      : `<button class="flex-1 py-1 bg-gray-700 text-gray-500 font-semibold rounded text-xs cursor-not-allowed" disabled>Full</button>`
+                      ? `<button class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold rounded-lg text-sm transition-all active:scale-95" onclick="window.joinRoom('${room.id}')">Join</button>`
+                      : `<button class="px-4 py-2 bg-gray-200 text-gray-500 font-semibold rounded-lg text-sm cursor-not-allowed" disabled>Full</button>`
                 }
               </div>
             </div>
@@ -1075,8 +1128,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentRoomName.textContent = room.name;
     roomMemberCount.textContent = `${room.memberCount} members`;
 
+    // Show/hide end session button based on whether user is the room creator
+    const endSessionBtn = document.getElementById("js-end-session-btn");
+    if (endSessionBtn) {
+      if (room.createdBy === user.uid) {
+        endSessionBtn.style.display = "block";
+      } else {
+        endSessionBtn.style.display = "none";
+      }
+    }
+
     showChatView();
-    messagesContainer.innerHTML = '<p class="text-center text-gray-500 py-2">Loading messages...</p>';
+    messagesContainer.innerHTML = '<p class="text-center text-gray-500 py-2 text-base">Loading messages...</p>';
     messageInput.focus();
 
     listenToMessages(roomId, (messages) => {
@@ -1088,8 +1151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
               <div class="flex ${isCurrentUser ? "flex-row-reverse" : "flex-row"} gap-1 max-w-xs items-end">
                 <img src="${msg.userPhoto}" alt="${msg.userName}" class="w-6 h-6 rounded-full object-cover flex-shrink-0">
                 <div class="flex flex-col ${isCurrentUser ? "items-end" : "items-start"}">
-                  <span class="text-xs font-semibold text-gray-400 px-2">${msg.userName}</span>
-                  <div class="px-2 py-1 rounded-lg text-xs ${isCurrentUser ? "bg-pink-500 text-white" : "bg-gray-700 text-gray-100"}">
+                  <span class="text-base font-semibold text-gray-600 px-2">${msg.userName}</span>
+                  <div class="px-3 py-2 rounded-lg text-base ${isCurrentUser ? "bg-pink-500 text-white" : "bg-gray-200 text-gray-800"}">
                     ${msg.text}
                   </div>
                 </div>
@@ -1142,14 +1205,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       const user = getCurrentUser();
       const roomId = getCurrentRoomId();
       if (user && roomId) {
-        try {
-          await leaveRoom(roomId, user.uid);
-          await deleteChatRoom(roomId);
-        } catch (error) {
-          console.error("End session cleanup error:", error);
+        // Double-check that the user is the room creator
+        const room = localRooms.find((r) => r.id === roomId);
+        if (room && room.createdBy === user.uid) {
+          try {
+            await leaveRoom(roomId, user.uid);
+            await deleteChatRoom(roomId);
+          } catch (error) {
+            console.error("End session cleanup error:", error);
+          }
+          setCurrentRoomId(null);
+          closeChatModal();
+        } else {
+          console.warn("Only the room creator can end the session");
         }
-        setCurrentRoomId(null);
-        closeChatModal();
       }
       showRoomsView();
       loadRooms();
