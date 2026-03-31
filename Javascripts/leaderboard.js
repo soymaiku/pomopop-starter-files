@@ -28,6 +28,12 @@ export function initializeLeaderboard() {
     return;
   }
 
+  if (!db) {
+    console.warn("⚠️ Firebase not initialized, cannot load leaderboard");
+    displayLeaderboardError();
+    return;
+  }
+
   // Query all users by total pomodoros (descending)
   const leaderboardQuery = query(
     collection(db, "users"),
@@ -41,11 +47,19 @@ export function initializeLeaderboard() {
       if (snapshot.empty) {
         console.log("ℹ️ No users in leaderboard yet");
       }
-      leaderboardData = snapshot.docs.map((doc, index) => ({
-        rank: index + 1,
+      // Filter to only users with pomodoros > 0 and map with rank
+      const allUsers = snapshot.docs.map((doc) => ({
         uid: doc.id,
         ...doc.data(),
-      }));
+      })).filter(user => (user.totalPomodoros || 0) > 0);
+      
+      leaderboardData = allUsers
+        .sort((a, b) => (b.totalPomodoros || 0) - (a.totalPomodoros || 0))
+        .map((user, index) => ({
+          ...user,
+          rank: index + 1,
+        }));
+      
       renderLeaderboard(leaderboardData);
     },
     (error) => {
@@ -154,7 +168,14 @@ function displayLeaderboardError() {
     container.innerHTML = `
       <div class="leaderboard-error">
         <p>⚠️ Failed to load leaderboard.</p>
-        <p style="font-size: 12px; margin-top: 5px;">Check console for details. Verify Firestore security rules allow 'read' for authenticated users.</p>
+        <p style="font-size: 12px; margin-top: 5px;">This could be due to:</p>
+        <ul style="font-size: 11px; margin-top: 5px; padding-left: 15px;">
+          <li>Firebase not configured properly</li>
+          <li>Firestore security rules blocking reads</li>
+          <li>No users have completed pomodoros yet</li>
+          <li>Network connectivity issues</li>
+        </ul>
+        <p style="font-size: 12px; margin-top: 5px;">Check browser console for detailed error messages.</p>
       </div>
     `;
   }
