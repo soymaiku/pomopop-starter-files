@@ -2438,6 +2438,195 @@
       </div>
     </div>
 
+    <!-- Floating Chat Widget Button -->
+    <button
+      id="js-floating-chat-btn"
+      class="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-lg hover:shadow-2xl hover:scale-110 active:scale-95 transition-all z-[500] border-4 border-white/70 flex items-center justify-center"
+      title="Open Chat"
+      aria-label="Open Chat"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+    </button>
+
+    <!-- Chat Room Modal (Compact Facebook-style) -->
+    <div
+      id="js-chat-modal"
+      class="fixed bottom-8 right-8 z-[600] opacity-0 invisible transition-all duration-300 [&.open]:opacity-100 [&.open]:visible"
+    >
+      <div
+        class="modal-content bg-gradient-to-b from-gray-900 to-gray-950 w-80 h-96 rounded-2xl shadow-2xl transform scale-95 transition-all duration-300 [.open_&]:scale-100 relative flex flex-col overflow-hidden border border-gray-800"
+        style="position:relative;">
+        <!-- Chat Header -->
+        <div class="p-4 border-b border-gray-700 flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-white">Chat</h2></div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-gray-400" id="js-chat-mode-subtitle">Study together!</span>
+            <button
+              class="text-gray-500 hover:text-gray-300 transition-all"
+              id="js-close-chat"
+              title="Close"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Modes Container -->
+        <div id="js-chat-modes-container" class="flex-1 flex flex-col overflow-hidden">
+          <!-- Initial View: Choose Mode -->
+          <div id="js-chat-initial-view" class="flex-1 flex flex-col items-center justify-center p-4 space-y-4">
+            <p class="text-center text-gray-300 text-sm">Study together with your friends!</p>
+            <div class="flex flex-col gap-2 w-full">
+              <button
+                class="py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all active:scale-95 text-sm"
+                id="js-share-room-btn"
+              >
+                Share your room
+              </button>
+              <button
+                class="py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all active:scale-95 text-sm"
+                id="js-find-room-btn"
+              >
+                Find a room
+              </button>
+            </div>
+          </div>
+
+          <!-- Rooms List View -->
+          <div id="js-rooms-list-view" class="hidden flex-1 flex flex-col overflow-hidden">
+            <div class="p-3 flex items-center gap-2 border-b border-gray-700">
+              <button
+                id="js-back-to-initial"
+                class="text-gray-400 hover:text-white transition-all"
+                title="Back"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+              </button>
+              <h3 class="text-white font-semibold text-sm">Rooms</h3>
+            </div>
+            <div id="js-rooms-list" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+              <p class="text-center text-gray-500 text-xs py-4">Loading rooms...</p>
+            </div>
+          </div>
+
+          <!-- Create Room View -->
+          <div id="js-create-room-view" class="hidden flex-1 flex flex-col overflow-hidden">
+            <div class="p-3 flex items-center gap-2 border-b border-gray-700">
+              <button
+                id="js-back-to-initial-2"
+                class="text-gray-400 hover:text-white transition-all"
+                title="Back"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+              </button>
+              <h3 class="text-white font-semibold text-sm">Create Room</h3>
+            </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-3">
+              <div>
+                <label class="block text-gray-300 font-semibold mb-1 text-xs">Name</label>
+                <input
+                  type="text"
+                  id="js-room-name-input"
+                  placeholder="Room name"
+                  class="w-full p-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-400 outline-none transition-all text-white placeholder-gray-500 text-xs"
+                />
+              </div>
+              <div>
+                <label class="block text-gray-300 font-semibold mb-1 text-xs">Description</label>
+                <textarea
+                  id="js-room-description-input"
+                  placeholder="What's this about?"
+                  class="w-full p-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-400 outline-none transition-all text-white placeholder-gray-500 resize-none h-16 text-xs"
+                ></textarea>
+              </div>
+              <div>
+                <label class="block text-gray-300 font-semibold mb-1 text-xs">Password (Optional)</label>
+                <input
+                  type="password"
+                  id="js-room-password-input"
+                  placeholder="Leave blank if none"
+                  class="w-full p-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-400 outline-none transition-all text-white placeholder-gray-500 text-xs"
+                />
+              </div>
+              <button
+                class="w-full py-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold rounded-lg hover:shadow-lg transition-all active:scale-95 text-sm"
+                id="js-create-room-btn"
+              >
+                Create
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat View -->
+          <div id="js-chat-view" class="hidden flex-1 flex flex-col overflow-hidden">
+            <div class="p-3 flex items-center gap-2 border-b border-gray-700">
+              <button
+                id="js-back-to-rooms"
+                class="text-gray-400 hover:text-white transition-all"
+                title="Back"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+              </button>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-white text-sm truncate" id="js-current-room-name">Room Name</h3>
+                <p class="text-xs text-gray-500" id="js-room-member-count">0 members</p>
+              </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div
+              id="js-messages-container"
+              class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2"
+            >
+              <p class="text-center text-gray-500 text-xs py-4">No messages yet...</p>
+            </div>
+
+            <!-- Message Input & Controls -->
+            <div class="p-3 border-t border-gray-700 space-y-2">
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  id="js-message-input"
+                  placeholder="Type a message..."
+                  class="flex-1 p-2 rounded-lg bg-gray-800 border border-gray-700 focus:border-pink-400 outline-none transition-all text-white placeholder-gray-500 text-sm"
+                />
+                <button
+                  class="p-2 bg-gradient-to-r from-pink-400 to-rose-400 text-white rounded-lg hover:shadow-lg transition-all active:scale-95"
+                  id="js-send-message-btn"
+                  title="Send message"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                    <path d="M16.6915026,12.4744748 L3.50612381,13.2599618 C3.19218622,13.2599618 3.03521743,13.4170592 3.03521743,13.5741566 L1.15159189,20.0151496 C0.8376543,20.8006365 0.99,21.89 1.77946707,22.52 C2.41,22.99 3.50612381,23.1 4.13399899,22.99 L21.714504,14.0454487 C22.6563168,13.5741566 23.1272231,12.6315722 22.9702544,11.6889879 L4.13399899,1.01630716 C3.34915502,0.9052 2.40734225,1.01630716 1.77946707,1.4876 C0.994623095,2.11328046 0.837654326,3.0516722 1.15159189,3.98 L3.03521743,10.4209931 C3.03521743,10.5780905 3.19218622,10.7351879 3.50612381,10.7351879 L16.6915026,11.5206748 C16.6915026,11.5206748 17.1624089,11.5206748 17.1624089,12 C17.1624089,12.4744748 16.6915026,12.4744748 16.6915026,12.4744748 Z" />
+                  </svg>
+                </button>
+              </div>
+              <button
+                class="w-full py-1 px-3 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-lg transition-all active:scale-95 text-xs"
+                id="js-end-session-btn"
+                title="Leave chat room"
+              >
+                End Session
+              </button>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Guest Warning Modal -->
     <div
       id="js-guest-warning-modal"

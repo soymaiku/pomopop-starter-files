@@ -54,6 +54,20 @@ import {
   loginAsGuest,
   logout,
 } from "./stats.js";
+import {
+  createChatRoom,
+  joinChatRoom,
+  leaveRoom,
+  deleteChatRoom,
+  sendMessage,
+  getChatRooms,
+  listenToMessages,
+  listenToRooms,
+  stopMessagesListener,
+  stopRoomsListener,
+  getCurrentRoomId,
+  setCurrentRoomId,
+} from "./chat.js";
 
 // ==================== FONT LOGIC ====================
 function applyCustomFont() {
@@ -923,6 +937,274 @@ document.addEventListener("DOMContentLoaded", async () => {
   document
     .getElementById("js-reset-cancel")
     .addEventListener("click", closeResetModal);
+
+  // ==================== CHAT ROOM LOGIC ====================
+  const floatingChatBtn = document.getElementById("js-floating-chat-btn");
+  const chatModal = document.getElementById("js-chat-modal");
+  const closeChatBtn = document.getElementById("js-close-chat");
+  const shareRoomBtn = document.getElementById("js-share-room-btn");
+  const findRoomBtn = document.getElementById("js-find-room-btn");
+  const initialView = document.getElementById("js-chat-initial-view");
+  const roomsListView = document.getElementById("js-rooms-list-view");
+  const createRoomView = document.getElementById("js-create-room-view");
+  const chatView = document.getElementById("js-chat-view");
+  const roomsList = document.getElementById("js-rooms-list");
+  const roomNameInput = document.getElementById("js-room-name-input");
+  const roomDescriptionInput = document.getElementById("js-room-description-input");
+  const createRoomBtn = document.getElementById("js-create-room-btn");
+  const messagesContainer = document.getElementById("js-messages-container");
+  const messageInput = document.getElementById("js-message-input");
+  const sendMessageBtn = document.getElementById("js-send-message-btn");
+  const backToRoomsBtn = document.getElementById("js-back-to-rooms");
+  const backToInitialBtn = document.getElementById("js-back-to-initial");
+  const backToInitialBtn2 = document.getElementById("js-back-to-initial-2");
+  const currentRoomName = document.getElementById("js-current-room-name");
+  const roomMemberCount = document.getElementById("js-room-member-count");
+
+  let localRooms = [];
+
+  function openChatModal() {
+    const user = getCurrentUser();
+    if (user && user.isGuest) {
+      guestWarningModal.classList.add("open");
+      return;
+    }
+
+    chatModal.classList.add("open");
+    showInitialView();
+  }
+
+  function closeChatModal() {
+    chatModal.classList.remove("open");
+    stopRoomsListener();
+    stopMessagesListener();
+    if (getCurrentRoomId()) {
+      const user = getCurrentUser();
+      if (user) {
+        leaveRoom(getCurrentRoomId(), user.uid);
+      }
+      setCurrentRoomId(null);
+    }
+  }
+
+  function showInitialView() {
+    initialView.classList.remove("hidden");
+    roomsListView.classList.add("hidden");
+    createRoomView.classList.add("hidden");
+    chatView.classList.add("hidden");
+  }
+
+  function showRoomsView() {
+    initialView.classList.add("hidden");
+    roomsListView.classList.remove("hidden");
+    createRoomView.classList.add("hidden");
+    chatView.classList.add("hidden");
+    loadRooms();
+  }
+
+  function showCreateView() {
+    initialView.classList.add("hidden");
+    roomsListView.classList.add("hidden");
+    createRoomView.classList.remove("hidden");
+    chatView.classList.add("hidden");
+    roomNameInput.focus();
+  }
+
+  function showChatView() {
+    initialView.classList.add("hidden");
+    roomsListView.classList.add("hidden");
+    createRoomView.classList.add("hidden");
+    chatView.classList.remove("hidden");
+  }
+
+  async function loadRooms() {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    roomsList.innerHTML = '<p class="text-center text-gray-500 py-4">Loading rooms...</p>';
+
+    listenToRooms((rooms) => {
+      localRooms = rooms;
+      if (rooms.length === 0) {
+        roomsList.innerHTML = '<p class="text-center text-gray-500 text-xs py-4">No rooms yet!</p>';
+        return;
+      }
+
+      roomsList.innerHTML = rooms
+        .map((room) => {
+          const isMember = room.members.includes(user.uid);
+          const lockIcon = room.hasPassword ? '🔒' : '';
+          return `
+            <div class="p-2 bg-gray-800 rounded-lg border border-gray-700 hover:border-pink-400 transition-all">
+              <div class="flex justify-between items-start mb-1">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-1">
+                    <h3 class="font-bold text-gray-100 text-xs truncate">${room.name}</h3>
+                    ${lockIcon ? `<span class="text-xs">${lockIcon}</span>` : ''}
+                  </div>
+                  <p class="text-xs text-gray-400 truncate">${room.description || "No description"}</p>
+                </div>
+                <span class="text-xs bg-pink-500 text-white px-1.5 py-0.5 rounded ml-1 flex-shrink-0">
+                  ${room.memberCount || 0}/${room.capacity}
+                </span>
+              </div>
+              <div class="flex gap-1">
+                ${
+                  isMember
+                    ? `<button class="flex-1 py-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded text-xs transition-all active:scale-95" onclick="window.openChatRoom('${room.id}')">Chat</button>`
+                    : room.memberCount < room.capacity
+                      ? `<button class="flex-1 py-1 bg-gray-600 hover:bg-gray-500 text-white font-semibold rounded text-xs transition-all active:scale-95" onclick="window.joinRoom('${room.id}')">Join</button>`
+                      : `<button class="flex-1 py-1 bg-gray-700 text-gray-500 font-semibold rounded text-xs cursor-not-allowed" disabled>Full</button>`
+                }
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    });
+  }
+
+  window.openChatRoom = async function (roomId) {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const room = localRooms.find((r) => r.id === roomId);
+    if (!room) return;
+
+    setCurrentRoomId(roomId);
+    currentRoomName.textContent = room.name;
+    roomMemberCount.textContent = `${room.memberCount} members`;
+
+    showChatView();
+    messagesContainer.innerHTML = '<p class="text-center text-gray-500 py-2">Loading messages...</p>';
+    messageInput.focus();
+
+    listenToMessages(roomId, (messages) => {
+      messagesContainer.innerHTML = messages
+        .map((msg) => {
+          const isCurrentUser = msg.userId === user.uid;
+          return `
+            <div class="flex ${isCurrentUser ? "justify-end" : "justify-start"}">
+              <div class="flex ${isCurrentUser ? "flex-row-reverse" : "flex-row"} gap-1 max-w-xs items-end">
+                <img src="${msg.userPhoto}" alt="${msg.userName}" class="w-6 h-6 rounded-full object-cover flex-shrink-0">
+                <div class="flex flex-col ${isCurrentUser ? "items-end" : "items-start"}">
+                  <span class="text-xs font-semibold text-gray-400 px-2">${msg.userName}</span>
+                  <div class="px-2 py-1 rounded-lg text-xs ${isCurrentUser ? "bg-pink-500 text-white" : "bg-gray-700 text-gray-100"}">
+                    ${msg.text}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
+  };
+
+  window.joinRoom = async function (roomId) {
+    const user = getCurrentUser();
+    if (!user) return;
+
+    try {
+      // Check if room requires password
+      const room = localRooms.find((r) => r.id === roomId);
+      let password = "";
+      
+      if (room && room.hasPassword) {
+        password = prompt("This room is password protected. Please enter the password:");
+        if (password === null) {
+          return; // User cancelled
+        }
+      }
+      
+      await joinChatRoom(roomId, user, password);
+      window.openChatRoom(roomId);
+    } catch (error) {
+      alert("Error joining room: " + error.message);
+    }
+  };
+
+  // Event Listeners
+  floatingChatBtn.addEventListener("click", openChatModal);
+  closeChatBtn.addEventListener("click", closeChatModal);
+  shareRoomBtn.addEventListener("click", showCreateView);
+  findRoomBtn.addEventListener("click", showRoomsView);
+  backToRoomsBtn.addEventListener("click", showRoomsView);
+  backToInitialBtn.addEventListener("click", showInitialView);
+  backToInitialBtn2.addEventListener("click", showInitialView);
+
+  // End Session Button
+  const endSessionBtn = document.getElementById("js-end-session-btn");
+  if (endSessionBtn) {
+    endSessionBtn.addEventListener("click", async () => {
+      const user = getCurrentUser();
+      const roomId = getCurrentRoomId();
+      if (user && roomId) {
+        try {
+          await leaveRoom(roomId, user.uid);
+          await deleteChatRoom(roomId);
+        } catch (error) {
+          console.error("End session cleanup error:", error);
+        }
+        setCurrentRoomId(null);
+        closeChatModal();
+      }
+      showRoomsView();
+      loadRooms();
+    });
+  }
+
+  createRoomBtn.addEventListener("click", async () => {
+    const user = getCurrentUser();
+    const roomName = roomNameInput.value.trim();
+    const roomDescription = roomDescriptionInput.value.trim();
+
+    if (!roomName) {
+      alert("Please enter a room name");
+      return;
+    }
+
+    if (!user) return;
+
+    try {
+      const roomPassword = document.getElementById("js-room-password-input").value.trim();
+      const roomId = await createChatRoom(user, roomName, roomDescription, roomPassword);
+      roomNameInput.value = "";
+      roomDescriptionInput.value = "";
+      document.getElementById("js-room-password-input").value = "";
+      showRoomsView();
+      loadRooms();
+      // Auto-open the created room
+      setTimeout(() => window.openChatRoom(roomId), 500);
+    } catch (error) {
+      alert("Error creating room: " + error.message);
+    }
+  });
+
+  sendMessageBtn.addEventListener("click", async () => {
+    const user = getCurrentUser();
+    const roomId = getCurrentRoomId();
+    const messageText = messageInput.value.trim();
+
+    if (!messageText) return;
+    if (!user || !roomId) return;
+
+    try {
+      await sendMessage(roomId, user, messageText);
+      messageInput.value = "";
+      messageInput.focus();
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  });
+
+  messageInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendMessageBtn.click();
+    }
+  });
 
   // Close modals AND BURGER MENU on outside click
   window.addEventListener("click", (e) => {
