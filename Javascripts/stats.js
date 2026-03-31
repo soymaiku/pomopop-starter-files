@@ -44,6 +44,7 @@ export async function loginWithGoogle() {
       uid: user.uid,
       displayName: user.displayName,
       photoURL: user.photoURL,
+      originalPhotoURL: user.photoURL,
       isGuest: false,
     };
     localStorage.setItem("pomopop-user", JSON.stringify(appUser));

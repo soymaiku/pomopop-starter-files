@@ -352,12 +352,12 @@ html {
 
 .task-item {
   background-color: #f9f9f9;
-  padding: 14px;
+  padding: 18px;
   border-radius: 16px;
   border-left: 4px solid #555;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   color: #333;
 }
@@ -369,13 +369,13 @@ html {
 
 .task-item .task-name {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   word-break: break-word;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .task-item .task-pomos {
-  font-size: 13px;
+  font-size: 14px;
   color: #666;
 }
 
@@ -2012,4 +2012,37 @@ html {
   .modal {
     height: 100dvh;
   }
+}
+
+/* Onboarding shortcut button colors */
+#js-onboarding-open-tasks {
+  background: linear-gradient(to right, #1976d2, #1565c0);
+}
+
+#js-onboarding-open-tasks:hover {
+  background: linear-gradient(to right, #1565c0, #0d47a1);
+}
+
+#js-onboarding-open-settings {
+  background: linear-gradient(to right, #757575, #616161);
+}
+
+#js-onboarding-open-settings:hover {
+  background: linear-gradient(to right, #616161, #424242);
+}
+
+#js-onboarding-open-music {
+  background: linear-gradient(to right, #9c27b0, #7b1fa2);
+}
+
+#js-onboarding-open-music:hover {
+  background: linear-gradient(to right, #7b1fa2, #4a148c);
+}
+
+#js-onboarding-open-video {
+  background: linear-gradient(to right, #f44336, #d32f2f);
+}
+
+#js-onboarding-open-video:hover {
+  background: linear-gradient(to right, #d32f2f, #b71c1c);
 }

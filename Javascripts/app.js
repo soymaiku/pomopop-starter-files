@@ -1,5 +1,5 @@
 // app.js
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import {
   doc,
   getDoc,
@@ -127,12 +127,22 @@ const profilePic = document.getElementById("js-profile-pic");
 const profileName = document.getElementById("js-profile-name");
 const accountIconBtn = document.getElementById("js-account-icon-btn");
 const accountAvatarDisplay = document.getElementById("js-account-avatar");
+const avatarModal = document.getElementById("js-avatar-modal");
+const closeAvatarBtn = document.getElementById("js-close-avatar");
+const cancelAvatarBtn = document.getElementById("js-cancel-avatar");
+const editProfileBtn = document.getElementById("js-edit-profile-btn");
+const resetGmailPhotoBtn = document.getElementById("js-reset-gmail-photo");
 
 function checkAuth() {
   const user = getCurrentUser();
   if (user) {
     // User is logged in
     loginModal.classList.remove("open");
+    // Set original photo URL from Firebase if not already set
+    if (!user.originalPhotoURL && !user.isGuest && auth.currentUser) {
+      user.originalPhotoURL = auth.currentUser.photoURL;
+      localStorage.setItem("pomopop-user", JSON.stringify(user));
+    }
     updateProfileUI(user);
   } else {
     // No user, show login
@@ -611,6 +621,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const picUploadLabel = document.querySelector('label[for="js-pic-upload"]');
   if (picUploadLabel) picUploadLabel.style.display = "none";
 
+  // Make profile picture clickable to open avatar modal
+  accountEditPic.addEventListener("click", () => {
+    openAvatarModal();
+  });
+  accountEditPic.style.cursor = "pointer";
+
   function openAccountModal() {
     const user = getCurrentUser();
     if (user && !user.isGuest) {
@@ -623,6 +639,59 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function closeAccountModal() {
     accountModal.classList.remove("open");
+  }
+
+  function openAvatarModal() {
+    accountModal.classList.remove("open");
+    avatarModal.classList.add("open");
+  }
+
+  function closeAvatarModal() {
+    avatarModal.classList.remove("open");
+  }
+
+  // Select avatar
+  window.selectAvatar = async function(src) {
+    const user = getCurrentUser();
+    if (user) {
+      user.photoURL = src;
+      localStorage.setItem("pomopop-user", JSON.stringify(user));
+      if (!user.isGuest) {
+        // Update Firebase auth profile
+        try {
+          await updateProfile(auth.currentUser, { photoURL: src });
+          // Update Firestore to sync avatar across database (Leaderboard, etc.)
+          const userRef = doc(db, "users", user.uid);
+          await updateDoc(userRef, { photoURL: src });
+        } catch (error) {
+          console.error("Error updating Firebase profile:", error);
+        }
+      }
+      updateProfileUI(user);
+      closeAvatarModal();
+    }
+  }
+
+  // Reset to Gmail photo
+  window.resetToGmailPhoto = async function() {
+    const user = getCurrentUser();
+    let originalPhotoURL = user.originalPhotoURL || (auth.currentUser ? auth.currentUser.photoURL : null);
+    
+    if (user && originalPhotoURL && !user.isGuest) {
+      user.photoURL = originalPhotoURL;
+      user.originalPhotoURL = originalPhotoURL;
+      localStorage.setItem("pomopop-user", JSON.stringify(user));
+      try {
+        await updateProfile(auth.currentUser, { photoURL: originalPhotoURL });
+        // Update Firestore to sync avatar across database (Leaderboard, etc.)
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { photoURL: originalPhotoURL });
+      } catch (error) {
+        console.error("Error resetting to Gmail photo:", error);
+      }
+      updateProfileUI(user);
+      closeAvatarModal();
+    }
   }
 
   // Save account changes
@@ -678,6 +747,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   closeAccountBtn.addEventListener("click", closeAccountModal);
   cancelAccountBtn.addEventListener("click", closeAccountModal);
+
+  closeAvatarBtn.addEventListener("click", closeAvatarModal);
+  cancelAvatarBtn.addEventListener("click", closeAvatarModal);
+  resetGmailPhotoBtn.addEventListener("click", resetToGmailPhoto);
+  editProfileBtn.addEventListener("click", () => {
+    closeAvatarModal();
+    openAccountModal();
+  });
 
   // ==================== ABOUT MODAL LOGIC ====================
   const infoBtn = document.getElementById("js-info-btn");
