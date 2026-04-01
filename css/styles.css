@@ -325,8 +325,17 @@ html {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.25);
   z-index: 40;
+}
+
+#js-chat-modal,
+#js-chat-modal.open {
+  background: transparent !important;
+}
+
+#js-chat-modal .modal-content {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
 .modal-content {
@@ -577,10 +586,97 @@ body.modal-open .footer-buttons-container {
   pointer-events: none;
 }
 
+/* Hide chat button when chat modal is open */
+body:has(#js-chat-modal.open) #js-floating-chat-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Chat modal animations */
+@keyframes chatModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes chatModalSlideOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+}
+
+/* Chat modal base (mobile-first) */
+#js-chat-modal {
+  display: none;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#js-chat-modal.open {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 6vh;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+#js-chat-modal .modal-content {
+  width: min(92vw, 560px);
+  max-height: min(84vh, 680px);
+  min-height: 50vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+  display: flex;
+  flex-direction: column;
+  animation: chatModalSlideOut 0.3s ease-out forwards;
+}
+
+#js-chat-modal.open .modal-content {
+  animation: chatModalSlideIn 0.3s ease-out forwards;
+}
+
+#js-chat-modal .modal-content #js-chat-modes-container {
+  flex: 1; 
+  min-height: 0;
+  overflow: hidden;
+}
+
+#js-chat-modal .modal-content #js-messages-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+
+/* Fix chat modal positioning on desktop */
+@media (min-width: 768px) {
+  #js-chat-modal .modal-content {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+}
+
 .video-bg-btn,
 .music-btn,
 .about-btn,
-.info-btn {
+.info-btn,
+.chat-btn {
   width: 60px;
   height: 60px;
   padding: 0;
@@ -610,7 +706,8 @@ body.modal-open .footer-buttons-container {
 .video-bg-btn:hover,
 .music-btn:hover,
 .about-btn:hover,
-.info-btn:hover {
+.info-btn:hover,
+.chat-btn:hover {
   background: linear-gradient(
     145deg,
     rgba(255, 255, 255, 0.25),
@@ -625,7 +722,8 @@ body.modal-open .footer-buttons-container {
 .video-bg-btn:active,
 .music-btn:active,
 .about-btn:active,
-.info-btn:active {
+.info-btn:active,
+.chat-btn:active {
   transform: translateY(0);
   box-shadow:
     inset 3px 3px 6px rgba(0, 0, 0, 0.15),
@@ -858,6 +956,10 @@ body.video-active {
 
 .stats-tab-content {
   animation: fadeIn 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 #js-tab-ranking {
@@ -886,8 +988,8 @@ body.video-active {
 .leaderboard-container {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
-  max-height: 480px;
   overflow: hidden;
   background: #fff;
 }

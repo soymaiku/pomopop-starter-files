@@ -943,6 +943,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     .addEventListener("click", closeResetModal);
 
   // ==================== CHAT ROOM LOGIC ====================
+  const chatBtn = document.getElementById("js-chat-btn");
   const floatingChatBtn = document.getElementById("js-floating-chat-btn");
   const chatModal = document.getElementById("js-chat-modal");
   const closeChatBtn = document.getElementById("js-close-chat");
@@ -974,11 +975,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Set initial position if not set
-    if (!chatModal.style.left) {
-      chatModal.style.left = '50%';
+    // Set position on desktop only
+    if (window.innerWidth >= 768 && !chatModal.style.right) { // 768px is md breakpoint
+      chatModal.style.right = '20px';
       chatModal.style.top = '50%';
-      chatModal.style.transform = 'translate(-50%, -50%)';
+      chatModal.style.transform = 'translateY(-50%)';
     }
 
     chatModal.classList.add("open");
@@ -999,48 +1000,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ==================== CHAT MODAL DRAG FUNCTIONALITY ====================
-  const chatHeader = document.getElementById("js-chat-header");
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let initialX = 0;
-  let initialY = 0;
-
-  function startDrag(e) {
-    isDragging = true;
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    const rect = chatModal.getBoundingClientRect();
-    initialX = rect.left;
-    initialY = rect.top;
-    chatHeader.style.cursor = 'grabbing';
-    document.body.style.userSelect = 'none';
-  }
-
-  function drag(e) {
-    if (!isDragging) return;
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    const newX = initialX + dx;
-    const newY = initialY + dy;
-    // Constrain to viewport
-    const maxX = window.innerWidth - chatModal.offsetWidth;
-    const maxY = window.innerHeight - chatModal.offsetHeight;
-    chatModal.style.left = Math.max(0, Math.min(newX, maxX)) + 'px';
-    chatModal.style.top = Math.max(0, Math.min(newY, maxY)) + 'px';
-    chatModal.style.transform = 'translate(0, 0)';
-  }
-
-  function stopDrag() {
-    isDragging = false;
-    chatHeader.style.cursor = 'grab';
-    document.body.style.userSelect = '';
-  }
-
-  // Make chat header draggable
-  chatHeader.addEventListener('mousedown', startDrag);
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', stopDrag);
+  // Removed: drag functionality disabled
 
   function showInitialView() {
     initialView.classList.remove("hidden");
@@ -1190,7 +1150,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   // Event Listeners
-  floatingChatBtn.addEventListener("click", openChatModal);
+  if (chatBtn) {
+    chatBtn.addEventListener("click", openChatModal);
+  } else if (floatingChatBtn) {
+    floatingChatBtn.addEventListener("click", openChatModal);
+  }
   closeChatBtn.addEventListener("click", closeChatModal);
   shareRoomBtn.addEventListener("click", showCreateView);
   findRoomBtn.addEventListener("click", showRoomsView);
@@ -1215,13 +1179,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error("End session cleanup error:", error);
           }
           setCurrentRoomId(null);
-          closeChatModal();
+          showInitialView();
         } else {
           console.warn("Only the room creator can end the session");
         }
       }
-      showRoomsView();
-      loadRooms();
+      showInitialView();
     });
   }
 
