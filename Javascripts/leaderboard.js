@@ -14,7 +14,9 @@ import {
 
 // Store current leaderboard data
 let leaderboardData = [];
+let displayedUsers = [];
 let unsubscribe = null;
+const BATCH_SIZE = 50; // Load 50 users at a time for performance
 
 /**
  * Start real-time listener for leaderboard
@@ -35,6 +37,7 @@ export function initializeLeaderboard() {
   }
 
   // Query all users by total pomodoros (descending)
+  // Using limit to manage Firestore performance with large user bases
   const leaderboardQuery = query(
     collection(db, "users"),
     orderBy("totalPomodoros", "desc"),
@@ -47,11 +50,11 @@ export function initializeLeaderboard() {
       if (snapshot.empty) {
         console.log("ℹ️ No users in leaderboard yet");
       }
-      // Filter to only users with pomodoros > 0 and map with rank
+      // Get all users and map with rank (including those with 0 pomodoros)
       const allUsers = snapshot.docs.map((doc) => ({
         uid: doc.id,
         ...doc.data(),
-      })).filter(user => (user.totalPomodoros || 0) > 0);
+      }));
       
       leaderboardData = allUsers
         .sort((a, b) => (b.totalPomodoros || 0) - (a.totalPomodoros || 0))
@@ -60,7 +63,16 @@ export function initializeLeaderboard() {
           rank: index + 1,
         }));
       
-      renderLeaderboard(leaderboardData);
+      // Debug info for user
+      console.log(`✅ Leaderboard Loaded:`);
+      console.log(`   - Total users (all): ${leaderboardData.length}`);
+      console.log(`   - Users with pomodoros: ${leaderboardData.filter(u => (u.totalPomodoros || 0) > 0).length}`);
+      console.log(`   - Users with 0 pomodoros: ${leaderboardData.filter(u => (u.totalPomodoros || 0) === 0).length}`);
+      console.log(`📊 Leaderboard Data (first 20):`, leaderboardData.slice(0, 20));
+      
+      // Reset displayed users and show first batch
+      displayedUsers = [];
+      loadMoreUsers();
     },
     (error) => {
       console.error("❌ Leaderboard listener error:", error);
@@ -81,8 +93,34 @@ export function initializeLeaderboard() {
 }
 
 /**
+ * Load next batch of users (pagination)
+ */
+export function loadMoreUsers() {
+  const nextBatch = leaderboardData.slice(
+    displayedUsers.length,
+    displayedUsers.length + BATCH_SIZE
+  );
+  
+  if (nextBatch.length > 0) {
+    displayedUsers = [...displayedUsers, ...nextBatch];
+    renderLeaderboard(displayedUsers);
+  }
+  
+  const stats = {
+    displayed: displayedUsers.length,
+    total: leaderboardData.length,
+    remaining: leaderboardData.length - displayedUsers.length,
+    batchSize: BATCH_SIZE
+  };
+  
+  console.log(`📊 Leaderboard Stats:`, stats);
+  console.log(`Displaying ${stats.displayed} / ${stats.total} users (${stats.remaining} remaining)`);
+}
+
+/**
  * Render leaderboard HTML - matches screenshot layout
- * Shows: Rank | Photo | Name | Weekly Pomodoros
+ * Shows: Rank | Photo | Name | Total Pomodoros
+ * Now includes ALL users (active + inactive)
  */
 function renderLeaderboard(users) {
   const container = document.getElementById("js-leaderboard");
@@ -92,7 +130,7 @@ function renderLeaderboard(users) {
   if (users.length === 0) {
     container.innerHTML = `
       <div class="leaderboard-empty">
-        <p>No users on the leaderboard yet. Complete your first pomodoro!</p>
+        <p>No users found. Be the first to join the Pomopop community!</p>
       </div>
     `;
     return;
@@ -110,9 +148,11 @@ function renderLeaderboard(users) {
 
   users.forEach((user) => {
     const photoUrl = user.photoURL || "https://via.placeholder.com/48";
+    const isInactive = (user.totalPomodoros || 0) === 0;
+    const inactiveClass = isInactive ? 'inactive' : '';
 
     html += `
-      <div class="leaderboard-row" data-uid="${user.uid}">
+      <div class="leaderboard-row ${inactiveClass}" data-uid="${user.uid}">
         <div class="leaderboard-rank-cell">
           <span class="rank-number">${user.rank}</span>
         </div>
@@ -126,15 +166,32 @@ function renderLeaderboard(users) {
           <span class="user-name" title="${escapeHtml(user.displayName)}" aria-label="${escapeHtml(user.displayName)}">${escapeHtml(user.displayName)}</span>
         </div>
         <div class="leaderboard-total-cell">
-          <span class="total-count">${user.totalPomodoros}</span>
+          <span class="total-count">${user.totalPomodoros || 0}</span>
         </div>
       </div>
     `;
   });
 
+  // Add "Load More" button if there are more users to display
+  if (displayedUsers.length < leaderboardData.length) {
+    html += `
+      <div class="leaderboard-load-more">
+        <button id="js-load-more-btn" class="load-more-btn">
+          Load More (${leaderboardData.length - displayedUsers.length} more)
+        </button>
+      </div>
+    `;
+  }
+
   html += `</div>`;
 
   container.innerHTML = html;
+  
+  // Attach event listener to load more button if it exists
+  const loadMoreBtn = document.getElementById("js-load-more-btn");
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener("click", loadMoreUsers);
+  }
 }
 
 /**
