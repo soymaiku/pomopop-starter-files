@@ -183,6 +183,8 @@ export async function sendMessage(roomId, user, messageText) {
   }
 }
 
+let roomStatusUnsubscribe = null;
+
 /**
  * Listen to real-time messages in a room
  */
@@ -211,6 +213,45 @@ export function listenToMessages(roomId, callback) {
     return messagesUnsubscribe;
   } catch (error) {
     console.error("Error setting up message listener:", error);
+  }
+}
+
+/**
+ * Listen to room status and detect if it's been deleted
+ */
+export function listenToRoomStatus(roomId, onRoomDeleted) {
+  try {
+    const roomRef = doc(db, "chatRooms", roomId);
+    
+    roomStatusUnsubscribe = onSnapshot(
+      roomRef,
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          // Room has been deleted
+          console.log("Room deleted:", roomId);
+          onRoomDeleted();
+        }
+      },
+      (error) => {
+        console.error("Error listening to room status:", error);
+        // If we get an error, the room might be deleted, so call onRoomDeleted
+        onRoomDeleted();
+      },
+    );
+
+    return roomStatusUnsubscribe;
+  } catch (error) {
+    console.error("Error setting up room status listener:", error);
+  }
+}
+
+/**
+ * Stop listening to room status
+ */
+export function stopRoomStatusListener() {
+  if (roomStatusUnsubscribe) {
+    roomStatusUnsubscribe();
+    roomStatusUnsubscribe = null;
   }
 }
 

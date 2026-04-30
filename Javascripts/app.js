@@ -65,6 +65,8 @@ import {
   listenToRooms,
   stopMessagesListener,
   stopRoomsListener,
+  listenToRoomStatus,
+  stopRoomStatusListener,
   getCurrentRoomId,
   setCurrentRoomId,
 } from "./chat.js";
@@ -990,6 +992,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     chatModal.classList.remove("open");
     stopRoomsListener();
     stopMessagesListener();
+    stopRoomStatusListener();
     if (getCurrentRoomId()) {
       const user = getCurrentUser();
       if (user) {
@@ -1101,6 +1104,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     showChatView();
     messagesContainer.innerHTML = '<p class="text-center text-gray-500 py-2 text-base">Loading messages...</p>';
     messageInput.focus();
+
+    // Listen for room deletion - if room is deleted, go back to initial view
+    listenToRoomStatus(roomId, () => {
+      console.log("Room has been deleted, returning to initial view");
+      stopMessagesListener();
+      stopRoomStatusListener();
+      setCurrentRoomId(null);
+      showInitialView();
+    });
 
     listenToMessages(roomId, (messages) => {
       messagesContainer.innerHTML = messages
